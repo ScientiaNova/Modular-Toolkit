@@ -1,0 +1,8 @@
+{
+  "itemtype.stick": "%s Rod",
+  "itemtype.long_stick": "Long %s Stick",
+  "itemtype.axe_head": "%s Axe Head",
+  "itemtype.hoe_head": "%s Hoe Head",
+  "itemtype.pickaxe_head": "%s Pickaxe Head",
+  "itemtype.sword_head": "%s Sword Head"
+}
