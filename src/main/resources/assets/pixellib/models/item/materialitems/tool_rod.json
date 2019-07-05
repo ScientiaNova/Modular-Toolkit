@@ -1,6 +1,6 @@
 {
   "parent":"item/generated",
   "textures": {
-    "layer0":"modulartoolkit:item/long_stick"
+    "layer0":"modulartoolkit:item/tool_rod"
   }
 }

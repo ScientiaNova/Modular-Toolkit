@@ -13,10 +13,10 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 version = '${mc_version}-{mod_version}'
-group = 'com.NovumScientiaTeam.modulartoolkit' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = 'com.NovumScientiaTeam.modulartoolkit'
 archivesBaseName = 'modulartoolkit'
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
     mappings channel: 'snapshot', version: '20190622-1.14.2'

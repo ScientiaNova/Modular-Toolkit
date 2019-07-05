@@ -1,0 +1,8 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "modulartoolkit:item/axe_bottom",
+        "layer1": "modulartoolkit:item/axe_mmiddle",
+        "layer2": "modulartoolkit:item/axe_top"
+    }
+}

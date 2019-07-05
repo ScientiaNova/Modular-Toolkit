@@ -1,8 +1,42 @@
 {
-  "itemtype.stick": "%s Rod",
-  "itemtype.long_stick": "Long %s Stick",
+  "itemGroup.mt_tools": "Modular Toolkit: Tools",
+
+  "itemtype.tool_rod": "%s Tool Rod",
   "itemtype.axe_head": "%s Axe Head",
   "itemtype.hoe_head": "%s Hoe Head",
   "itemtype.pickaxe_head": "%s Pickaxe Head",
-  "itemtype.sword_head": "%s Sword Head"
+  "itemtype.sword_blade": "%s Sword Blade",
+  "itemtype.binding": "%s Binding",
+  "itemtype.sword_guard": "%s Sword Guard",
+
+  "item.modulartoolkit.pickaxe_tool": "%s Pickaxe",
+  "item.modulartoolkit.shovel_tool": "%s Shovel",
+  "item.modulartoolkit.hoe_tool": "%s Hoe",
+  "item.modulartoolkit.axe_tool": "%s Axe",
+  "item.modulartoolkit.sword_tool": "%s Tool",
+
+  "tool_part_type.head": "Head",
+  "tool_part_type.handle": "Handle",
+  "tool_part_type.extra": "Extra",
+
+  "tool.stat.level": "Level: %s/%s",
+  "tool.stat.experience": "XP: %s/%s",
+  "tool.stat.attack_damage": "Attack Damage: %s",
+  "tool.stat.harvest_level": "Harvest Level: %s",
+  "tool.stat.harvest_level_axe": "Axe Harvest Level: %s",
+  "tool.stat.harvest_level_pickaxe": "Pickaxe Harvest Level: %s",
+  "tool.stat.harvest_level_shovel": "Shovel Harvest Level: %s",
+  "tool.stat.efficiency": "Mining Speed: %s",
+  "tool.stat.efficiency_axe": "Axe Mining Speed: %s",
+  "tool.stat.efficiency_pickaxe": "Pickaxe Mining Speed: %s",
+  "tool.stat.efficiency_shovel": "Shovel Mining Speed: %s",
+  "tool.stat.durability": "Durability: %s",
+  "tool.stat.durability_multiplier": "Durability Multiplier: %s",
+  "tool.stat.level_cap": "Level Cap: %s",
+  "tool.stat.level_cap_multiplier": "Level Cap Multiplier: %s",
+
+  "harvest_level_0": "Stone",
+  "harvest_level_1": "Iron",
+  "harvest_level_2": "Diamond",
+  "harvest_level_3": "Obsidian"
 }

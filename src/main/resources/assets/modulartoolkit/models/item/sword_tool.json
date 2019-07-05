@@ -1,0 +1,8 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "modulartoolkit:item/sword_bottom",
+        "layer1": "modulartoolkit:item/sword_middle",
+        "layer2": "modulartoolkit:item/sword_top"
+    }
+}
