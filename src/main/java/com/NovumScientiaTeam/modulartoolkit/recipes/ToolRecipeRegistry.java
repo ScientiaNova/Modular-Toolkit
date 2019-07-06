@@ -23,8 +23,13 @@ public class ToolRecipeRegistry {
 
         toolMaterials.forEach(m0 ->
                 toolMaterials.forEach(m1 ->
-                        toolMaterials.forEach(m2 ->
-                                addToolRecipe(new ItemStack(ToolRegistry.PICKAXE), Arrays.asList(m0, m1, m2), m0.getTag(ObjTypeRegistry.TOOL_ROD), m1.getTag(ObjTypeRegistry.BINDING), m2.getTag(ObjTypeRegistry.PICKAXE_HEAD)))));
+                        toolMaterials.forEach(m2 -> {
+                            addToolRecipe(new ItemStack(ToolRegistry.PICKAXE), Arrays.asList(m0, m1, m2), m0.getTag(ObjTypeRegistry.TOOL_ROD), m1.getTag(ObjTypeRegistry.BINDING), m2.getTag(ObjTypeRegistry.PICKAXE_HEAD));
+                            addToolRecipe(new ItemStack(ToolRegistry.AXE), Arrays.asList(m0, m1, m2), m0.getTag(ObjTypeRegistry.TOOL_ROD), m1.getTag(ObjTypeRegistry.BINDING), m2.getTag(ObjTypeRegistry.AXE_HEAD));
+                            addToolRecipe(new ItemStack(ToolRegistry.SHOVEL), Arrays.asList(m0, m1, m2), m0.getTag(ObjTypeRegistry.TOOL_ROD), m1.getTag(ObjTypeRegistry.BINDING), m2.getTag(ObjTypeRegistry.SHOVEL_HEAD));
+                            addToolRecipe(new ItemStack(ToolRegistry.HOE), Arrays.asList(m0, m1, m2), m0.getTag(ObjTypeRegistry.TOOL_ROD), m1.getTag(ObjTypeRegistry.BINDING), m2.getTag(ObjTypeRegistry.HOE_HEAD));
+                            addToolRecipe(new ItemStack(ToolRegistry.SWORD), Arrays.asList(m0, m1, m2), m0.getTag(ObjTypeRegistry.TOOL_ROD), m1.getTag(ObjTypeRegistry.SWORD_GUARD), m2.getTag(ObjTypeRegistry.SWORD_BLADE));
+                        })));
     }
 
     public static void addToolRecipe(ItemStack output, List<Material> toolMaterials, @Nonnull Object... inputs) {

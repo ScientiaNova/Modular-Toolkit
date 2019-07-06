@@ -31,4 +31,8 @@ public class Head extends PartType {
         return Optional.ofNullable(toolType);
     }
 
+    @Override
+    public String getName() {
+        return "head";
+    }
 }

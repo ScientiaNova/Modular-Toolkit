@@ -2,7 +2,7 @@
     "parent": "item/handheld",
     "textures": {
         "layer0": "modulartoolkit:item/hoe_bottom",
-        "layer1": "modulartoolkit:item/hoe_mmiddle",
+        "layer1": "modulartoolkit:item/hoe_middle",
         "layer2": "modulartoolkit:item/hoe_top"
     }
 }

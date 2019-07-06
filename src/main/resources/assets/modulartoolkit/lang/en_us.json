@@ -5,6 +5,7 @@
   "itemtype.axe_head": "%s Axe Head",
   "itemtype.hoe_head": "%s Hoe Head",
   "itemtype.pickaxe_head": "%s Pickaxe Head",
+  "itemtype.shovel_head": "%s Shovel Head",
   "itemtype.sword_blade": "%s Sword Blade",
   "itemtype.binding": "%s Binding",
   "itemtype.sword_guard": "%s Sword Guard",
@@ -13,7 +14,9 @@
   "item.modulartoolkit.shovel_tool": "%s Shovel",
   "item.modulartoolkit.hoe_tool": "%s Hoe",
   "item.modulartoolkit.axe_tool": "%s Axe",
-  "item.modulartoolkit.sword_tool": "%s Tool",
+  "item.modulartoolkit.sword_tool": "%s Sword",
+  "item.modulartoolkit.paxel_tool": "%s Paxel",
+  "item.modulartoolkit.ylritool_tool": "%s Ultitool",
 
   "tool_part_type.head": "Head",
   "tool_part_type.handle": "Handle",

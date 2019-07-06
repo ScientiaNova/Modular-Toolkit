@@ -23,4 +23,9 @@ public class Handle extends PartType {
     public double getLevelCapMultiplier(Material mat) {
         return 1;
     }
+
+    @Override
+    public String getName() {
+        return "handle";
+    }
 }

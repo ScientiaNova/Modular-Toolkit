@@ -35,11 +35,12 @@ public class ClientProxy implements IModProxy {
 
     @Override
     public void enque(InterModEnqueueEvent interModEnqueueEvent) {
+        ToolRegistry.TOOLS.forEach(t->
         Minecraft.getInstance().getItemColors().register((stack, index) -> {
             if (ToolUtils.getToolMaterial(stack, index) != null)
                 return ToolUtils.getToolMaterial(stack, index).getColor();
             return -1;
-        }, ToolRegistry.PICKAXE);
+        }, t));
     }
 
     @Override

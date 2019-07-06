@@ -8,4 +8,6 @@ public abstract class PartType {
     public abstract double getDurabilityModifier(Material mat);
 
     public abstract double getLevelCapMultiplier(Material mat);
+
+    public abstract String getName();
 }

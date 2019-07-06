@@ -17,4 +17,9 @@ public class Extra extends PartType {
     public double getLevelCapMultiplier(Material mat) {
         return mat.getItemTier().getEnchantability() / 10d;
     }
+
+    @Override
+    public String getName() {
+        return "extra";
+    }
 }

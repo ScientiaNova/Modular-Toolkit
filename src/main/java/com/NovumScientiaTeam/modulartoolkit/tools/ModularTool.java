@@ -57,7 +57,7 @@ public abstract class ModularTool extends Item {
         if (!ToolUtils.isNull(stack)) {
             tooltip.add(new TranslationTextComponent("tool.stat.level", ToolUtils.getLevel(stack), ToolUtils.getLevelCap(stack)));
             tooltip.add(new TranslationTextComponent("tool.stat.experience", ToolUtils.getXP(stack) - ToolUtils.getXPForCurentLevel(stack), ToolUtils.getXPForLevelUp(stack)));
-            tooltip.add(new TranslationTextComponent("tool.stat.attack_damage", getAttackDamage(stack)));
+            tooltip.add(new TranslationTextComponent("tool.stat.attack_damage", getAttackDamage(stack) + 1));
             getToolTypes(stack).forEach(t -> {
                 tooltip.add(new TranslationTextComponent("tool.stat.harvest_level_" + t.getName(), new TranslationTextComponent("harvest_level_" + ToolUtils.getHarvestMap(stack).get(t))));
                 tooltip.add(new TranslationTextComponent("tool.stat.efficiency_" + t.getName(), ToolUtils.getDestroySpeedForToolType(stack, t)));
@@ -149,7 +149,7 @@ public abstract class ModularTool extends Item {
 
     @Override
     public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if (hasTag(ToolUtils.IS_MELEE_WEAPON))
+        if (hasTag(ToolUtils.IS_MELEE_WEAPON) || hasTag(ToolUtils.IS_HOE))
             stack.damageItem(1, attacker, (p_220039_0_) -> {
                 p_220039_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
             });
@@ -159,6 +159,11 @@ public abstract class ModularTool extends Item {
             });
 
         return true;
+    }
+
+    @Override
+    public boolean canPlayerBreakBlockWhileHolding(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
+        return !(player.isCreative() && hasTag(ToolUtils.IS_MELEE_WEAPON));
     }
 
     public void addToolTags(String... tags) {

@@ -5,6 +5,7 @@ import com.EmosewaPixel.pixellib.materialSystem.materials.Material;
 import com.NovumScientiaTeam.modulartoolkit.partTypes.Head;
 import com.NovumScientiaTeam.modulartoolkit.partTypes.PartType;
 import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import javafx.util.Pair;
 import net.minecraft.item.ItemStack;
@@ -24,6 +25,8 @@ public class ToolUtils {
     public static final String IS_RANGED_WEAPON = "is_ranged_weapon";
     public static final String IS_PROJECTILE = "is_projectile";
     public static final String IS_ARMOR = "is_armor";
+    public static final String IS_HOE = "is_hoe";
+
 
     //NBT Methods
     public static boolean isNull(ItemStack stack) {
@@ -40,7 +43,7 @@ public class ToolUtils {
         stack.getOrCreateTag().putBoolean("isBroken", true);
     }
 
-    public static void fix(ItemStack stack) {
+    public static void unbreak(ItemStack stack) {
         stack.getOrCreateTag().putBoolean("isBroken", false);
     }
 
@@ -117,7 +120,10 @@ public class ToolUtils {
         if (!(stack.getItem() instanceof ModularTool))
             return 0;
         ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
-        return (int) IntStream.range(0, partList.size()).mapToDouble(i -> partList.get(i).getLevelCapMultiplier(getToolMaterial(stack, i))).reduce(1, (d1, d2) -> d1 * d2);
+        return (int) IntStream.range(0, partList.size())
+                .collect(HashMultimap::create, (map, i) -> map.put(partList.get(i).getName(), partList.get(i).getLevelCapMultiplier(getToolMaterial(stack, i))), (m1, m2) -> m1.putAll(m2))
+                .asMap().values().stream()
+                .mapToDouble(l -> l.stream().mapToDouble(d -> (double) d).average().getAsDouble()).reduce(1, (d1, d2) -> d1 * d2);
     }
 
     public static List<Material> getHeadMaterials(ItemStack stack) {
