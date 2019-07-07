@@ -7,16 +7,15 @@ public class Handle extends PartType {
     @Override
     public int getExtraDurability(Material mat) {
         IItemTier tier = mat.getItemTier();
-        return (int) ((tier.getMaxUses() - (tier.getEfficiency() / tier.getEnchantability() * tier.getMaxUses() * 2)) / 2);
+        return (int) ((tier.getMaxUses() - (tier.getEfficiency() / (tier.getEnchantability()) * tier.getMaxUses() * 2)) / 2);
     }
 
     @Override
     public double getDurabilityModifier(Material mat) {
         IItemTier tier = mat.getItemTier();
-        double value = tier.getMaxUses() / tier.getEfficiency() / tier.getEnchantability();
-        for (int i = 0; i <= tier.getHarvestLevel(); i++)
-            value = Math.sqrt(value);
-        return (1 + 1 / tier.getEfficiency()) / value;
+        double n = (double) tier.getMaxUses() / (tier.getHarvestLevel() + 1) / (2 + tier.getEnchantability() * 0.5 + tier.getHarvestLevel() * 1.5);
+        double gradient = tier.getEnchantability() / tier.getEfficiency() * 2;
+        return (((-n + 1) * gradient) / (n + 1 + gradient) + gradient) / gradient * 1.35;
     }
 
     @Override

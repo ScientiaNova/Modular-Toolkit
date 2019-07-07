@@ -58,6 +58,7 @@ public class ToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?
             boost.putInt("Tier", 0);
             boost.putIntArray("OnLevels", new int[0]);
             mainCompound.put("Boost", boost);
+            mainCompound.putInt("Damage", 0);
             itemstack.setTag(mainCompound);
             return new ToolRecipe(recipeId, s, itemstack, nonnulllist);
         }

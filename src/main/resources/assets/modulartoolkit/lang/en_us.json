@@ -16,12 +16,12 @@
   "item.modulartoolkit.axe_tool": "%s Axe",
   "item.modulartoolkit.sword_tool": "%s Sword",
   "item.modulartoolkit.paxel_tool": "%s Paxel",
-  "item.modulartoolkit.ylritool_tool": "%s Ultitool",
 
   "tool_part_type.head": "Head",
   "tool_part_type.handle": "Handle",
   "tool_part_type.extra": "Extra",
 
+  "tool.stat.broken": "Broken",
   "tool.stat.level": "Level: %s/%s",
   "tool.stat.experience": "XP: %s/%s",
   "tool.stat.attack_damage": "Attack Damage: %s",
@@ -34,6 +34,7 @@
   "tool.stat.efficiency_pickaxe": "Pickaxe Mining Speed: %s",
   "tool.stat.efficiency_shovel": "Shovel Mining Speed: %s",
   "tool.stat.durability": "Durability: %s",
+  "tool.stat.current_durability": "Durability: %s/%s",
   "tool.stat.durability_multiplier": "Durability Multiplier: %s",
   "tool.stat.level_cap": "Level Cap: %s",
   "tool.stat.level_cap_multiplier": "Level Cap Multiplier: %s",

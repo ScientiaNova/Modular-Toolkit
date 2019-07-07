@@ -29,6 +29,9 @@ public class ToolRecipeRegistry {
                             addToolRecipe(new ItemStack(ToolRegistry.SHOVEL), Arrays.asList(m0, m1, m2), m0.getTag(ObjTypeRegistry.TOOL_ROD), m1.getTag(ObjTypeRegistry.BINDING), m2.getTag(ObjTypeRegistry.SHOVEL_HEAD));
                             addToolRecipe(new ItemStack(ToolRegistry.HOE), Arrays.asList(m0, m1, m2), m0.getTag(ObjTypeRegistry.TOOL_ROD), m1.getTag(ObjTypeRegistry.BINDING), m2.getTag(ObjTypeRegistry.HOE_HEAD));
                             addToolRecipe(new ItemStack(ToolRegistry.SWORD), Arrays.asList(m0, m1, m2), m0.getTag(ObjTypeRegistry.TOOL_ROD), m1.getTag(ObjTypeRegistry.SWORD_GUARD), m2.getTag(ObjTypeRegistry.SWORD_BLADE));
+                            toolMaterials.forEach(m3 -> {
+                                addToolRecipe(new ItemStack(ToolRegistry.PAXEL), Arrays.asList(m0, m1, m2, m3), m0.getTag(ObjTypeRegistry.TOOL_ROD), m1.getTag(ObjTypeRegistry.AXE_HEAD), m2.getTag(ObjTypeRegistry.SHOVEL_HEAD), m3.getTag(ObjTypeRegistry.PICKAXE_HEAD));
+                            });
                         })));
     }
 

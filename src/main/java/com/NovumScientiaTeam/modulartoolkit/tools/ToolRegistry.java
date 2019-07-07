@@ -11,6 +11,7 @@ public class ToolRegistry {
 
     public static Item AXE;
     public static Item HOE;
+    public static Item PAXEL;
     public static Item PICKAXE;
     public static Item SHOVEL;
     public static Item SWORD;
@@ -18,6 +19,7 @@ public class ToolRegistry {
     public static void registry(RegistryEvent.Register<Item> e) {
         AXE = register(new AxeTool(), e);
         HOE = register(new HoeTool(), e);
+        PAXEL = register(new PaxelTool(), e);
         PICKAXE = register(new PickaxeTool(), e);
         SHOVEL = register(new ShovelTool(), e);
         SWORD = register(new SwordTool(), e);

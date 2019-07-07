@@ -18,6 +18,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -55,8 +57,12 @@ public abstract class ModularTool extends Item {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!ToolUtils.isNull(stack)) {
+            if (ToolUtils.isBroken(stack))
+                tooltip.add(new StringTextComponent(TextFormatting.RED + new TranslationTextComponent("tool.stat.broken").getString()));
             tooltip.add(new TranslationTextComponent("tool.stat.level", ToolUtils.getLevel(stack), ToolUtils.getLevelCap(stack)));
             tooltip.add(new TranslationTextComponent("tool.stat.experience", ToolUtils.getXP(stack) - ToolUtils.getXPForCurentLevel(stack), ToolUtils.getXPForLevelUp(stack)));
+            int maxDamage = getMaxDamage(stack) - 1;
+            tooltip.add(new TranslationTextComponent("tool.stat.current_durability", maxDamage - stack.getDamage(), maxDamage));
             tooltip.add(new TranslationTextComponent("tool.stat.attack_damage", getAttackDamage(stack) + 1));
             getToolTypes(stack).forEach(t -> {
                 tooltip.add(new TranslationTextComponent("tool.stat.harvest_level_" + t.getName(), new TranslationTextComponent("harvest_level_" + ToolUtils.getHarvestMap(stack).get(t))));
@@ -67,7 +73,7 @@ public abstract class ModularTool extends Item {
 
     @Override
     public Set<ToolType> getToolTypes(ItemStack stack) {
-        return partList.stream().filter(p -> p instanceof Head).map(h -> ((Head) h).getToolType()).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
+        return partList.stream().filter(p -> p instanceof Head).map(h -> ((Head) h).getToolType()).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override
@@ -110,7 +116,7 @@ public abstract class ModularTool extends Item {
     public final int getMaxDamage(ItemStack stack) {
         if (ToolUtils.isNull(stack))
             return 1;
-        return (int) (IntStream.range(0, partList.size()).map(i -> partList.get(i).getExtraDurability(ToolUtils.getToolMaterial(stack, i))).sum() * IntStream.range(0, partList.size()).mapToDouble(i -> partList.get(i).getDurabilityModifier(ToolUtils.getToolMaterial(stack, i))).reduce(1, (d, p) -> d * p));
+        return (int) (IntStream.range(0, partList.size()).map(i -> partList.get(i).getExtraDurability(ToolUtils.getToolMaterial(stack, i))).sum() * IntStream.range(0, partList.size()).mapToDouble(i -> partList.get(i).getDurabilityModifier(ToolUtils.getToolMaterial(stack, i))).reduce(1, (d, p) -> d * p) + 1);
     }
 
     @Override

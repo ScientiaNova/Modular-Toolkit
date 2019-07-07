@@ -119,6 +119,7 @@ public class ToolUtils {
     public static int getLevelCap(ItemStack stack) {
         if (!(stack.getItem() instanceof ModularTool))
             return 0;
+
         ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
         return (int) IntStream.range(0, partList.size())
                 .collect(HashMultimap::create, (map, i) -> map.put(partList.get(i).getName(), partList.get(i).getLevelCapMultiplier(getToolMaterial(stack, i))), (m1, m2) -> m1.putAll(m2))
