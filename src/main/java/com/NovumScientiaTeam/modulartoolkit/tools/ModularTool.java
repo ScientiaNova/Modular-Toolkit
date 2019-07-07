@@ -36,7 +36,7 @@ public abstract class ModularTool extends Item {
     private List<String> toolTags = new ArrayList<>();
 
     public ModularTool(String name, ImmutableList<PartType> partList) {
-        super(new Properties().group(ModularToolkit.GROUP).maxStackSize(1));
+        super(new Properties().group(ModularToolkit.TOOL_GROUP).maxStackSize(1));
         setRegistryName(name);
         this.partList = partList;
     }

@@ -1,5 +1,6 @@
 {
   "itemGroup.mt_tools": "Modular Toolkit: Tools",
+  "itemGroup.mt_tables": "Modular Toolkit: Tables",
 
   "itemtype.tool_rod": "%s Tool Rod",
   "itemtype.axe_head": "%s Axe Head",
@@ -9,6 +10,10 @@
   "itemtype.sword_blade": "%s Sword Blade",
   "itemtype.binding": "%s Binding",
   "itemtype.sword_guard": "%s Sword Guard",
+
+  "block.modulartoolkit.tool_constructor": "Tool Constructor",
+  "block.modulartoolkit.part_constructor": "Part Constructor",
+  "block.modulartoolkit.modification_station": "Modification Station",
 
   "item.modulartoolkit.pickaxe_tool": "%s Pickaxe",
   "item.modulartoolkit.shovel_tool": "%s Shovel",

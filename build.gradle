@@ -68,7 +68,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-27.0.17"
+    minecraft "net.minecraftforge:forge:${mc_version}-27.0.25"
     compile files("libs/pixellib-${mc_version}-${lib_version}-deobf.jar")
 }
 

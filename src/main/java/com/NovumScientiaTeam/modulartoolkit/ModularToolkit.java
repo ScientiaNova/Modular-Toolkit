@@ -5,8 +5,10 @@ import com.NovumScientiaTeam.modulartoolkit.proxy.ClientProxy;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ServerProxy;
 import com.NovumScientiaTeam.modulartoolkit.recipes.SerializerRegistry;
 import com.NovumScientiaTeam.modulartoolkit.recipes.ToolRecipeRegistry;
+import com.NovumScientiaTeam.modulartoolkit.tables.blocks.BlockRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tools.ToolRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolTypeMap;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -26,10 +28,17 @@ public class ModularToolkit {
 
     private IModProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
 
-    public static final ItemGroup GROUP = new ItemGroup("mt_tools") {
+    public static final ItemGroup TOOL_GROUP = new ItemGroup("mt_tools") {
         @Override
         public ItemStack createIcon() {
             return new ItemStack(ToolRegistry.PICKAXE);
+        }
+    };
+
+    public static final ItemGroup TABLE_GROUP = new ItemGroup("mt_tables") {
+        @Override
+        public ItemStack createIcon() {
+            return new ItemStack(BlockRegistry.PART_CONSTRUCTOR);
         }
     };
 
@@ -57,6 +66,12 @@ public class ModularToolkit {
         @SubscribeEvent
         public static void onItemRegistry(RegistryEvent.Register<Item> e) {
             ToolRegistry.registry(e);
+            BlockRegistry.registerItems(e);
+        }
+
+        @SubscribeEvent
+        public static void onBlockRegistry(RegistryEvent.Register<Block> e) {
+            BlockRegistry.registrBlocks(e);
         }
 
         @SubscribeEvent

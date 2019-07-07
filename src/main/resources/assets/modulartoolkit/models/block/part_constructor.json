@@ -1,0 +1,12 @@
+{
+    "parent": "block/cube",
+    "textures": {
+        "particle": "modulartoolkit:block/part_constructor_side1",
+        "down": "block/oak_planks",
+        "up": "modulartoolkit:block/table_top",
+        "north": "modulartoolkit:block/part_constructor_side1",
+        "east": "modulartoolkit:block/part_constructor_side2",
+        "south": "modulartoolkit:block/part_constructor_side3",
+        "west": "modulartoolkit:block/part_constructor_side4"
+    }
+}
