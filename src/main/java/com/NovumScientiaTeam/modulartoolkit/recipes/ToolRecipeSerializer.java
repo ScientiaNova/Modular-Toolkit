@@ -14,8 +14,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class ToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<ToolRecipe> {
     public ToolRecipeSerializer() {
         setRegistryName("modulartoolkit:tool_crafting");
@@ -44,13 +42,8 @@ public class ToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?
             throw new JsonParseException("Too many ingredients for shapeless recipe the max is 9");
         } else {
             ItemStack itemstack = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
-            JsonObject materialsJSON = JSONUtils.getJsonObject(json, "materials", new JsonObject());
             CompoundNBT mainCompound = new CompoundNBT();
-            CompoundNBT materialNBT = new CompoundNBT();
-            AtomicInteger index = new AtomicInteger(0);
-            while (materialsJSON.has("material" + index.get()))
-                materialNBT.putString("material" + index.get(), materialsJSON.get("material" + index.getAndIncrement()).getAsString());
-            mainCompound.put("Materials", materialNBT);
+            mainCompound.put("Materials", new CompoundNBT());
             mainCompound.putLong("XP", 0);
             mainCompound.putInt("Level", 0);
             mainCompound.put("Modifiers", new CompoundNBT());

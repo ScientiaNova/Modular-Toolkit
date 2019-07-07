@@ -11,12 +11,10 @@ import java.util.List;
 
 public class BlockRegistry {
     private static List<Item> blockItems = new ArrayList<>();
-    public static Block TOOL_CONSTRUCTOR;
     public static Block PART_CONSTRUCTOR;
     public static Block MODIFICATION_STATION;
 
     public static void registrBlocks(RegistryEvent.Register<Block> e) {
-        TOOL_CONSTRUCTOR = register(new ToolConstructorBlock(), e);
         PART_CONSTRUCTOR = register(new PartConstructorBlock(), e);
         MODIFICATION_STATION = register(new ModificationStationBlock(), e);
     }
