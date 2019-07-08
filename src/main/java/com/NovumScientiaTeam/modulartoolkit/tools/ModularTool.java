@@ -36,7 +36,7 @@ public abstract class ModularTool extends Item {
     private List<String> toolTags = new ArrayList<>();
 
     public ModularTool(String name, ImmutableList<PartType> partList) {
-        super(new Properties().group(ModularToolkit.TOOL_GROUP).maxStackSize(1));
+        super(new Properties().group(ModularToolkit.TOOL_GROUP).maxStackSize(1).setNoRepair());
         setRegistryName(name);
         this.partList = partList;
     }
@@ -60,7 +60,8 @@ public abstract class ModularTool extends Item {
             if (ToolUtils.isBroken(stack))
                 tooltip.add(new StringTextComponent(TextFormatting.RED + new TranslationTextComponent("tool.stat.broken").getString()));
             tooltip.add(new TranslationTextComponent("tool.stat.level", ToolUtils.getLevel(stack), ToolUtils.getLevelCap(stack)));
-            tooltip.add(new TranslationTextComponent("tool.stat.experience", ToolUtils.getXP(stack) - ToolUtils.getXPForCurentLevel(stack), ToolUtils.getXPForLevelUp(stack)));
+            tooltip.add(new TranslationTextComponent("tool.stat.experience", ToolUtils.getXP(stack) - ToolUtils.getXPForCurentLevel(stack), ToolUtils.getXPForLevelUp(stack) - ToolUtils.getXPForCurentLevel(stack)));
+            tooltip.add(new TranslationTextComponent("tool.stat.modifier_slots", ToolUtils.getFreeModifierSlotCount(stack)));
             int maxDamage = getMaxDamage(stack) - 1;
             tooltip.add(new TranslationTextComponent("tool.stat.current_durability", maxDamage - stack.getDamage(), maxDamage));
             tooltip.add(new TranslationTextComponent("tool.stat.attack_damage", getAttackDamage(stack) + 1));
@@ -78,9 +79,7 @@ public abstract class ModularTool extends Item {
 
     @Override
     public int getHarvestLevel(ItemStack stack, ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState) {
-        if (ToolUtils.isNull(stack))
-            return -1;
-        if (ToolUtils.isBroken(stack))
+        if (ToolUtils.isNull(stack) || ToolUtils.isBroken(stack))
             return -1;
         return ToolUtils.getHarvestMap(stack).getOrDefault(tool, -1);
     }
@@ -98,9 +97,7 @@ public abstract class ModularTool extends Item {
 
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
-        if (ToolUtils.isNull(stack))
-            return 1;
-        if (ToolUtils.isBroken(stack))
+        if (ToolUtils.isNull(stack) || ToolUtils.isBroken(stack))
             return 1;
         if (ToolTypeMap.contains(state.getBlock()))
             return ToolUtils.getDestroySpeedForToolType(stack, ToolTypeMap.get(state.getBlock()));
@@ -139,13 +136,19 @@ public abstract class ModularTool extends Item {
     }
 
     @Override
+    public boolean isRepairable() {
+        return false;
+    }
+
+    @Override
     public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
         if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0F)
-            if (hasTag(ToolUtils.IS_TOOL))
+            if (hasTag(ToolUtils.IS_TOOL)) {
                 stack.damageItem(1, entityLiving, (p_220038_0_) -> {
                     p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
                 });
-            else if (hasTag(ToolUtils.IS_MELEE_WEAPON))
+                ToolUtils.addXP(stack);
+            } else if (hasTag(ToolUtils.IS_MELEE_WEAPON))
                 stack.damageItem(2, entityLiving, (p_220038_0_) -> {
                     p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
                 });
@@ -163,6 +166,9 @@ public abstract class ModularTool extends Item {
             stack.damageItem(2, attacker, (p_220039_0_) -> {
                 p_220039_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
             });
+
+        if (hasTag(ToolUtils.IS_MELEE_WEAPON) && !target.isAlive())
+            ToolUtils.addXP(stack, (int) target.getMaxHealth());
 
         return true;
     }

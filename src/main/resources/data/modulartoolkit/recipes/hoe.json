@@ -1,0 +1,19 @@
+{
+  "type": "modulartoolkit:tool_crafting",
+  "group": "modulartoolkit:hoe_tool",
+  "ingredients": [
+    {
+      "tag": "forge:tool_rods"
+    },
+    {
+      "tag": "forge:bindings"
+    },
+    {
+      "tag": "forge:hoe_heads"
+    }
+  ],
+  "result": {
+    "item": "modulartoolkit:hoe_tool",
+    "count": 1
+  }
+}

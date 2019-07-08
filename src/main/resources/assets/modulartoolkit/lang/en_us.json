@@ -28,6 +28,7 @@
   "tool.stat.broken": "Broken",
   "tool.stat.level": "Level: %s/%s",
   "tool.stat.experience": "XP: %s/%s",
+  "tool.stat.modifier_slots": "Modifier Slots: %s",
   "tool.stat.attack_damage": "Attack Damage: %s",
   "tool.stat.harvest_level": "Harvest Level: %s",
   "tool.stat.harvest_level_axe": "Axe Harvest Level: %s",

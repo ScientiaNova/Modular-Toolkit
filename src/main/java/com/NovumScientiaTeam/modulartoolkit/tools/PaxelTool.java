@@ -30,8 +30,14 @@ public class PaxelTool extends ModularTool {
 
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
-        if (Items.DIAMOND_AXE.onItemUse(context) == ActionResultType.SUCCESS)
+        ItemStack stack = context.getPlayer().getHeldItem(context.getHand());
+        if (Items.DIAMOND_AXE.onItemUse(context) == ActionResultType.SUCCESS) {
+            ToolUtils.addXP(stack);
             return ActionResultType.SUCCESS;
-        return Items.DIAMOND_SHOVEL.onItemUse(context);
+        }
+        ActionResultType result = Items.DIAMOND_SHOVEL.onItemUse(context);
+        if (result == ActionResultType.SUCCESS)
+            ToolUtils.addXP(stack);
+        return result;
     }
 }

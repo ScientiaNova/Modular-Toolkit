@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ToolType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,6 +61,38 @@ public class ToolUtils {
         return list;
     }
 
+    public static int getUsedModifierSlotCount(ItemStack stack) {
+        if (isNull(stack))
+            return 0;
+        return stack.getTag().getInt("ModifierSlotsUsed");
+    }
+
+    public static void setUsedModifierSlotCount(ItemStack stack, int amount) {
+        if (isNull(stack))
+            return;
+        stack.getTag().putInt("ModifierSlots", amount);
+    }
+
+    public static void freeModifierSlots(ItemStack stack, int amount) {
+        setUsedModifierSlotCount(stack, getUsedModifierSlotCount(stack) - amount);
+    }
+
+    public static void freeModifierSlot(ItemStack stack) {
+        freeModifierSlots(stack, 1);
+    }
+
+    public static void useModifierSlots(ItemStack stack, int amount) {
+        setUsedModifierSlotCount(stack, getUsedModifierSlotCount(stack) + amount);
+    }
+
+    public static void useModifierSlot(ItemStack stack) {
+        useModifierSlots(stack, 1);
+    }
+
+    public static int getFreeModifierSlotCount(ItemStack stack) {
+        return getLevel(stack) - getUsedModifierSlotCount(stack);
+    }
+
     public static long getXP(ItemStack stack) {
         if (isNull(stack))
             return 0;
@@ -76,8 +107,9 @@ public class ToolUtils {
         if (getLevel(stack) != getLevelCap(stack))
             setXP(stack, getXP(stack) + amount);
 
-        if (getXP(stack) >= getXPForLevelUp(stack))
+        if (getXP(stack) >= getXPForLevelUp(stack) && getLevel(stack) + 1 <= getLevelCap(stack)) {
             levelUp(stack);
+        }
     }
 
     public static void addXP(ItemStack stack) {
@@ -117,9 +149,6 @@ public class ToolUtils {
     }
 
     public static int getLevelCap(ItemStack stack) {
-        if (!(stack.getItem() instanceof ModularTool))
-            return 0;
-
         ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
         return (int) IntStream.range(0, partList.size())
                 .collect(HashMultimap::create, (map, i) -> map.put(partList.get(i).getName(), partList.get(i).getLevelCapMultiplier(getToolMaterial(stack, i))), (m1, m2) -> m1.putAll(m2))
@@ -128,22 +157,16 @@ public class ToolUtils {
     }
 
     public static List<Material> getHeadMaterials(ItemStack stack) {
-        if (!(stack.getItem() instanceof ModularTool))
-            return Collections.EMPTY_LIST;
         ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
         return IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).mapToObj(i -> getToolMaterial(stack, i)).collect(Collectors.toList());
     }
 
     public static Map<ToolType, Integer> getHarvestMap(ItemStack stack) {
-        if (!(stack.getItem() instanceof ModularTool))
-            return Collections.EMPTY_MAP;
         ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
         return IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).filter(i -> ((Head) partList.get(i)).getToolType().isPresent()).mapToObj(i -> new Pair<>(((Head) partList.get(i)).getToolType().get(), getToolMaterial(stack, i).getItemTier().getHarvestLevel())).collect(Collectors.toMap(Pair::getKey, Pair::getValue, (i1, i2) -> i1 > i2 ? i1 : i2));
     }
 
     public static float getDestroySpeedForToolType(ItemStack stack, ToolType type) {
-        if (!(stack.getItem() instanceof ModularTool))
-            return -1;
         ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
         return (float) IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).filter(i -> ((Head) partList.get(i)).getToolType().get() == type).mapToDouble(i -> getToolMaterial(stack, i).getItemTier().getEfficiency()).max().orElse(1);
     }

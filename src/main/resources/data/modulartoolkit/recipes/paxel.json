@@ -1,0 +1,22 @@
+{
+  "type": "modulartoolkit:tool_crafting",
+  "group": "modulartoolkit:paxel_tool",
+  "ingredients": [
+    {
+      "tag": "forge:tool_rods"
+    },
+    {
+      "tag": "forge:axe_heads"
+    },
+    {
+      "tag": "forge:shovel_heads"
+    },
+    {
+      "tag": "forge:pickaxe_heads"
+    }
+  ],
+  "result": {
+    "item": "modulartoolkit:paxel_tool",
+    "count": 1
+  }
+}

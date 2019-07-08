@@ -4,7 +4,6 @@ import com.EmosewaPixel.pixellib.proxy.IModProxy;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ClientProxy;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ServerProxy;
 import com.NovumScientiaTeam.modulartoolkit.recipes.SerializerRegistry;
-import com.NovumScientiaTeam.modulartoolkit.recipes.ToolRecipeRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tables.blocks.BlockRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tools.ToolRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolTypeMap;
@@ -21,10 +20,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Mod(ModularToolkit.MOD_ID)
 public class ModularToolkit {
     public static final String MOD_ID = "modulartoolkit";
+
+    public static final Logger LOGGER = LogManager.getLogger();
 
     private IModProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
 
@@ -53,7 +56,6 @@ public class ModularToolkit {
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
         proxy.enque(event);
-        ToolRecipeRegistry.registry();
         ToolTypeMap.init();
     }
 

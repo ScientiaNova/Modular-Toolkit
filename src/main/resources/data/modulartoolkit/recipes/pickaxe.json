@@ -1,0 +1,19 @@
+{
+  "type": "modulartoolkit:tool_crafting",
+  "group": "modulartoolkit:pickaxe_tool",
+  "ingredients": [
+    {
+      "tag": "forge:tool_rods"
+    },
+    {
+      "tag": "forge:bindings"
+    },
+    {
+      "tag": "forge:pickaxe_heads"
+    }
+  ],
+  "result": {
+    "item": "modulartoolkit:pickaxe_tool",
+    "count": 1
+  }
+}
