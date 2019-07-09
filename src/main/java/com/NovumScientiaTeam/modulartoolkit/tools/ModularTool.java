@@ -1,5 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit.tools;
 
+import com.EmosewaPixel.pixellib.materialSystem.materials.Material;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
 import com.NovumScientiaTeam.modulartoolkit.partTypes.Head;
 import com.NovumScientiaTeam.modulartoolkit.partTypes.PartType;
@@ -46,10 +47,10 @@ public abstract class ModularTool extends Item {
         if (ToolUtils.isNull(stack))
             return new TranslationTextComponent(this.getTranslationKey(stack));
 
-        Object[] matStrings = partList.stream().filter(t -> t instanceof Head).mapToInt(t -> partList.indexOf(t)).mapToObj(i -> ToolUtils.getToolMaterial(stack, i).getTranslationKey()).toArray();
+        List<ITextComponent> matStrings = ToolUtils.getHeadMaterials(stack).stream().map(Material::getTranslationKey).collect(Collectors.toList());
         List<String> placeholders = new ArrayList<>();
-        Arrays.asList(matStrings).forEach(s -> placeholders.add("%s"));
-        TranslationTextComponent matComponent = new TranslationTextComponent(String.join("-", placeholders), matStrings);
+        matStrings.forEach(s -> placeholders.add("%s"));
+        TranslationTextComponent matComponent = new TranslationTextComponent(String.join("-", placeholders), matStrings.toArray());
         return new TranslationTextComponent(this.getTranslationKey(stack), matComponent);
     }
 

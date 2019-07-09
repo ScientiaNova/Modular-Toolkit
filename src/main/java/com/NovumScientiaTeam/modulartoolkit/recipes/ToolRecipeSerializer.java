@@ -7,7 +7,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
@@ -37,23 +36,11 @@ public class ToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?
         String s = JSONUtils.getString(json, "group", "");
         NonNullList<Ingredient> nonnulllist = readIngredients(JSONUtils.getJsonArray(json, "ingredients"));
         if (nonnulllist.isEmpty()) {
-            throw new JsonParseException("No ingredients for shapeless recipe");
+            throw new JsonParseException("No ingredients for tool recipe");
         } else if (nonnulllist.size() > 3 * 3) {
-            throw new JsonParseException("Too many ingredients for shapeless recipe the max is 9");
+            throw new JsonParseException("Too many ingredients for tool recipe the max is 9");
         } else {
             ItemStack itemstack = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
-            CompoundNBT mainCompound = new CompoundNBT();
-            mainCompound.put("Materials", new CompoundNBT());
-            mainCompound.putLong("XP", 0);
-            mainCompound.putInt("Level", 0);
-            mainCompound.put("Modifiers", new CompoundNBT());
-            CompoundNBT boost = new CompoundNBT();
-            boost.putInt("Tier", 0);
-            boost.putIntArray("OnLevels", new int[0]);
-            mainCompound.put("Boost", boost);
-            mainCompound.putInt("Damage", 0);
-            mainCompound.putInt("ModifierSlotsUsed", 0);
-            itemstack.setTag(mainCompound);
             return new ToolRecipe(recipeId, s, itemstack, nonnulllist);
         }
     }

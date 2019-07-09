@@ -29,7 +29,7 @@ public class ToolUtils {
 
     //NBT Methods
     public static boolean isNull(ItemStack stack) {
-        return !(stack.getOrCreateTag().contains("Materials") && stack.getOrCreateTag().contains("Modifiers") && stack.getOrCreateTag().contains("XP") && stack.getOrCreateTag().contains("Boost"));
+        return !(stack.getOrCreateTag().contains("Materials") && stack.getOrCreateTag().contains("Modifiers") && stack.getOrCreateTag().contains("XP") && stack.getOrCreateTag().contains("Boosts"));
     }
 
     public static boolean isBroken(ItemStack stack) {

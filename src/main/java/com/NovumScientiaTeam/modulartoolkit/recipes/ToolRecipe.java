@@ -27,18 +27,28 @@ public class ToolRecipe extends ShapelessRecipe {
 
     @Override
     public ItemStack getCraftingResult(CraftingInventory inventory) {
-        ItemStack result = getRecipeOutput();
+        ItemStack result = getRecipeOutput().copy();
         List<ItemStack> inputs = IntStream.range(0, inventory.getSizeInventory()).mapToObj(inventory::getStackInSlot).filter(s -> !s.isEmpty()).collect(Collectors.toList());
         NonNullList<Ingredient> ingredients = getIngredients();
+        CompoundNBT mainCompound = new CompoundNBT();
+        mainCompound.put("Materials", new CompoundNBT());
+        mainCompound.putLong("XP", 0);
+        mainCompound.putInt("Level", 0);
+        mainCompound.put("Modifiers", new CompoundNBT());
+        mainCompound.put("Boosts", new CompoundNBT());
+        mainCompound.putInt("Damage", 0);
+        mainCompound.putInt("ModifierSlotsUsed", 0);
         AtomicInteger index = new AtomicInteger(0);
-        CompoundNBT materialNBT = result.getTag().getCompound("Materials");
+        CompoundNBT materialNBT = new CompoundNBT();
         ingredients.stream().map(i -> {
-            ItemStack match = inputs.stream().filter(i::test).findFirst().get();
+            ItemStack match = inputs.stream().filter(i).findFirst().get();
             inputs.remove(match);
             if (match.getItem() instanceof IMaterialItem)
                 return ((IMaterialItem) match.getItem()).getMaterial().getName();
             return MaterialItems.getItemMaterial(match.getItem()).getName();
-        }).collect(Collectors.toList()).forEach(s -> materialNBT.putString("material" + index.getAndIncrement(), s));
+        }).forEach(s -> materialNBT.putString("material" + index.getAndIncrement(), s));
+        mainCompound.put("Materials", materialNBT);
+        result.setTag(mainCompound);
         return result;
     }
 }

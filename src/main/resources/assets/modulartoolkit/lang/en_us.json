@@ -10,6 +10,7 @@
   "itemtype.sword_blade": "%s Sword Blade",
   "itemtype.binding": "%s Binding",
   "itemtype.sword_guard": "%s Sword Guard",
+  "itemtype.wrench_head": "%s Wrench Head",
 
   "block.modulartoolkit.part_constructor": "Part Constructor",
   "block.modulartoolkit.modification_station": "Modification Station",
@@ -20,6 +21,7 @@
   "item.modulartoolkit.axe_tool": "%s Axe",
   "item.modulartoolkit.sword_tool": "%s Sword",
   "item.modulartoolkit.paxel_tool": "%s Paxel",
+  "item.modulartoolkit.wrench_tool": "%s Wrench",
 
   "tool_part_type.head": "Head",
   "tool_part_type.handle": "Handle",
@@ -34,10 +36,12 @@
   "tool.stat.harvest_level_axe": "Axe Harvest Level: %s",
   "tool.stat.harvest_level_pickaxe": "Pickaxe Harvest Level: %s",
   "tool.stat.harvest_level_shovel": "Shovel Harvest Level: %s",
+  "tool.stat.harvest_level_wrench": "Wrench Harvest Level: %s",
   "tool.stat.efficiency": "Mining Speed: %s",
   "tool.stat.efficiency_axe": "Axe Mining Speed: %s",
   "tool.stat.efficiency_pickaxe": "Pickaxe Mining Speed: %s",
   "tool.stat.efficiency_shovel": "Shovel Mining Speed: %s",
+  "tool.stat.efficiency_wrench": "Wrench Mining Speed: %s",
   "tool.stat.durability": "Durability: %s",
   "tool.stat.current_durability": "Durability: %s/%s",
   "tool.stat.durability_multiplier": "Durability Multiplier: %s",

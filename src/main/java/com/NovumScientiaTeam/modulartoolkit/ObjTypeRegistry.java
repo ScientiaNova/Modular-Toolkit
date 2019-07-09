@@ -13,6 +13,7 @@ public class ObjTypeRegistry {
     public static ObjectType BINDING;
     public static ObjectType SHOVEL_HEAD;
     public static ObjectType SWORD_GUARD;
+    public static ObjectType WRENCH_HEAD;
 
     public static final String HEAD = "tool_head";
     public static final String HANDLE = "tool_handle";
@@ -28,5 +29,6 @@ public class ObjTypeRegistry {
         SWORD_BLADE = new ItemType("sword_blade", m -> m.getItemTier() != null).setBucketVolume(144).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE, HEAD, WEAPON_PART).build();
         BINDING = new ItemType("binding", m -> m.getItemTier() != null).setBucketVolume(144).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE, EXTRA).build();
         SWORD_GUARD = new ItemType("sword_guard", m -> m.getItemTier() != null).setBucketVolume(144).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE, EXTRA, WEAPON_PART).build();
+        WRENCH_HEAD = new ItemType("wrench_head", m -> m.getItemTier() != null).setBucketVolume(144).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE, HEAD).build();
     }
 }
