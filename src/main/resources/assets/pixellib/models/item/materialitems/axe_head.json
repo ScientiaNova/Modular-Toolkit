@@ -1,6 +1,6 @@
 {
-  "parent":"item/generated",
+  "parent": "item/generated",
   "textures": {
-    "layer0":"modulartoolkit:item/axe_head"
+    "layer0": "modulartoolkit:item/axe_head"
   }
 }

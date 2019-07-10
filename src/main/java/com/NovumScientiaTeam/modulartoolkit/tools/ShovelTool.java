@@ -32,6 +32,8 @@ public class ShovelTool extends ModularTool {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         ItemStack stack = context.getPlayer().getHeldItem(context.getHand());
+        if (ToolUtils.isBroken(stack) || ToolUtils.isNull(stack))
+            return ActionResultType.PASS;
         ActionResultType result = Items.DIAMOND_SHOVEL.onItemUse(context);
         if (result == ActionResultType.SUCCESS)
             ToolUtils.addXP(stack);

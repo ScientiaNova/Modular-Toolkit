@@ -2,6 +2,11 @@ package com.NovumScientiaTeam.modulartoolkit.tools.util;
 
 import com.EmosewaPixel.pixellib.materialSystem.lists.Materials;
 import com.EmosewaPixel.pixellib.materialSystem.materials.Material;
+import com.EmosewaPixel.pixellib.miscUtils.StreamUtils;
+import com.NovumScientiaTeam.modulartoolkit.abilities.Abilities;
+import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
+import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
+import com.NovumScientiaTeam.modulartoolkit.modifiers.Modifiers;
 import com.NovumScientiaTeam.modulartoolkit.partTypes.Head;
 import com.NovumScientiaTeam.modulartoolkit.partTypes.PartType;
 import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
@@ -9,11 +14,11 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import javafx.util.Pair;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.ToolType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -169,5 +174,37 @@ public class ToolUtils {
     public static float getDestroySpeedForToolType(ItemStack stack, ToolType type) {
         ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
         return (float) IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).filter(i -> ((Head) partList.get(i)).getToolType().get() == type).mapToDouble(i -> getToolMaterial(stack, i).getItemTier().getEfficiency()).max().orElse(1);
+    }
+
+    public static List<CompoundNBT> getModifiersNBT(ItemStack stack) {
+        if (isNull(stack))
+            return Collections.EMPTY_LIST;
+        AtomicInteger index = new AtomicInteger(0);
+        CompoundNBT main = stack.getTag().getCompound("Modifiers");
+        List<CompoundNBT> result = new ArrayList<>();
+        while (main.contains("modifier" + index.get()))
+            result.add(main.getCompound("modifier" + index.getAndIncrement()));
+        return result;
+    }
+
+    public static List<AbstractModifier> getAllModifiers(ItemStack stack) {
+        if (isNull(stack))
+            return Collections.EMPTY_LIST;
+        Set<AbstractModifier> allModifiers = Modifiers.getAll();
+        return getModifiersNBT(stack).stream().map(nbt -> allModifiers.stream().filter(m -> m.getName().equals(nbt.getString("name"))).findFirst()).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+    }
+
+    public static Map<AbstractModifier, Integer> getModifierTierMap(ItemStack stack) {
+        if (isNull(stack))
+            return Collections.EMPTY_MAP;
+        Set<AbstractModifier> allModifiers = Modifiers.getAll();
+        return getModifiersNBT(stack).stream().collect(Collectors.toMap(nbt -> allModifiers.stream().filter(m -> m.getName().equals(((CompoundNBT) nbt).getString("name"))).findFirst(), nbt -> ((CompoundNBT) nbt).getInt("tier"))).entrySet().stream().filter(e -> e.getKey().isPresent()).collect(Collectors.toMap(e -> e.getKey().get(), Map.Entry::getValue));
+    }
+
+    public static List<AbstractAbility> getAllAbilities(ItemStack stack) {
+        if (isNull(stack))
+            return Collections.EMPTY_LIST;
+        ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
+        return IntStream.range(0, partList.size()).mapToObj(i -> Abilities.getFor(getToolMaterial(stack, i), partList.get(i))).filter(StreamUtils::isNotNull).collect(Collectors.toList());
     }
 }

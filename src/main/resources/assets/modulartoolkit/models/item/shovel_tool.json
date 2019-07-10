@@ -1,8 +1,16 @@
 {
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "modulartoolkit:item/shovel_bottom",
-        "layer1": "modulartoolkit:item/shovel_middle",
-        "layer2": "modulartoolkit:item/shovel_top"
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "modulartoolkit:item/shovel_bottom",
+    "layer1": "modulartoolkit:item/shovel_middle",
+    "layer2": "modulartoolkit:item/shovel_top"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "broken": 1
+      },
+      "model": "modulartoolkit:item/shovel_tool_broken"
     }
+  ]
 }

@@ -1,9 +1,17 @@
 {
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "modulartoolkit:item/pickaxe_bottom",
-        "layer1": "modulartoolkit:item/paxel_axe",
-        "layer2": "modulartoolkit:item/paxel_shovel",
-        "layer3": "modulartoolkit:item/paxel_pickaxe"
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "modulartoolkit:item/pickaxe_bottom",
+    "layer1": "modulartoolkit:item/paxel_axe",
+    "layer2": "modulartoolkit:item/paxel_shovel",
+    "layer3": "modulartoolkit:item/paxel_pickaxe"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "broken": 1
+      },
+      "model": "modulartoolkit:item/paxel_tool_broken"
     }
+  ]
 }

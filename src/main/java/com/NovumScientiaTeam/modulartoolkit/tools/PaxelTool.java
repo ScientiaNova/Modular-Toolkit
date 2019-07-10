@@ -31,6 +31,8 @@ public class PaxelTool extends ModularTool {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         ItemStack stack = context.getPlayer().getHeldItem(context.getHand());
+        if (ToolUtils.isBroken(stack) || ToolUtils.isNull(stack))
+            return ActionResultType.PASS;
         if (Items.DIAMOND_AXE.onItemUse(context) == ActionResultType.SUCCESS) {
             ToolUtils.addXP(stack);
             return ActionResultType.SUCCESS;

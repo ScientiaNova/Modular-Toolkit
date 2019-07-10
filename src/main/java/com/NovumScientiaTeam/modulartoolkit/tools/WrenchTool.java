@@ -39,6 +39,8 @@ public class WrenchTool extends ModularTool {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+        if (ToolUtils.isBroken(stack) || ToolUtils.isNull(stack))
+            return ActionResultType.PASS;
         World world = context.getWorld();
         BlockState state = world.getBlockState(context.getPos());
         PlayerEntity player = context.getPlayer();

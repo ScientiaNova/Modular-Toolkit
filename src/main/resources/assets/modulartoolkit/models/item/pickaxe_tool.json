@@ -1,8 +1,16 @@
 {
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "modulartoolkit:item/pickaxe_bottom",
-        "layer1": "modulartoolkit:item/pickaxe_middle",
-        "layer2": "modulartoolkit:item/pickaxe_top"
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "modulartoolkit:item/pickaxe_bottom",
+    "layer1": "modulartoolkit:item/pickaxe_middle",
+    "layer2": "modulartoolkit:item/pickaxe_top"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "broken": 1
+      },
+      "model": "modulartoolkit:item/pickaxe_tool_broken"
     }
+  ]
 }

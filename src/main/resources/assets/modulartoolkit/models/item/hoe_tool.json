@@ -1,8 +1,16 @@
 {
-    "parent": "item/handheld",
-    "textures": {
-        "layer0": "modulartoolkit:item/hoe_bottom",
-        "layer1": "modulartoolkit:item/hoe_middle",
-        "layer2": "modulartoolkit:item/hoe_top"
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "modulartoolkit:item/hoe_bottom",
+    "layer1": "modulartoolkit:item/hoe_middle",
+    "layer2": "modulartoolkit:item/hoe_top"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "broken": 1
+      },
+      "model": "modulartoolkit:item/hoe_tool_broken"
     }
+  ]
 }
