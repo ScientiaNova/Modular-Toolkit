@@ -145,7 +145,7 @@ public class ToolUtils {
         return 25 * (long) Math.pow(3, level - 1);
     }
 
-    public static long getXPForCurentLevel(ItemStack stack) {
+    public static long getXPForCurrentLevel(ItemStack stack) {
         return getXPForLevel(stack, getLevel(stack));
     }
 

@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -69,7 +70,7 @@ public abstract class ModularTool extends Item {
                 tooltip.add(new StringTextComponent(TextFormatting.RED + new TranslationTextComponent("tool.stat.broken").getString()));
             getAllAbilities(stack).forEach(a -> tooltip.add(a.getTranslationKey(stack)));
             tooltip.add(new TranslationTextComponent("tool.stat.level", getLevel(stack), getLevelCap(stack)));
-            tooltip.add(new TranslationTextComponent("tool.stat.experience", getXP(stack) - getXPForCurentLevel(stack), getXPForLevelUp(stack) - getXPForCurentLevel(stack)));
+            tooltip.add(new TranslationTextComponent("tool.stat.experience", getXP(stack) - getXPForCurrentLevel(stack), getXPForLevelUp(stack) - getXPForCurrentLevel(stack)));
             tooltip.add(new TranslationTextComponent("tool.stat.modifier_slots", getFreeModifierSlotCount(stack)));
             int maxDamage = getMaxDamage(stack) - 1;
             tooltip.add(new TranslationTextComponent("tool.stat.current_durability", maxDamage - stack.getDamage(), maxDamage));
@@ -103,6 +104,11 @@ public abstract class ModularTool extends Item {
             multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", getAttackSpeed(stack), AttributeModifier.Operation.ADDITION));
         }
 
+        for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
+            multimap = e.getKey().getAttributeModifiers(slot, stack, e.getValue(), multimap);
+        for (AbstractAbility ability : Abilities.getAll())
+            multimap = ability.getAttributeModifiers(slot, stack, multimap);
+
         return multimap;
     }
 
@@ -132,7 +138,7 @@ public abstract class ModularTool extends Item {
         if (isNull(stack))
             return amount;
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
-            amount = e.getKey().onToolDamaged(amount, e.getValue());
+            amount = e.getKey().onToolDamaged(amount, stack, e.getValue());
         for (AbstractAbility ability : Abilities.getAll())
             amount = ability.onToolDamaged(stack, amount);
         int max = getMaxDamage(stack) - 1 - stack.getDamage();
@@ -158,31 +164,41 @@ public abstract class ModularTool extends Item {
 
     @Override
     public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
+        for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
+            e.getKey().onBlockDestroyed(stack, worldIn, state, pos, entityLiving, e.getValue());
+        for (AbstractAbility ability : Abilities.getAll())
+            ability.onBlockDestroyed(stack, worldIn, state, pos, entityLiving);
+
         if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0F && !isBroken(stack))
             if (hasTag(IS_TOOL)) {
-                stack.damageItem(1, entityLiving, (p_220038_0_) -> {
-                    p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
-                });
+                stack.damageItem(1, entityLiving, (p_220038_0_) ->
+                        p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND)
+                );
                 addXP(stack);
             } else if (hasTag(IS_MELEE_WEAPON))
-                stack.damageItem(2, entityLiving, (p_220038_0_) -> {
-                    p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
-                });
+                stack.damageItem(2, entityLiving, (p_220038_0_) ->
+                        p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND)
+                );
 
         return true;
     }
 
     @Override
     public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
+            e.getKey().onHitEntity(stack, target, attacker, e.getValue());
+        for (AbstractAbility ability : Abilities.getAll())
+            ability.onHitEntity(stack, target, attacker);
+
         if (!isBroken(stack))
             if (hasTag(IS_MELEE_WEAPON) || hasTag(IS_HOE))
-                stack.damageItem(1, attacker, (p_220039_0_) -> {
-                    p_220039_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
-                });
+                stack.damageItem(1, attacker, (p_220039_0_) ->
+                        p_220039_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND)
+                );
             else if (hasTag(IS_TOOL))
-                stack.damageItem(2, attacker, (p_220039_0_) -> {
-                    p_220039_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
-                });
+                stack.damageItem(2, attacker, (p_220039_0_) ->
+                        p_220039_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND)
+                );
 
         if (hasTag(IS_MELEE_WEAPON) && !target.isAlive())
             addXP(stack, (int) target.getMaxHealth());
@@ -193,6 +209,14 @@ public abstract class ModularTool extends Item {
     @Override
     public boolean canPlayerBreakBlockWhileHolding(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
         return !(player.isCreative() && hasTag(IS_MELEE_WEAPON));
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
+        for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
+            e.getKey().onInventoryTick(stack, worldIn, entityIn, itemSlot, isSelected, e.getValue());
+        for (AbstractAbility ability : Abilities.getAll())
+            ability.onInventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
     public void addToolTags(String... tags) {
