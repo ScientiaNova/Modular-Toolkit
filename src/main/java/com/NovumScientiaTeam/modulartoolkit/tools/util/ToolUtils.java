@@ -2,6 +2,7 @@ package com.NovumScientiaTeam.modulartoolkit.tools.util;
 
 import com.EmosewaPixel.pixellib.materialsystem.lists.Materials;
 import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
+import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.abilities.Abilities;
 import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
@@ -13,6 +14,7 @@ import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import javafx.util.Pair;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.ToolType;
@@ -22,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class ToolUtils {
+public final class ToolUtils {
     //Tool Tags
     public static final String IS_TOOL = "is_tool";
     public static final String IS_MELEE_WEAPON = "is_melee_weapon";
@@ -31,6 +33,16 @@ public class ToolUtils {
     public static final String IS_ARMOR = "is_armor";
     public static final String IS_HOE = "is_hoe";
 
+    //Tool Part Map
+    private static final Map<Item, List<ObjectType>> TOOL_PART_MAP = new HashMap<>();
+
+    public static void setToolParts(Item tool, List<ObjectType> list) {
+        TOOL_PART_MAP.put(tool, list);
+    }
+
+    public static List<ObjectType> getToolParts(Item tool) {
+        return TOOL_PART_MAP.get(tool);
+    }
 
     //NBT Methods
     public static boolean isNull(ItemStack stack) {

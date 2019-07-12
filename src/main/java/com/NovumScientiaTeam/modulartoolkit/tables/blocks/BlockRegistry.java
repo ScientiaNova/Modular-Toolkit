@@ -25,7 +25,7 @@ public class BlockRegistry {
 
     private static Block register(Block block, RegistryEvent.Register<Block> e) {
         e.getRegistry().register(block);
-        blockItems.add(new BlockItem(block, new Item.Properties().group(ModularToolkit.TABLE_GROUP)).setRegistryName(block.getRegistryName()));
+        blockItems.add(new BlockItem(block, new Item.Properties().group(ModularToolkit.MAIN_GROUP)).setRegistryName(block.getRegistryName()));
         return block;
     }
 }

@@ -1,6 +1,5 @@
 {
-  "itemGroup.mt_tools": "Modular Toolkit: Tools",
-  "itemGroup.mt_tables": "Modular Toolkit: Tables",
+  "itemGroup.mt_main": "Modular Toolkit",
 
   "itemtype.tool_rod": "%s Tool Rod",
   "itemtype.axe_head": "%s Axe Head",
@@ -11,6 +10,7 @@
   "itemtype.binding": "%s Binding",
   "itemtype.sword_guard": "%s Sword Guard",
   "itemtype.wrench_head": "%s Wrench Head",
+  "itemtype.fragment": "%s Fragment",
 
   "block.modulartoolkit.part_constructor": "Part Constructor",
   "block.modulartoolkit.modification_station": "Modification Station",
@@ -47,6 +47,9 @@
   "tool.stat.durability_multiplier": "Durability Multiplier: %s",
   "tool.stat.level_cap": "Level Cap: %s",
   "tool.stat.level_cap_multiplier": "Level Cap Multiplier: %s",
+
+  "tool.tooltip.hold_shift": "Hold Shift for Tool Info",
+  "tool.tooltip.hold_ctrl": "Hold Control for Part Info",
 
   "harvest_level_0": "Stone",
   "harvest_level_1": "Iron",

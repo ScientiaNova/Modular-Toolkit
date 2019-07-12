@@ -1,46 +1,52 @@
 package com.NovumScientiaTeam.modulartoolkit.recipes;
 
+import com.EmosewaPixel.pixellib.materialsystem.lists.ObjTypes;
+import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<ToolRecipe> {
     public ToolRecipeSerializer() {
         setRegistryName("modulartoolkit:tool_crafting");
     }
 
-    private static NonNullList<Ingredient> readIngredients(JsonArray p_199568_0_) {
-        NonNullList<Ingredient> nonnulllist = NonNullList.create();
+    private static List<Tag<Item>> getTags(JsonArray array) {
+        List<Tag<Item>> list = new ArrayList<>();
+        array.forEach(element -> list.add(ItemTags.getCollection().get(new ResourceLocation(JSONUtils.getString(element.getAsJsonObject(), "tag")))));
 
-        for (int i = 0; i < p_199568_0_.size(); ++i) {
-            Ingredient ingredient = Ingredient.deserialize(p_199568_0_.get(i));
-            if (!ingredient.hasNoMatchingItems()) {
-                nonnulllist.add(ingredient);
-            }
-        }
-
-        return nonnulllist;
+        return list;
     }
 
     @Override
     public ToolRecipe read(ResourceLocation recipeId, JsonObject json) {
         String s = JSONUtils.getString(json, "group", "");
-        NonNullList<Ingredient> nonnulllist = readIngredients(JSONUtils.getJsonArray(json, "ingredients"));
+        NonNullList<Ingredient> nonnulllist = NonNullList.create();
+        List<Tag<Item>> tags = getTags(JSONUtils.getJsonArray(json, "ingredients"));
+        tags.forEach(tag -> nonnulllist.add(Ingredient.fromTag(tag)));
         if (nonnulllist.isEmpty()) {
             throw new JsonParseException("No ingredients for tool recipe");
         } else if (nonnulllist.size() > 3 * 3) {
             throw new JsonParseException("Too many ingredients for tool recipe the max is 9");
         } else {
             ItemStack itemstack = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
+            ToolUtils.setToolParts(itemstack.getItem(), tags.stream().map(tag -> ObjTypes.get(tag.getId().getPath().substring(0, tag.getId().getPath().length() - 1))).collect(Collectors.toList()));
             return new ToolRecipe(recipeId, s, itemstack, nonnulllist);
         }
     }

@@ -27,21 +27,12 @@ import org.apache.logging.log4j.Logger;
 public class ModularToolkit {
     public static final String MOD_ID = "modulartoolkit";
 
-    public static final Logger LOGGER = LogManager.getLogger();
-
     private IModProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
 
-    public static final ItemGroup TOOL_GROUP = new ItemGroup("mt_tools") {
+    public static final ItemGroup MAIN_GROUP = new ItemGroup("mt_main") {
         @Override
         public ItemStack createIcon() {
             return new ItemStack(ToolRegistry.PICKAXE);
-        }
-    };
-
-    public static final ItemGroup TABLE_GROUP = new ItemGroup("mt_tables") {
-        @Override
-        public ItemStack createIcon() {
-            return new ItemStack(BlockRegistry.PART_CONSTRUCTOR);
         }
     };
 
