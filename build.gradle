@@ -20,6 +20,9 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 minecraft {
     mappings channel: 'snapshot', version: '20190709-1.14.3'
+
+    accessTransformer = file('src/main/resources/META-INF/modulartoolkit_at.cfg')
+
     runs {
         client {
             workingDirectory project.file('run')

@@ -1,6 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit.partTypes;
 
-import com.EmosewaPixel.pixellib.materialSystem.materials.Material;
+import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 
 public abstract class PartType {
     public abstract int getExtraDurability(Material mat);
