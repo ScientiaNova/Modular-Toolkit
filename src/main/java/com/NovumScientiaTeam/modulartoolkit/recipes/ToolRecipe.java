@@ -1,7 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.recipes;
 
-import com.EmosewaPixel.pixellib.materialSystem.lists.MaterialItems;
-import com.EmosewaPixel.pixellib.materialSystem.materials.IMaterialItem;
+import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialItems;
+import com.EmosewaPixel.pixellib.materialsystem.materials.IMaterialItem;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;

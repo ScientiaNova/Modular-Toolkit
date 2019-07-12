@@ -1,6 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit.partTypes;
 
-import com.EmosewaPixel.pixellib.materialSystem.materials.Material;
+import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 import net.minecraft.item.IItemTier;
 
 public class Handle extends PartType {

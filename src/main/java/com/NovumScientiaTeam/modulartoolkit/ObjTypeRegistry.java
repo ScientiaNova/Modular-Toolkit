@@ -1,8 +1,8 @@
 package com.NovumScientiaTeam.modulartoolkit;
 
-import com.EmosewaPixel.pixellib.materialSystem.MaterialRegistry;
-import com.EmosewaPixel.pixellib.materialSystem.types.ItemType;
-import com.EmosewaPixel.pixellib.materialSystem.types.ObjectType;
+import com.EmosewaPixel.pixellib.materialsystem.MaterialRegistry;
+import com.EmosewaPixel.pixellib.materialsystem.types.ItemType;
+import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 
 public class ObjTypeRegistry {
     public static ObjectType TOOL_ROD;

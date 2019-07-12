@@ -1,8 +1,8 @@
 package com.NovumScientiaTeam.modulartoolkit.tools.util;
 
-import com.EmosewaPixel.pixellib.materialSystem.lists.Materials;
-import com.EmosewaPixel.pixellib.materialSystem.materials.Material;
-import com.EmosewaPixel.pixellib.miscUtils.StreamUtils;
+import com.EmosewaPixel.pixellib.materialsystem.lists.Materials;
+import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
+import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.abilities.Abilities;
 import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
@@ -145,7 +145,7 @@ public class ToolUtils {
         return 25 * (long) Math.pow(3, level - 1);
     }
 
-    public static long getXPForCurentLevel(ItemStack stack) {
+    public static long getXPForCurrentLevel(ItemStack stack) {
         return getXPForLevel(stack, getLevel(stack));
     }
 
