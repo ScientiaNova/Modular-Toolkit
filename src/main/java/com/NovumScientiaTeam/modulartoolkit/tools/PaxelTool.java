@@ -12,7 +12,7 @@ import net.minecraftforge.common.ToolType;
 
 public class PaxelTool extends ModularTool {
     public PaxelTool() {
-        super("modulartoolkit:paxel_tool", ImmutableList.of(new Handle(), new Head(ToolType.AXE), new Head(ToolType.SHOVEL), new Head(ToolType.PICKAXE)));
+        super("modulartoolkit:paxel_tool", ImmutableList.of(new Head(ToolType.AXE), new Head(ToolType.SHOVEL), new Head(ToolType.PICKAXE), new Handle()));
         addToolTags(ToolUtils.IS_TOOL);
     }
 

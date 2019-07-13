@@ -3,13 +3,13 @@
   "group": "modulartoolkit:sword_tool",
   "ingredients": [
     {
-      "tag": "forge:tool_rods"
+      "tag": "forge:sword_blades"
     },
     {
       "tag": "forge:sword_guards"
     },
     {
-      "tag": "forge:sword_blades"
+      "tag": "forge:tool_rods"
     }
   ],
   "result": {

@@ -3,13 +3,13 @@
   "group": "modulartoolkit:shovel_tool",
   "ingredients": [
     {
-      "tag": "forge:tool_rods"
+      "tag": "forge:shovel_heads"
     },
     {
       "tag": "forge:bindings"
     },
     {
-      "tag": "forge:shovel_heads"
+      "tag": "forge:tool_rods"
     }
   ],
   "result": {

@@ -13,7 +13,7 @@ import net.minecraftforge.common.ToolType;
 
 public class AxeTool extends ModularTool {
     public AxeTool() {
-        super("modulartoolkit:axe_tool", ImmutableList.of(new Handle(), new Extra(), new Head(ToolType.AXE)));
+        super("modulartoolkit:axe_tool", ImmutableList.of(new Head(ToolType.AXE), new Extra(), new Handle()));
         addToolTags(ToolUtils.IS_TOOL);
     }
 
@@ -21,14 +21,14 @@ public class AxeTool extends ModularTool {
     public double getAttackDamage(ItemStack stack) {
         if (ToolUtils.isNull(stack))
             return 0;
-        return ToolUtils.getToolMaterial(stack, 2).getItemTier().getAttackDamage() + 6;
+        return ToolUtils.getToolMaterial(stack, 0).getItemTier().getAttackDamage() + 6;
     }
 
     @Override
     public double getAttackSpeed(ItemStack stack) {
         if (ToolUtils.isNull(stack))
             return -3.4F;
-        return -3.4F + (ToolUtils.getToolMaterial(stack, 2).getItemTier().getEfficiency() / 2 - 1) * 0.1F;
+        return -3.4F + (ToolUtils.getToolMaterial(stack, 0).getItemTier().getEfficiency() / 2 - 1) * 0.1F;
     }
 
     @Override

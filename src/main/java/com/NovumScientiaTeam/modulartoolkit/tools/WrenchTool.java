@@ -22,14 +22,14 @@ public class WrenchTool extends ModularTool {
     public static final ToolType WRENCH = ToolType.get("wrench");
 
     public WrenchTool() {
-        super("modulartoolkit:wrench_tool", ImmutableList.of(new Handle(), new Head(WRENCH)));
+        super("modulartoolkit:wrench_tool", ImmutableList.of(new Head(WRENCH), new Handle()));
     }
 
     @Override
     public double getAttackDamage(ItemStack stack) {
         if (ToolUtils.isNull(stack))
             return 0;
-        return ToolUtils.getToolMaterial(stack, 1).getItemTier().getAttackDamage() + 1;
+        return ToolUtils.getToolMaterial(stack, 0).getItemTier().getAttackDamage() + 1;
     }
 
     @Override

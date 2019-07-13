@@ -3,10 +3,10 @@
   "group": "modulartoolkit:wrench_tool",
   "ingredients": [
     {
-      "tag": "forge:tool_rods"
+      "tag": "forge:wrench_heads"
     },
     {
-      "tag": "forge:wrench_heads"
+      "tag": "forge:tool_rods"
     }
   ],
   "result": {

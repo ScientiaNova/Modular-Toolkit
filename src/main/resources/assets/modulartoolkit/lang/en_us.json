@@ -54,5 +54,7 @@
   "harvest_level_0": "Stone",
   "harvest_level_1": "Iron",
   "harvest_level_2": "Diamond",
-  "harvest_level_3": "Obsidian"
+  "harvest_level_3": "Obsidian",
+
+  "gui.jei.category.part_constructor": "Part Constructor"
 }

@@ -14,7 +14,7 @@ import net.minecraft.tags.BlockTags;
 
 public class SwordTool extends ModularTool {
     public SwordTool() {
-        super("modulartoolkit:sword_tool", ImmutableList.of(new Handle(), new Extra(), new Head(null)));
+        super("modulartoolkit:sword_tool", ImmutableList.of(new Head(null), new Extra(), new Handle()));
         addToolTags(ToolUtils.IS_MELEE_WEAPON);
     }
 
@@ -22,7 +22,7 @@ public class SwordTool extends ModularTool {
     public double getAttackDamage(ItemStack stack) {
         if (ToolUtils.isNull(stack))
             return 0;
-        return ToolUtils.getToolMaterial(stack, 2).getItemTier().getAttackDamage() + 3;
+        return ToolUtils.getToolMaterial(stack, 0).getItemTier().getAttackDamage() + 3;
     }
 
     @Override

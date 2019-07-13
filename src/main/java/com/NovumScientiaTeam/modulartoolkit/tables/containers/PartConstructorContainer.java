@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.AirItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.ItemStackHandler;
@@ -62,14 +63,10 @@ public class PartConstructorContainer extends Container {
     }
 
     private void addPlayerSlots(IInventory playerInventory) {
-        StreamUtils.repeat(3, (i) -> {
-            StreamUtils.repeat(9, (j) -> {
-                this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-            });
-        });
-        StreamUtils.repeat(9, (k) -> {
-            this.addSlot(new Slot(playerInventory, k, 8 + k * 18, 142));
-        });
+        StreamUtils.repeat(3, i ->
+                StreamUtils.repeat(9, j ->
+                        this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18))));
+        StreamUtils.repeat(9, k -> this.addSlot(new Slot(playerInventory, k, 8 + k * 18, 142)));
     }
 
     @Override
@@ -79,12 +76,8 @@ public class PartConstructorContainer extends Container {
         if (slot != null && slot.getHasStack()) {
             ItemStack stack1 = slot.getStack();
             itemstack = stack1.copy();
-            if (index == 1) {
+            if (index == 1)
                 slot.onTake(playerIn, stack1);
-                if (!this.mergeItemStack(stack1, itemHandler.getSlots(), this.inventorySlots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            }
             if (index < itemHandler.getSlots()) {
                 if (!this.mergeItemStack(stack1, itemHandler.getSlots(), this.inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
@@ -135,7 +128,7 @@ public class PartConstructorContainer extends Container {
         ObjectType objectType = getMatchingObjectType();
         ItemStack fragmentStack = itemHandler.getStackInSlot(2);
         float consumeAmount;
-        if (objectType != null && material.isPresent() && MaterialItems.contains(material.get(), objectType) && getMaterialValue(itemHandler.getStackInSlot(0)) >= Math.ceil(consumeAmount = (objectType.getBucketVolume() / 144f)) && (fragmentStack == ItemStack.EMPTY || ((IMaterialItem) fragmentStack.getItem()).getMaterial() == material.get()) && (consumeAmount - (int) consumeAmount != 0.5f || fragmentStack.getCount() < fragmentStack.getMaxStackSize())) {
+        if (objectType != null && material.isPresent() && MaterialItems.contains(material.get(), objectType) && getMaterialValue(itemHandler.getStackInSlot(0)) >= (consumeAmount = (objectType.getBucketVolume() / 144f)) && (fragmentStack == ItemStack.EMPTY || fragmentStack.getItem() instanceof AirItem || ((IMaterialItem) fragmentStack.getItem()).getMaterial() == material.get()) && (consumeAmount - (int) consumeAmount != 0.5f || fragmentStack.getCount() < fragmentStack.getMaxStackSize())) {
             itemHandler.setStackInSlot(1, new ItemStack(MaterialItems.getItem(material.get(), objectType)));
         } else
             itemHandler.setStackInSlot(1, ItemStack.EMPTY);

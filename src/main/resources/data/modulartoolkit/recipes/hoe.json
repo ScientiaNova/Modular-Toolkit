@@ -3,13 +3,13 @@
   "group": "modulartoolkit:hoe_tool",
   "ingredients": [
     {
-      "tag": "forge:tool_rods"
+      "tag": "forge:hoe_heads"
     },
     {
       "tag": "forge:bindings"
     },
     {
-      "tag": "forge:hoe_heads"
+      "tag": "forge:tool_rods"
     }
   ],
   "result": {

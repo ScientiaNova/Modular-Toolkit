@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "# #",
+    " C ",
+    "# #"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:crafting_table"
+    },
+    "C": {
+      "tag": "forge:tool_rods/wooden"
+    }
+  },
+  "result": {
+    "item": "modulartoolkit:modification_station"
+  }
+}

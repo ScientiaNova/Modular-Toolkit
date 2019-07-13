@@ -12,7 +12,7 @@ import net.minecraft.util.ActionResultType;
 
 public class HoeTool extends ModularTool {
     public HoeTool() {
-        super("modulartoolkit:hoe_tool", ImmutableList.of(new Handle(), new Extra(), new Head(null)));
+        super("modulartoolkit:hoe_tool", ImmutableList.of(new Head(null), new Extra(), new Handle()));
         addToolTags(ToolUtils.IS_HOE);
     }
 
@@ -25,7 +25,7 @@ public class HoeTool extends ModularTool {
     public double getAttackSpeed(ItemStack stack) {
         if (ToolUtils.isNull(stack))
             return -3;
-        return ToolUtils.getToolMaterial(stack, 2).getItemTier().getHarvestLevel() + -3;
+        return ToolUtils.getToolMaterial(stack, 0).getItemTier().getHarvestLevel() + -3;
     }
 
     @Override

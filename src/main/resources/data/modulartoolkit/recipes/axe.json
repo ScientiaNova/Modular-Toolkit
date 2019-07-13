@@ -3,13 +3,13 @@
   "group": "modulartoolkit:axe_tool",
   "ingredients": [
     {
-      "tag": "forge:tool_rods"
+      "tag": "forge:axe_heads"
     },
     {
       "tag": "forge:bindings"
     },
     {
-      "tag": "forge:axe_heads"
+      "tag": "forge:tool_rods"
     }
   ],
   "result": {

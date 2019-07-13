@@ -13,7 +13,7 @@ import net.minecraftforge.common.ToolType;
 
 public class ShovelTool extends ModularTool {
     public ShovelTool() {
-        super("modulartoolkit:shovel_tool", ImmutableList.of(new Handle(), new Extra(), new Head(ToolType.SHOVEL)));
+        super("modulartoolkit:shovel_tool", ImmutableList.of(new Head(ToolType.SHOVEL), new Extra(), new Handle()));
         addToolTags(ToolUtils.IS_TOOL);
     }
 
@@ -21,7 +21,7 @@ public class ShovelTool extends ModularTool {
     public double getAttackDamage(ItemStack stack) {
         if (ToolUtils.isNull(stack))
             return 0;
-        return ToolUtils.getToolMaterial(stack, 2).getItemTier().getAttackDamage() + 1.5f;
+        return ToolUtils.getToolMaterial(stack, 0).getItemTier().getAttackDamage() + 1.5f;
     }
 
     @Override

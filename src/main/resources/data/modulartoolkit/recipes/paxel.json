@@ -3,9 +3,6 @@
   "group": "modulartoolkit:paxel_tool",
   "ingredients": [
     {
-      "tag": "forge:tool_rods"
-    },
-    {
       "tag": "forge:axe_heads"
     },
     {
@@ -13,6 +10,9 @@
     },
     {
       "tag": "forge:pickaxe_heads"
+    },
+    {
+      "tag": "forge:tool_rods"
     }
   ],
   "result": {

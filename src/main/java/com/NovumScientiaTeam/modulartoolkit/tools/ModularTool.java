@@ -1,8 +1,10 @@
 package com.NovumScientiaTeam.modulartoolkit.tools;
 
 import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialItems;
+import com.EmosewaPixel.pixellib.materialsystem.lists.Materials;
 import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
+import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
 import com.NovumScientiaTeam.modulartoolkit.abilities.Abilities;
 import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
@@ -23,7 +25,10 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -60,7 +65,7 @@ public abstract class ModularTool extends Item {
         if (isNull(stack))
             return new TranslationTextComponent(this.getTranslationKey(stack));
 
-        List<ITextComponent> matStrings = getHeadMaterials(stack).stream().map(Material::getTranslationKey).collect(Collectors.toList());
+        List<ITextComponent> matStrings = getHeadMaterials(stack).stream().map(Material::getTranslationKey).distinct().collect(Collectors.toList());
         List<String> placeholders = new ArrayList<>();
         matStrings.forEach(s -> placeholders.add("%s"));
         TranslationTextComponent matComponent = new TranslationTextComponent(String.join("-", placeholders), matStrings.toArray());
@@ -237,6 +242,27 @@ public abstract class ModularTool extends Item {
             e.getKey().onInventoryTick(stack, worldIn, entityIn, itemSlot, isSelected, e.getValue());
         for (AbstractAbility ability : Abilities.getAll())
             ability.onInventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
+    }
+
+    @Override
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list) {
+        if (isInGroup(group))
+            Materials.getAll().stream().filter(mat -> mat.getItemTier() != null).map(mat -> {
+                ItemStack result = new ItemStack(this);
+                CompoundNBT mainCompound = new CompoundNBT();
+                mainCompound.put("Materials", new CompoundNBT());
+                mainCompound.putLong("XP", 0);
+                mainCompound.putInt("Level", 0);
+                mainCompound.put("Modifiers", new CompoundNBT());
+                mainCompound.put("Boosts", new CompoundNBT());
+                mainCompound.putInt("Damage", 0);
+                mainCompound.putInt("ModifierSlotsUsed", 0);
+                CompoundNBT materialNBT = new CompoundNBT();
+                StreamUtils.repeat(partList.size(), i -> materialNBT.putString("material" + i, mat.getName()));
+                mainCompound.put("Materials", materialNBT);
+                result.setTag(mainCompound);
+                return result;
+            }).forEach(list::add);
     }
 
     public void addToolTags(String... tags) {

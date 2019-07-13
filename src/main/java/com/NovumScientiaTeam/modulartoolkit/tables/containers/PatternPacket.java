@@ -11,8 +11,8 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class PatternPacket {
-    public BlockPos pos;
-    public ConstructorPattern pattern;
+    private BlockPos pos;
+    private ConstructorPattern pattern;
 
     public PatternPacket(BlockPos pos, ConstructorPattern pattern) {
         this.pos = pos;

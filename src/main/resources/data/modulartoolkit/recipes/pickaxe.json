@@ -3,13 +3,13 @@
   "group": "modulartoolkit:pickaxe_tool",
   "ingredients": [
     {
-      "tag": "forge:tool_rods"
+      "tag": "forge:pickaxe_heads"
     },
     {
       "tag": "forge:bindings"
     },
     {
-      "tag": "forge:pickaxe_heads"
+      "tag": "forge:tool_rods"
     }
   ],
   "result": {

@@ -3,21 +3,28 @@ package com.NovumScientiaTeam.modulartoolkit.recipes;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.NovumScientiaTeam.modulartoolkit.ObjTypeRegistry;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-public class ConstructorPatternRegistry {
+public final class ConstructorPatternRegistry {
     private static HashMap<ConstructorPattern, ObjectType> patterns = new HashMap<>();
 
     public static List<ConstructorPattern> getPossiblePatterns() {
-        List<ConstructorPattern> list = new ArrayList<>();
-        patterns.keySet().forEach(pattern -> list.add(pattern));
-        return list;
+        return new ArrayList<>(patterns.keySet());
     }
 
     public static ObjectType getObjectType(ConstructorPattern pattern) {
         return patterns.get(pattern);
+    }
+
+    public static List<ObjectType> getPossibleObjectTypes() {
+        return new ArrayList<>(patterns.values());
+    }
+
+    public static ConstructorPattern getPattern(ObjectType type) {
+        Optional<Map.Entry<ConstructorPattern, ObjectType>> entry = patterns.entrySet().stream().filter(e -> e.getValue().equals(type)).findFirst();
+        if (entry.isPresent())
+            return entry.get().getKey();
+        return new ConstructorPattern();
     }
 
     public static void addPattern(ConstructorPattern pattern, ObjectType objectType) {

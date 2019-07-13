@@ -15,7 +15,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class PartConstructorScreen extends ContainerScreen<PartConstructorContainer> {
     protected PartConstructorTile te;
-    private String background = ModularToolkit.MOD_ID + ":textures/gui/part_constructor.png";
+    public static final String background = ModularToolkit.MOD_ID + ":textures/gui/part_constructor.png";
     private PlayerInventory playerInventory;
 
     public PartConstructorScreen(PartConstructorContainer container, PlayerInventory playerInventory, ITextComponent title) {

@@ -1,5 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit;
 
+import com.NovumScientiaTeam.modulartoolkit.jei.partConstructor.recipetransfer.AdvancedRecipeTransferPacket;
 import com.NovumScientiaTeam.modulartoolkit.tables.containers.PatternPacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -16,7 +17,9 @@ public class PacketHandler {
 
     public static void setup() {
         INSTANCE.registerMessage(patternSetID, PatternPacket.class, PatternPacket::encode, PatternPacket::decode, PatternPacket::processPacket);
+        INSTANCE.registerMessage(advancedRecipeTransfer, AdvancedRecipeTransferPacket.class, AdvancedRecipeTransferPacket::encode, AdvancedRecipeTransferPacket::decode, AdvancedRecipeTransferPacket::processPacket);
     }
 
     public static final int patternSetID = 0;
+    public static final int advancedRecipeTransfer = 1;
 }
