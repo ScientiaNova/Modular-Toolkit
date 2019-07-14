@@ -33,15 +33,15 @@ public final class ConstructorPatternRegistry {
 
     public static void setup() {
         //patterns work any size from 1x1 to 7x7 and will trim rows/columns of 0s
-        addPattern(new ConstructorPattern(new int[][]{
+        addPattern(new ConstructorPattern(new byte[][]{
                 {0, 1, 1, 1, 1, 1, 0},
                 {1, 0, 0, 0, 0, 0, 1}
         }), ObjTypeRegistry.PICKAXE_HEAD);
-        addPattern(new ConstructorPattern(new int[][]{
+        addPattern(new ConstructorPattern(new byte[][]{
                 {0, 1, 1, 1},
                 {1, 0, 0, 0}
         }), ObjTypeRegistry.HOE_HEAD);
-        addPattern(new ConstructorPattern(new int[][]{
+        addPattern(new ConstructorPattern(new byte[][]{
                 {0, 1, 0},
                 {1, 1, 1},
                 {1, 1, 1},
@@ -50,36 +50,36 @@ public final class ConstructorPatternRegistry {
                 {1, 1, 1},
                 {1, 1, 1}
         }), ObjTypeRegistry.SWORD_BLADE);
-        addPattern(new ConstructorPattern(new int[][]{
+        addPattern(new ConstructorPattern(new byte[][]{
                 {1},
                 {1},
                 {1},
                 {1},
                 {1}
         }), ObjTypeRegistry.TOOL_ROD);
-        addPattern(new ConstructorPattern(new int[][]{
+        addPattern(new ConstructorPattern(new byte[][]{
                 {1, 0, 1},
                 {0, 1, 0},
                 {1, 0, 1}
         }), ObjTypeRegistry.BINDING);
-        addPattern(new ConstructorPattern(new int[][]{
+        addPattern(new ConstructorPattern(new byte[][]{
                 {1, 0, 0, 0, 0},
                 {1, 1, 1, 0, 0},
                 {1, 1, 1, 1, 1},
                 {1, 1, 1, 0, 0},
                 {1, 0, 0, 0, 0}
         }), ObjTypeRegistry.AXE_HEAD);
-        addPattern(new ConstructorPattern(new int[][]{
+        addPattern(new ConstructorPattern(new byte[][]{
                 {1, 1, 1, 1, 1},
                 {0, 1, 1, 1, 0}
         }), ObjTypeRegistry.SWORD_GUARD);
-        addPattern(new ConstructorPattern(new int[][]{
+        addPattern(new ConstructorPattern(new byte[][]{
                 {1, 0, 0, 0, 1},
                 {1, 0, 0, 0, 1},
                 {1, 1, 0, 1, 1},
                 {0, 1, 1, 1, 0}
         }), ObjTypeRegistry.WRENCH_HEAD);
-        addPattern(new ConstructorPattern(new int[][]{
+        addPattern(new ConstructorPattern(new byte[][]{
                 {0, 1, 1, 0},
                 {1, 1, 1, 1},
                 {1, 1, 1, 1},

@@ -1,7 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "modulartoolkit:item/wrench_bottom",
-    "layer1": "modulartoolkit:item/wrench_top_broken"
+    "layer0": "modulartoolkit:item/wrench_top_broken",
+    "layer1": "modulartoolkit:item/wrench_bottom"
   }
 }

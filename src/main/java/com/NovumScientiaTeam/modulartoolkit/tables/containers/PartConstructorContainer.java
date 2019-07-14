@@ -102,7 +102,7 @@ public class PartConstructorContainer extends Container {
         updateOutput();
         this.listeners.forEach((listener) -> {
 
-            List<Integer> data = new ArrayList<>();
+            List<Byte> data = new ArrayList<>();
             for (int y = 0; y < te.getCurrentPattern().pattern.length; y++) {
                 for (int x = 0; x < te.getCurrentPattern().pattern[0].length; x++) {
                     data.add(te.getCurrentPattern().pattern[y][x]);
@@ -120,7 +120,7 @@ public class PartConstructorContainer extends Container {
     public void updateProgressBar(int id, int data) {
         int y = id / 7;
         int x = id - y * 7;
-        te.getCurrentPattern().pattern[y][x] = data;
+        te.getCurrentPattern().pattern[y][x] = (byte) data;
     }
 
     private void updateOutput() {

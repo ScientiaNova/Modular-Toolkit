@@ -1,9 +1,9 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "modulartoolkit:item/shovel_bottom",
+    "layer0": "modulartoolkit:item/shovel_top",
     "layer1": "modulartoolkit:item/shovel_middle",
-    "layer2": "modulartoolkit:item/shovel_top"
+    "layer2": "modulartoolkit:item/shovel_bottom"
   },
   "overrides": [
     {

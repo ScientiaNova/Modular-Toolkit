@@ -15,7 +15,7 @@ public class PartConstructorTile extends TileEntity {
     public PartConstructorTile() {
         super(ModularToolkit.CONSTRUCTOR);
         itemStackHandler = new ItemStackHandler(3);
-        currentPattern = new ConstructorPattern(new int[7][7]);
+        currentPattern = new ConstructorPattern(new byte[7][7]);
     }
 
     public ItemStackHandler getItemStackHandler() {

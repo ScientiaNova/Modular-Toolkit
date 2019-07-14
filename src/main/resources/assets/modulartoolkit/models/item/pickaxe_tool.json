@@ -1,9 +1,9 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "modulartoolkit:item/pickaxe_bottom",
+    "layer0": "modulartoolkit:item/pickaxe_top",
     "layer1": "modulartoolkit:item/pickaxe_middle",
-    "layer2": "modulartoolkit:item/pickaxe_top"
+    "layer2": "modulartoolkit:item/pickaxe_bottom"
   },
   "overrides": [
     {

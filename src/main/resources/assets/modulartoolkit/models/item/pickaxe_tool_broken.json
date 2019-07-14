@@ -1,8 +1,8 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "modulartoolkit:item/pickaxe_bottom",
+    "layer0": "modulartoolkit:item/pickaxe_top_broken",
     "layer1": "modulartoolkit:item/pickaxe_middle",
-    "layer2": "modulartoolkit:item/pickaxe_top_broken"
+    "layer2": "modulartoolkit:item/pickaxe_bottom"
   }
 }

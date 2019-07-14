@@ -1,10 +1,10 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "modulartoolkit:item/pickaxe_bottom",
     "layer1": "modulartoolkit:item/paxel_axe",
     "layer2": "modulartoolkit:item/paxel_shovel",
-    "layer3": "modulartoolkit:item/paxel_pickaxe"
+    "layer3": "modulartoolkit:item/paxel_pickaxe",
+    "layer0": "modulartoolkit:item/paxel_bottom"
   },
   "overrides": [
     {

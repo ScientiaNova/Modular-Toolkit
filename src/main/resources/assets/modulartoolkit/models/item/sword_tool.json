@@ -1,9 +1,9 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "modulartoolkit:item/sword_bottom",
+    "layer0": "modulartoolkit:item/sword_top",
     "layer1": "modulartoolkit:item/sword_middle",
-    "layer2": "modulartoolkit:item/sword_top"
+    "layer2": "modulartoolkit:item/sword_bottom"
   },
   "overrides": [
     {

@@ -1,16 +1,8 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "modulartoolkit:item/axe_bottom",
+    "layer0": "modulartoolkit:item/axe_top_broken",
     "layer1": "modulartoolkit:item/axe_middle",
-    "layer2": "modulartoolkit:item/axe_top_broken"
-  },
-  "overrides": [
-    {
-      "predicate": {
-        "broken": 1
-      },
-      "model": "modulartoolkit:item/axe_tool_broken"
-    }
-  ]
+    "layer2": "modulartoolkit:item/axe_bottom"
+  }
 }

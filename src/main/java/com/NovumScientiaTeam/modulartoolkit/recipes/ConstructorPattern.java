@@ -1,21 +1,22 @@
 package com.NovumScientiaTeam.modulartoolkit.recipes;
 
+import net.minecraft.nbt.ByteArrayNBT;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntArrayNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConstructorPattern {
-    public int[][] pattern;
+    public byte[][] pattern;
 
     public ConstructorPattern() {
-        this(new int[0][0]);
+        this(new byte[0][0]);
     }
 
-    public ConstructorPattern(int[][] pattern) {
+    public ConstructorPattern(byte[][] pattern) {
         this.pattern = pattern;
     }
 
@@ -24,13 +25,21 @@ public class ConstructorPattern {
         ConstructorPattern constructorPattern2 = pattern2.copy().cleanPattern();
         if (constructorPattern1.pattern.length != constructorPattern2.pattern.length || constructorPattern1.pattern[0].length != constructorPattern2.pattern[0].length)
             return false;
-        for (int y = 0; y < constructorPattern1.pattern.length; y++) {
-            for (int x = 0; x < constructorPattern1.pattern[0].length; x++) {
+        boolean matches = true;
+        for (int y = 0; y < constructorPattern1.pattern.length && matches; y++)
+            for (int x = 0; x < constructorPattern1.pattern[0].length && matches; x++)
                 if (constructorPattern1.pattern[y][x] != constructorPattern2.pattern[y][x])
-                    return false;
-            }
+                    matches = false;
+        if (!matches) {
+            matches = true;
+            for (int i = 0; i < constructorPattern2.pattern.length; i++)
+                ArrayUtils.reverse(constructorPattern2.pattern[i]);
+            for (int y = 0; y < constructorPattern1.pattern.length && matches; y++)
+                for (int x = 0; x < constructorPattern1.pattern[0].length && matches; x++)
+                    if (constructorPattern1.pattern[y][x] != constructorPattern2.pattern[y][x])
+                        matches = false;
         }
-        return true;
+        return matches;
     }
 
     public ConstructorPattern cleanPattern() {
@@ -62,7 +71,7 @@ public class ConstructorPattern {
     }
 
     private void removeRows(List<Integer> rowsToRemove) {
-        int[][] newPattern = new int[pattern.length - rowsToRemove.size()][pattern[0].length];
+        byte[][] newPattern = new byte[pattern.length - rowsToRemove.size()][pattern[0].length];
         int curNewY = 0;
         for (int y = 0; y < pattern.length; y++) {
             if (!rowsToRemove.contains(y)) {
@@ -76,7 +85,7 @@ public class ConstructorPattern {
     }
 
     private void removeCols(List<Integer> colsToRemove) {
-        int[][] newPattern = new int[pattern.length][pattern[0].length - colsToRemove.size()];
+        byte[][] newPattern = new byte[pattern.length][pattern[0].length - colsToRemove.size()];
         int curNewX = 0;
         for (int x = 0; x < pattern[0].length; x++) {
             if (!colsToRemove.contains(x)) {
@@ -97,7 +106,7 @@ public class ConstructorPattern {
 
         ListNBT list = new ListNBT();
         for (int i = 0; i < height; i++) {
-            list.add(new IntArrayNBT(pattern[i]));
+            list.add(new ByteArrayNBT(pattern[i]));
         }
 
         compound.put("array", list);
@@ -109,15 +118,15 @@ public class ConstructorPattern {
     public void deserializeNBT(CompoundNBT compound) {
         int height = Math.max(1, compound.getInt("height"));
         int width = Math.max(1, compound.getInt("width"));
-        pattern = new int[height][width];
-        ListNBT list = compound.getList("array", Constants.NBT.TAG_INT_ARRAY);
+        pattern = new byte[height][width];
+        ListNBT list = compound.getList("array", Constants.NBT.TAG_BYTE_ARRAY);
         for (int i = 0; i < height; i++) {
-            pattern[i] = list.getIntArray(i);
+            pattern[i] = ((ByteArrayNBT) list.get(i)).getByteArray();
         }
     }
 
     public ConstructorPattern copy() {
-        int[][] array = new int[pattern.length][pattern[0].length];
+        byte[][] array = new byte[pattern.length][pattern[0].length];
         for (int y = 0; y < pattern.length; y++) {
             for (int x = 0; x < pattern[0].length; x++) {
                 array[y][x] = pattern[y][x];

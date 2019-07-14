@@ -23,7 +23,7 @@ public class PartConstructorCategory implements IRecipeCategory<PartRecipe> {
     public static final ResourceLocation ID = new ResourceLocation(ModularToolkit.MOD_ID, "part_constructor");
 
     public PartConstructorCategory(IGuiHelper helper) {
-        background = helper.createDrawable(new ResourceLocation(PartConstructorScreen.background), 15, 25, 146, 35);
+        background = helper.createDrawable(PartConstructorScreen.background, 15, 24, 146, 37);
         icon = helper.createDrawableIngredient(new ItemStack(BlockRegistry.PART_CONSTRUCTOR));
     }
 
@@ -54,13 +54,11 @@ public class PartConstructorCategory implements IRecipeCategory<PartRecipe> {
 
     @Override
     public void draw(PartRecipe recipe, double mouseX, double mouseY) {
-        int[][] pattern = PartRecipe.centerPatern(recipe.getPattern());
+        byte[][] pattern = PartRecipe.centerPatern(recipe.getPattern());
         for (int i = 0; i < 7; i++)
             for (int j = 0; j < 7; j++)
-                if (pattern[i][j] == 0)
-                    recipe.getOffButton().draw(23 + j * 5, i * 5);
-                else
-                    recipe.getOnButton().draw(23 + j * 5, i * 5);
+                if (pattern[i][j] == 1)
+                    recipe.getOnButton().draw(23 + j * 5, 1 + i * 5);
     }
 
     @Override
@@ -72,9 +70,9 @@ public class PartConstructorCategory implements IRecipeCategory<PartRecipe> {
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, PartRecipe partRecipe, IIngredients iIngredients) {
         IGuiItemStackGroup guiStacks = recipeLayout.getItemStacks();
-        guiStacks.init(0, true, 0, 9);
-        guiStacks.init(1, false, 106, 9);
-        guiStacks.init(2, false, 128, 9);
+        guiStacks.init(0, true, 0, 10);
+        guiStacks.init(1, false, 106, 10);
+        guiStacks.init(2, false, 128, 10);
         guiStacks.set(iIngredients);
     }
 }

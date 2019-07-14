@@ -12,11 +12,15 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
+import org.lwjgl.glfw.GLFW;
 
 public class PartConstructorScreen extends ContainerScreen<PartConstructorContainer> {
     protected PartConstructorTile te;
-    public static final String background = ModularToolkit.MOD_ID + ":textures/gui/part_constructor.png";
+    public static final ResourceLocation background = new ResourceLocation(ModularToolkit.MOD_ID + ":textures/gui/part_constructor.png");
     private PlayerInventory playerInventory;
+    private int lastX = 0;
+    private int lastY = 0;
+    private byte mode = 0;
 
     public PartConstructorScreen(PartConstructorContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
@@ -24,37 +28,89 @@ public class PartConstructorScreen extends ContainerScreen<PartConstructorContai
         this.te = container.getTe();
     }
 
+
+    @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        this.minecraft.getTextureManager().bindTexture(new ResourceLocation(this.background));
+        this.minecraft.getTextureManager().bindTexture(PartConstructorScreen.background);
         this.blit(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
+
+        int mx = getXFromMouse(mouseX);
+        int my = getYFromMouse(mouseY);
 
         for (int y = 0; y < te.getCurrentPattern().pattern.length; y++)
             for (int x = 0; x < te.getCurrentPattern().pattern[0].length; x++)
-                this.blit(this.guiLeft + 38 + 5 * x, this.guiTop + 25 + y * 5, te.getCurrentPattern().pattern[y][x] == 1 ? 181 : 176, 1, 5, 5);
+                if (te.getCurrentPattern().pattern[y][x] == 1)
+                    this.blit(this.guiLeft + 38 + 5 * x, this.guiTop + 25 + y * 5, 181, 1, 5, 5);
+                else if (isMouseInPattern(mouseX, mouseY) && mx == x && my == y)
+                    this.blit(this.guiLeft + 38 + 5 * x, this.guiTop + 25 + y * 5, 176, 1, 5, 5);
     }
 
+    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String name = title.getFormattedText();
         this.font.drawString(name, (float) (this.xSize / 2 - this.font.getStringWidth(name) / 2), 6.0F, 4210752);
         this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float) (this.ySize - 96 + 2), 4210752);
     }
 
+    @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground();
+        renderBackground();
         super.render(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
+        renderHoveredToolTip(mouseX, mouseY);
+
+        if (isMouseOnReset(mouseX, mouseY))
+            renderTooltip("Reset Pattern", mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int clickType) {
-        if (mouseX >= this.guiLeft + 38 && mouseX < this.guiLeft + 38 + 5 * 7 && mouseY >= this.guiTop + 25 && mouseY < this.guiTop + 25 + 5 * 7) {
-            int x = (int) Math.floor(mouseX - this.guiLeft - 38) / 5;
-            int y = (int) Math.floor(mouseY - this.guiTop - 25) / 5;
-            te.getCurrentPattern().pattern[y][x] = te.getCurrentPattern().pattern[y][x] == 1 ? 0 : 1;
-            PacketHandler.INSTANCE.sendToServer(new PatternPacket(te.getPos(), te.getCurrentPattern()));
-            Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            return true;
-        } else
-            return super.mouseClicked(mouseX, mouseY, clickType);
+        if (clickType == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+            if (isMouseInPattern(mouseX, mouseY)) {
+                int x = getXFromMouse(mouseX);
+                int y = getYFromMouse(mouseY);
+                te.getCurrentPattern().pattern[y][x] = mode = (byte) (te.getCurrentPattern().pattern[y][x] == 1 ? 0 : 1);
+                PacketHandler.INSTANCE.sendToServer(new PatternPacket(te.getPos(), te.getCurrentPattern()));
+                Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                lastX = x;
+                lastY = y;
+                return true;
+            } else if (isMouseOnReset(mouseX, mouseY)) {
+                te.getCurrentPattern().pattern = new byte[7][7];
+                PacketHandler.INSTANCE.sendToServer(new PatternPacket(te.getPos(), te.getCurrentPattern()));
+                Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            }
+        return super.mouseClicked(mouseX, mouseY, clickType);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int clickType, double p_mouseDragged_6_, double p_mouseDragged_8_) {
+        if (clickType == GLFW.GLFW_MOUSE_BUTTON_LEFT && isMouseInPattern(mouseX, mouseY)) {
+            int x = getXFromMouse(mouseX);
+            int y = getYFromMouse(mouseY);
+            if ((x != lastX || y != lastY) && te.getCurrentPattern().pattern[y][x] != mode) {
+                te.getCurrentPattern().pattern[y][x] = mode;
+                PacketHandler.INSTANCE.sendToServer(new PatternPacket(te.getPos(), te.getCurrentPattern()));
+                Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            }
+            lastX = x;
+            lastY = y;
+        }
+        return super.mouseDragged(mouseX, mouseY, clickType, p_mouseDragged_6_, p_mouseDragged_8_);
+    }
+
+    private int getXFromMouse(double mouseX) {
+        return (int) Math.floor(mouseX - this.guiLeft - 38) / 5;
+    }
+
+    private int getYFromMouse(double mouseY) {
+        return (int) Math.floor(mouseY - this.guiTop - 25) / 5;
+    }
+
+    private boolean isMouseInPattern(double mouseX, double mouseY) {
+        return mouseX >= this.guiLeft + 38 && mouseX < this.guiLeft + 38 + 5 * 7 && mouseY >= this.guiTop + 25 && mouseY < this.guiTop + 25 + 5 * 7;
+    }
+
+    private boolean isMouseOnReset(double mouseX, double mouseY) {
+        return mouseX >= this.guiLeft + 50 && mouseX <= this.guiLeft + 61 && mouseY >= this.guiTop + 63 && mouseY <= this.guiTop + 72;
     }
 }
