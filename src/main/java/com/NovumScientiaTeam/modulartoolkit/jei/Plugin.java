@@ -66,7 +66,8 @@ public class Plugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration reg) {
-        reg.addRecipeClickArea(PartConstructorScreen.class, 84, 35, 22, 15, PartConstructorCategory.ID);
+        reg.addRecipeClickArea(PartConstructorScreen.class, 28, 35, 22, 15, PartConstructorCategory.ID);
+        reg.addRecipeClickArea(PartConstructorScreen.class, 100, 35, 22, 15, PartConstructorCategory.ID);
     }
 
     @Override

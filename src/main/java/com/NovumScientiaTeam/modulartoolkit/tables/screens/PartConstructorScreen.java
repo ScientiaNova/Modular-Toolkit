@@ -40,9 +40,9 @@ public class PartConstructorScreen extends ContainerScreen<PartConstructorContai
         for (int y = 0; y < te.getCurrentPattern().pattern.length; y++)
             for (int x = 0; x < te.getCurrentPattern().pattern[0].length; x++)
                 if (te.getCurrentPattern().pattern[y][x] == 1)
-                    this.blit(this.guiLeft + 38 + 5 * x, this.guiTop + 25 + y * 5, 181, 1, 5, 5);
+                    this.blit(this.guiLeft + 54 + 6 * x, this.guiTop + 22 + y * 6, 182, 1, 6, 6);
                 else if (isMouseInPattern(mouseX, mouseY) && mx == x && my == y)
-                    this.blit(this.guiLeft + 38 + 5 * x, this.guiTop + 25 + y * 5, 176, 1, 5, 5);
+                    this.blit(this.guiLeft + 54 + 6 * x, this.guiTop + 22 + y * 6, 176, 1, 6, 6);
     }
 
     @Override
@@ -99,18 +99,18 @@ public class PartConstructorScreen extends ContainerScreen<PartConstructorContai
     }
 
     private int getXFromMouse(double mouseX) {
-        return (int) Math.floor(mouseX - this.guiLeft - 38) / 5;
+        return (int) Math.floor(mouseX - this.guiLeft - 54) / 6;
     }
 
     private int getYFromMouse(double mouseY) {
-        return (int) Math.floor(mouseY - this.guiTop - 25) / 5;
+        return (int) Math.floor(mouseY - this.guiTop - 22) / 6;
     }
 
     private boolean isMouseInPattern(double mouseX, double mouseY) {
-        return mouseX >= this.guiLeft + 38 && mouseX < this.guiLeft + 38 + 5 * 7 && mouseY >= this.guiTop + 25 && mouseY < this.guiTop + 25 + 5 * 7;
+        return mouseX >= this.guiLeft + 54 && mouseX < this.guiLeft + 96 && mouseY >= this.guiTop + 22 && mouseY < this.guiTop + 64;
     }
 
     private boolean isMouseOnReset(double mouseX, double mouseY) {
-        return mouseX >= this.guiLeft + 50 && mouseX <= this.guiLeft + 61 && mouseY >= this.guiTop + 63 && mouseY <= this.guiTop + 72;
+        return mouseX >= this.guiLeft + 69 && mouseX <= this.guiLeft + 81 && mouseY >= this.guiTop + 68 && mouseY <= this.guiTop + 78;
     }
 }

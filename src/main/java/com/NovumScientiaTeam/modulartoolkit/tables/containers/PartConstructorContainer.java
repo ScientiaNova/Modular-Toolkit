@@ -52,9 +52,9 @@ public class PartConstructorContainer extends Container {
     }
 
     private void addMachineSlots() {
-        this.addSlot(new SlotItemHandler(this.itemHandler, 0, 16, 35));
-        this.addSlot(new PartConstructorResultSlot(this.itemHandler, 1, 122, 35));
-        this.addSlot(new SlotItemHandler(this.itemHandler, 2, 144, 35) {
+        this.addSlot(new SlotItemHandler(this.itemHandler, 0, 8, 35));
+        this.addSlot(new PartConstructorResultSlot(this.itemHandler, 1, 130, 35));
+        this.addSlot(new SlotItemHandler(this.itemHandler, 2, 152, 35) {
             @Override
             public boolean isItemValid(@Nonnull ItemStack stack) {
                 return false;

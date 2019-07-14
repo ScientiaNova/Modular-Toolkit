@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/novumscientiateam/Modular-Toolkit"
 modId="modulartoolkit"
 version="${file.jarVersion}"
 displayName="Modular Toolkit"
-authors="TheEmosewaPixel"
+authors="TheEmosewaPixel, Nartz24, RonM"
 description="A mod adding customizable tools based on Pixel Lib materials."
 [[dependencies.modulartoolkit]]
     modId="forge"
