@@ -1,13 +1,17 @@
 package com.NovumScientiaTeam.modulartoolkit;
 
 import com.EmosewaPixel.pixellib.proxy.IModProxy;
+import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ClientProxy;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ServerProxy;
 import com.NovumScientiaTeam.modulartoolkit.recipes.ConstructorPatternRegistry;
 import com.NovumScientiaTeam.modulartoolkit.recipes.SerializerRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tables.blocks.BlockRegistry;
+import com.NovumScientiaTeam.modulartoolkit.tables.containers.ModificationStationContainer;
 import com.NovumScientiaTeam.modulartoolkit.tables.containers.PartConstructorContainer;
+import com.NovumScientiaTeam.modulartoolkit.tables.screens.ModificationStationScreen;
 import com.NovumScientiaTeam.modulartoolkit.tables.screens.PartConstructorScreen;
+import com.NovumScientiaTeam.modulartoolkit.tables.tiles.ModificationStationTile;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.PartConstructorTile;
 import com.NovumScientiaTeam.modulartoolkit.tools.ToolRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolTypeMap;
@@ -46,6 +50,9 @@ public class ModularToolkit {
     public static ContainerType CONSTRUCTOR_CONTAINER;
     public static TileEntityType CONSTRUCTOR;
 
+    public static ContainerType STATION_CONTAINER;
+    public static TileEntityType STATION;
+
     public ModularToolkit() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
@@ -70,6 +77,7 @@ public class ModularToolkit {
 
     public void clientSetup(FMLClientSetupEvent event) {
         ScreenManager.registerFactory(CONSTRUCTOR_CONTAINER, PartConstructorScreen::new);
+        ScreenManager.registerFactory(STATION_CONTAINER, ModificationStationScreen::new);
     }
 
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -88,11 +96,13 @@ public class ModularToolkit {
         @SubscribeEvent
         public static void onTETypeRegistry(RegistryEvent.Register<TileEntityType<?>> e) {
             e.getRegistry().register(CONSTRUCTOR = TileEntityType.Builder.create(PartConstructorTile::new, BlockRegistry.PART_CONSTRUCTOR).build(null).setRegistryName(BlockRegistry.PART_CONSTRUCTOR.getRegistryName()));
+            e.getRegistry().register(STATION = TileEntityType.Builder.create(ModificationStationTile::new, BlockRegistry.MODIFICATION_STATION).build(null).setRegistryName(BlockRegistry.MODIFICATION_STATION.getRegistryName()));
         }
 
         @SubscribeEvent
         public static void onContainerTypeRegistry(RegistryEvent.Register<ContainerType<?>> e) {
             e.getRegistry().register(CONSTRUCTOR_CONTAINER = IForgeContainerType.create(PartConstructorContainer::new).setRegistryName(BlockRegistry.PART_CONSTRUCTOR.getRegistryName()));
+            e.getRegistry().register(STATION_CONTAINER = IForgeContainerType.create(ModificationStationContainer::new).setRegistryName(BlockRegistry.MODIFICATION_STATION.getRegistryName()));
         }
 
         @SubscribeEvent

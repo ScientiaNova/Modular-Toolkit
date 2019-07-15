@@ -26,14 +26,6 @@ public class PartConstructorBlock extends ModBlock {
         super(Properties.from(Blocks.CRAFTING_TABLE), ModularToolkit.MOD_ID + ":part_constructor", 0);
     }
 
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (!worldIn.isRemote) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, new PartConstructorContainerProvider(pos, this.getRegistryName()), pos);
-        }
-
-        return true;
-    }
-
     @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
@@ -53,5 +45,14 @@ public class PartConstructorBlock extends ModBlock {
             ItemUtils.spawnItemInWorld(world, pos, handler.getStackInSlot(2));
         }
         super.harvestBlock(world, player, pos, state, te, stack);
+    }
+
+    @Override
+    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (!worldIn.isRemote) {
+            NetworkHooks.openGui((ServerPlayerEntity) player, new PartConstructorContainerProvider(pos, this.getRegistryName()), pos);
+        }
+
+        return true;
     }
 }

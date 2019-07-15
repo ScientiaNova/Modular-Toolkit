@@ -18,6 +18,7 @@ public class PartConstructorResultSlot extends SlotItemHandler {
         super(itemHandler, index, xPosition, yPosition);
     }
 
+    @Override
     public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {
         Item item = stack.getItem();
         ObjectType objectType;

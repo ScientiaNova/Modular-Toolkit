@@ -162,14 +162,24 @@ public abstract class ModularTool extends Item {
     public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
         if (isNull(stack))
             return amount;
-        for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
-            amount = e.getKey().onToolDamaged(amount, stack, e.getValue());
-        for (AbstractAbility ability : Abilities.getAll())
-            amount = ability.onToolDamaged(stack, amount);
-        int max = getMaxDamage(stack) - 1 - stack.getDamage();
-        if (amount >= max && !isBroken(stack))
-            makeBroken(stack);
-        return Math.min(amount, max);
+        if (amount > 0) {
+            for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
+                amount = e.getKey().onToolDamaged(amount, stack, e.getValue());
+            for (AbstractAbility ability : Abilities.getAll())
+                amount = ability.onToolDamaged(stack, amount);
+            int max = getMaxDamage(stack) - 1 - stack.getDamage();
+            if (amount >= max && !isBroken(stack))
+                makeBroken(stack, entity);
+            return Math.min(amount, max);
+        } else {
+            for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
+                amount = e.getKey().onToolRepaired(amount, stack, e.getValue());
+            for (AbstractAbility ability : Abilities.getAll())
+                amount = ability.onToolRepaired(stack, amount);
+            if (amount < 0 && isBroken(stack))
+                unbreak(stack);
+            return Math.max(amount, -getDamage(stack));
+        }
     }
 
     @Override
@@ -188,20 +198,20 @@ public abstract class ModularTool extends Item {
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity livingEntity) {
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
-            e.getKey().onBlockDestroyed(stack, worldIn, state, pos, entityLiving, e.getValue());
+            e.getKey().onBlockDestroyed(stack, worldIn, state, pos, livingEntity, e.getValue());
         for (AbstractAbility ability : Abilities.getAll())
-            ability.onBlockDestroyed(stack, worldIn, state, pos, entityLiving);
+            ability.onBlockDestroyed(stack, worldIn, state, pos, livingEntity);
 
         if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0F && !isBroken(stack))
             if (hasTag(IS_TOOL)) {
-                stack.damageItem(1, entityLiving, (p_220038_0_) ->
+                stack.damageItem(1, livingEntity, (p_220038_0_) ->
                         p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND)
                 );
-                addXP(stack);
+                addXP(stack, livingEntity);
             } else if (hasTag(IS_MELEE_WEAPON))
-                stack.damageItem(2, entityLiving, (p_220038_0_) ->
+                stack.damageItem(2, livingEntity, (p_220038_0_) ->
                         p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND)
                 );
 
@@ -226,7 +236,7 @@ public abstract class ModularTool extends Item {
                 );
 
         if (hasTag(IS_MELEE_WEAPON) && !target.isAlive())
-            addXP(stack, (int) target.getMaxHealth());
+            addXP(stack, (int) target.getMaxHealth(), attacker);
 
         return true;
     }

@@ -35,7 +35,6 @@ public class PartConstructorContainer extends Container {
         this(id, playerInventory, (PartConstructorTile) playerInventory.player.world.getTileEntity(extraData.readBlockPos()));
     }
 
-
     public PartConstructorContainer(int id, PlayerInventory playerInventory, PartConstructorTile te) {
         super(ModularToolkit.CONSTRUCTOR_CONTAINER, id);
         this.te = te;
@@ -76,7 +75,7 @@ public class PartConstructorContainer extends Container {
         if (slot != null && slot.getHasStack()) {
             ItemStack stack1 = slot.getStack();
             itemstack = stack1.copy();
-            if (index == 1)
+            if (index == 2)
                 slot.onTake(playerIn, stack1);
             if (index < itemHandler.getSlots()) {
                 if (!this.mergeItemStack(stack1, itemHandler.getSlots(), this.inventorySlots.size(), true)) {

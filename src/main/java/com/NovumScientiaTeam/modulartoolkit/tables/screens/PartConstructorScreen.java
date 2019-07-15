@@ -1,9 +1,9 @@
 package com.NovumScientiaTeam.modulartoolkit.tables.screens;
 
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
-import com.NovumScientiaTeam.modulartoolkit.PacketHandler;
+import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
 import com.NovumScientiaTeam.modulartoolkit.tables.containers.PartConstructorContainer;
-import com.NovumScientiaTeam.modulartoolkit.tables.containers.PatternPacket;
+import com.NovumScientiaTeam.modulartoolkit.packets.PatternPacket;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.PartConstructorTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;

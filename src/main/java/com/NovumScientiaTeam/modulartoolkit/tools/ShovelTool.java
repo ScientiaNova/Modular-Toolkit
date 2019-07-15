@@ -36,7 +36,7 @@ public class ShovelTool extends ModularTool {
             return ActionResultType.PASS;
         ActionResultType result = Items.DIAMOND_SHOVEL.onItemUse(context);
         if (result == ActionResultType.SUCCESS)
-            ToolUtils.addXP(stack);
+            ToolUtils.addXP(stack, context.getPlayer());
         return result;
     }
 }

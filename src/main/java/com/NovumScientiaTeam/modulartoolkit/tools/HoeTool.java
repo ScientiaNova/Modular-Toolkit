@@ -35,7 +35,7 @@ public class HoeTool extends ModularTool {
             return ActionResultType.PASS;
         ActionResultType result = Items.DIAMOND_HOE.onItemUse(context);
         if (result == ActionResultType.SUCCESS)
-            ToolUtils.addXP(stack);
+            ToolUtils.addXP(stack, context.getPlayer());
         return result;
     }
 }

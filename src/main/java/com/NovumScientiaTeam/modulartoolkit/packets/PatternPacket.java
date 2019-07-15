@@ -1,4 +1,4 @@
-package com.NovumScientiaTeam.modulartoolkit.tables.containers;
+package com.NovumScientiaTeam.modulartoolkit.packets;
 
 import com.NovumScientiaTeam.modulartoolkit.recipes.ConstructorPattern;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.PartConstructorTile;

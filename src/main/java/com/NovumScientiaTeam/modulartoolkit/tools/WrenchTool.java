@@ -56,7 +56,7 @@ public class WrenchTool extends ModularTool {
                 stack.damageItem(1, player, (p_220038_0_) -> {
                     p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
                 });
-                ToolUtils.addXP(stack);
+                ToolUtils.addXP(stack, context.getPlayer());
                 return ActionResultType.SUCCESS;
             }
 

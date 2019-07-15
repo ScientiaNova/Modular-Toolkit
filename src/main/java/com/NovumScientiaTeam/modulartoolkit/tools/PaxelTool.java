@@ -34,12 +34,12 @@ public class PaxelTool extends ModularTool {
         if (ToolUtils.isBroken(stack) || ToolUtils.isNull(stack))
             return ActionResultType.PASS;
         if (Items.DIAMOND_AXE.onItemUse(context) == ActionResultType.SUCCESS) {
-            ToolUtils.addXP(stack);
+            ToolUtils.addXP(stack, context.getPlayer());
             return ActionResultType.SUCCESS;
         }
         ActionResultType result = Items.DIAMOND_SHOVEL.onItemUse(context);
         if (result == ActionResultType.SUCCESS)
-            ToolUtils.addXP(stack);
+            ToolUtils.addXP(stack, context.getPlayer());
         return result;
     }
 }

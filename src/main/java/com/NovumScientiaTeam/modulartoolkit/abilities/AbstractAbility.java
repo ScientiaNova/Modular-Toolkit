@@ -25,7 +25,7 @@ public abstract class AbstractAbility {
         return amount;
     }
 
-    public int onToolRepaired(int amount, ItemStack stack, int tier) {
+    public int onToolRepaired(ItemStack stack, int amount) {
         return amount;
     }
 
