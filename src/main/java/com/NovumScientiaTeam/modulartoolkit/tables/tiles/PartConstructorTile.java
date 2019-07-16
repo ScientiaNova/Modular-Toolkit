@@ -8,7 +8,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class PartConstructorTile extends TileEntity {
-
     private ConstructorPattern currentPattern;
     private ItemStackHandler itemStackHandler;
 

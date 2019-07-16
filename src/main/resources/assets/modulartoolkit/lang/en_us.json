@@ -56,5 +56,10 @@
   "harvest_level_2": "Diamond",
   "harvest_level_3": "Obsidian",
 
+  "modulartoolkit.button.tooltip.reset": "Reset Pattern",
+  "modulartoolkit.button.tooltip.boost": "Boost",
+
+  "modifier.sharpness": "Sharpness",
+
   "gui.jei.category.part_constructor": "Part Constructor"
 }

@@ -25,7 +25,7 @@ public class ModificationStationResultSlot extends SlotItemHandler {
         boolean isServerPlayer = player instanceof ServerPlayerEntity;
         consumeMap.forEach((k, v) -> {
             handler.extractItem(k + 1, v, false);
-            if (isServerPlayer)
+            if (isServerPlayer && v != 0)
                 ((ServerPlayerEntity) player).connection.sendPacket(new SSetSlotPacket(((ServerPlayerEntity) player).currentWindowId, k + 1, handler.getStackInSlot(k + 1)));
         });
         return stack;

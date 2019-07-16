@@ -100,18 +100,13 @@ public class PartConstructorContainer extends Container {
         super.detectAndSendChanges();
         updateOutput();
         this.listeners.forEach((listener) -> {
-
             List<Byte> data = new ArrayList<>();
-            for (int y = 0; y < te.getCurrentPattern().pattern.length; y++) {
-                for (int x = 0; x < te.getCurrentPattern().pattern[0].length; x++) {
+            for (int y = 0; y < te.getCurrentPattern().pattern.length; y++)
+                for (int x = 0; x < te.getCurrentPattern().pattern[0].length; x++)
                     data.add(te.getCurrentPattern().pattern[y][x]);
-                }
-            }
 
-            for (int i = 0; i < data.size(); i++) {
+            for (int i = 0; i < data.size(); i++)
                 listener.sendWindowProperty(this, i, data.get(i));
-
-            }
         });
     }
 

@@ -5,6 +5,8 @@ import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
+import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
+import com.NovumScientiaTeam.modulartoolkit.modifiers.Modifiers;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.ModificationStationTile;
 import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
@@ -14,11 +16,13 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +32,6 @@ import java.util.stream.IntStream;
 public class ModificationStationContainer extends Container {
     protected ModificationStationTile te;
     protected ItemStackHandler itemHandler;
-    private int consumeCount;
 
     public ModificationStationContainer(int id, PlayerInventory playerInventory, PacketBuffer extraData) {
         this(id, playerInventory, (ModificationStationTile) playerInventory.player.world.getTileEntity(extraData.readBlockPos()));
@@ -121,12 +124,20 @@ public class ModificationStationContainer extends Container {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         updateOutput();
+        listeners.forEach(l -> l.sendWindowProperty(this, 0, te.getBoosts()));
+    }
+
+    @Override
+    public void updateProgressBar(int id, int data) {
+        if (id == 0)
+            te.setBoosts(data);
     }
 
     private void updateOutput() {
         ItemStack inputTool = itemHandler.getStackInSlot(0);
         if (inputTool.isEmpty()) {
             itemHandler.setStackInSlot(5, ItemStack.EMPTY);
+            te.setBoosts(0);
             return;
         }
 
@@ -176,21 +187,78 @@ public class ModificationStationContainer extends Container {
                         nbt.putInt("tier", levelCap);
                     return nbt;
                 }).collect(Collectors.toList()));
-            if (ToolUtils.getLevelsOfBoosts(outputTool).stream().anyMatch(b -> b > levelCap))
-                ToolUtils.remapBoosts(outputTool, ToolUtils.getBoostsNBT(outputTool).stream().filter(nbt -> nbt.getInt("added") <= levelCap).collect(Collectors.toList()));
+            if (ToolUtils.getBoosts(outputTool).stream().anyMatch(b -> b > levelCap))
+                ToolUtils.remapBoosts(outputTool, ToolUtils.getBoosts(outputTool).stream().filter(b -> b <= levelCap).collect(Collectors.toList()));
             if (ToolUtils.getUsedModifierSlotCount(outputTool) > levelCap)
                 ToolUtils.setUsedModifierSlotCount(outputTool, levelCap);
         }
 
         //Adding Modifiers
+        StreamUtils.repeat(4, i -> {
+            if (!consumeMap.containsKey(i) && Modifiers.getFor(modStacks.get(i).getItem()) != null) {
+                Map<AbstractModifier, Integer> currentModifiers = ToolUtils.getModifierTierMap(outputTool);
+                final ItemStack current = modStacks.get(i);
+                AbstractModifier modifier = Modifiers.getFor(current.getItem());
+                if (currentModifiers.containsKey(modifier)) {
+                    int modifierIndex = new ArrayList<>(currentModifiers.keySet()).indexOf(modifier);
+                    CompoundNBT modifierNBT = ToolUtils.getModifierNBT(outputTool, modifierIndex);
+                    int alreadyAdded = modifierNBT.getInt("consumed");
+                    int tier = new ArrayList<>(currentModifiers.values()).get(modifierIndex);
+                    int consumed = 0;
+                    while (modifier.canLevelUp(outputTool, tier + 1)) {
+                        int consumeRequirement = modifier.getLevelRequirement(tier + 1);
+                        if (consumeRequirement - alreadyAdded - consumed <= current.getCount()) {
+                            consumed += consumeRequirement - alreadyAdded - consumed;
+                            tier++;
+                        } else {
+                            consumed += current.getCount();
+                            break;
+                        }
+                    }
+                    modifierNBT.putInt("consumed", alreadyAdded + consumed);
+                    modifierNBT.putInt("tier", tier);
+                    consumeMap.put(i, consumed);
+                } else if (ToolUtils.getFreeModifierSlotCount(outputTool) > 0 && modifier.canBeAdded(outputTool)) {
+                    int tier = 0;
+                    int consumed = 0;
+                    while (modifier.canLevelUp(outputTool, tier + 1)) {
+                        int consumeRequirement = modifier.getLevelRequirement(tier + 1);
+                        if (consumeRequirement - consumed <= current.getCount()) {
+                            consumed += consumeRequirement - consumed;
+                            tier++;
+                        } else {
+                            consumed += current.getCount();
+                            break;
+                        }
+                    }
+                    CompoundNBT nbt = new CompoundNBT();
+                    nbt.putString("name", modifier.getName());
+                    nbt.putInt("consumed", consumed);
+                    nbt.putInt("tier", tier);
+                    nbt.putInt("added", ToolUtils.getUsedModifierSlotCount(outputTool) + 1);
+                    ToolUtils.useModifierSlot(outputTool);
+                    outputTool.getTag().getCompound("Modifiers").put("modifier" + currentModifiers.entrySet().size(), nbt);
+                    consumeMap.put(i, consumed);
+                }
+            }
+        });
+
+        //Boosts
+        int modifierSlots = ToolUtils.getFreeModifierSlotCount(outputTool);
+        if (te.getBoosts() > modifierSlots)
+            te.setBoosts(modifierSlots);
+        if (te.getBoosts() > 0 && !ToolUtils.isBroken(outputTool)) {
+            int boosts = te.getBoosts();
+            int currentBoostCount = ToolUtils.getBoosts(outputTool).size();
+            int usedModifierSlot = ToolUtils.getLevel(outputTool) - modifierSlots;
+            CompoundNBT boostsNBT = outputTool.getTag().getCompound("Boosts");
+            for (int i = 0; i < boosts; i++)
+                boostsNBT.putInt("boost" + currentBoostCount++, ++usedModifierSlot);
+            ToolUtils.useModifierSlots(outputTool, boosts);
+        }
 
         updateConsumeMap(consumeMap);
         itemHandler.setStackInSlot(5, outputTool);
-    }
-
-    private void consumeInputs() {
-        itemHandler.extractItem(0, 1, false);
-        itemHandler.extractItem(1, consumeCount, false);
     }
 
     public ModificationStationTile getTe() {

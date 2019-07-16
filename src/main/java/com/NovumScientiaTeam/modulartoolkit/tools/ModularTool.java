@@ -42,6 +42,7 @@ import net.minecraftforge.common.ToolType;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -79,19 +80,20 @@ public abstract class ModularTool extends Item {
             if (isBroken(stack))
                 tooltip.add(new StringTextComponent(TextFormatting.RED + new TranslationTextComponent("tool.stat.broken").getString()));
             if (InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                DecimalFormat format = new DecimalFormat("#.#");
                 getAllAbilities(stack).forEach(a -> tooltip.add(a.getTranslationKey(stack)));
                 tooltip.add(new TranslationTextComponent("tool.stat.level", getLevel(stack), getLevelCap(stack)));
                 tooltip.add(new TranslationTextComponent("tool.stat.experience", getXP(stack) - getXPForCurrentLevel(stack), getXPForLevelUp(stack) - getXPForCurrentLevel(stack)));
                 tooltip.add(new TranslationTextComponent("tool.stat.modifier_slots", getFreeModifierSlotCount(stack)));
                 int maxDamage = getMaxDamage(stack) - 1;
                 tooltip.add(new TranslationTextComponent("tool.stat.current_durability", maxDamage - stack.getDamage(), maxDamage));
-                tooltip.add(new TranslationTextComponent("tool.stat.attack_damage", getAttackDamage(stack) + 1));
+                tooltip.add(new TranslationTextComponent("tool.stat.attack_damage", format.format(getTrueAttackDamage(stack) + 1)));
                 getToolTypes(stack).forEach(t -> {
                     tooltip.add(new TranslationTextComponent("tool.stat.harvest_level_" + t.getName(), new TranslationTextComponent("harvest_level_" + getHarvestMap(stack).get(t))));
-                    tooltip.add(new TranslationTextComponent("tool.stat.efficiency_" + t.getName(), getDestroySpeedForToolType(stack, t)));
+                    tooltip.add(new TranslationTextComponent("tool.stat.efficiency_" + t.getName(), format.format(getDestroySpeedForToolType(stack, t))));
                 });
-                getModifierTierMap(stack).forEach((modifier, tier) ->
-                        tooltip.add(modifier.getTextComponent(stack, tier)));
+                getModifiersStats(stack).forEach(s ->
+                        tooltip.add(s.getModifier().getTextComponent(stack, s)));
             } else if (InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL)) {
                 List<Material> materials = getAllToolMaterials(stack);
                 List<ObjectType> parts = getToolParts(stack.getItem());
@@ -125,8 +127,8 @@ public abstract class ModularTool extends Item {
     public Multimap<String, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack) {
         Multimap<String, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
         if (slot == EquipmentSlotType.MAINHAND && !isBroken(stack)) {
-            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", getAttackDamage(stack), AttributeModifier.Operation.ADDITION));
-            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", getAttackSpeed(stack), AttributeModifier.Operation.ADDITION));
+            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", getTrueAttackDamage(stack), AttributeModifier.Operation.ADDITION));
+            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", getTrueAttackSpeed(stack), AttributeModifier.Operation.ADDITION));
         }
 
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
@@ -155,7 +157,7 @@ public abstract class ModularTool extends Item {
     public final int getMaxDamage(ItemStack stack) {
         if (isNull(stack))
             return 1;
-        return (int) (IntStream.range(0, partList.size()).map(i -> partList.get(i).getExtraDurability(getToolMaterial(stack, i))).sum() * IntStream.range(0, partList.size()).mapToDouble(i -> partList.get(i).getDurabilityModifier(getToolMaterial(stack, i))).reduce(1, (d, p) -> d * p) + 1);
+        return (int) (IntStream.range(0, partList.size()).map(i -> partList.get(i).getExtraDurability(getToolMaterial(stack, i))).sum() * IntStream.range(0, partList.size()).mapToDouble(i -> partList.get(i).getDurabilityModifier(getToolMaterial(stack, i))).reduce(1, (d, p) -> d * p) * getBoostMultiplier(stack) + 1);
     }
 
     @Override
@@ -285,6 +287,24 @@ public abstract class ModularTool extends Item {
 
     public ImmutableList<PartType> getPartList() {
         return partList;
+    }
+
+    public double getTrueAttackDamage(ItemStack stack) {
+        double amount = getAttackDamage(stack);
+        for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
+            amount = e.getKey().setAttackDamage(stack, e.getValue(), amount);
+        for (AbstractAbility ability : Abilities.getAll())
+            amount = ability.setAttackDamage(stack, amount);
+        return amount * getBoostMultiplier(stack);
+    }
+
+    public double getTrueAttackSpeed(ItemStack stack) {
+        double amount = getAttackSpeed(stack);
+        for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
+            amount = e.getKey().setAttackSpeed(stack, e.getValue(), amount);
+        for (AbstractAbility ability : Abilities.getAll())
+            amount = ability.setAttackSpeed(stack, amount);
+        return amount;
     }
 
     public abstract double getAttackDamage(ItemStack stack);

@@ -1,6 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit;
 
 import com.EmosewaPixel.pixellib.proxy.IModProxy;
+import com.NovumScientiaTeam.modulartoolkit.modifiers.ModifierRegistry;
 import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ClientProxy;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ServerProxy;
@@ -62,7 +63,6 @@ public class ModularToolkit {
         MinecraftForge.EVENT_BUS.register(this);
 
         new ObjTypeRegistry();
-        ConstructorPatternRegistry.setup();
         PacketHandler.setup();
     }
 
@@ -73,6 +73,8 @@ public class ModularToolkit {
 
     private void processIMC(final InterModProcessEvent event) {
         proxy.process(event);
+        ConstructorPatternRegistry.setup();
+        ModifierRegistry.register();
     }
 
     public void clientSetup(FMLClientSetupEvent event) {

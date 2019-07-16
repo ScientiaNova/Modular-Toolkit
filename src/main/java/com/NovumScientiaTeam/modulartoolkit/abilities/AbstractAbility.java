@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ToolType;
 
 public abstract class AbstractAbility {
     public abstract ITextComponent getTranslationKey(ItemStack stack);
@@ -43,5 +44,21 @@ public abstract class AbstractAbility {
 
     public void onInventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
 
+    }
+
+    public double setAttackDamage(ItemStack stack, double amount) {
+        return amount;
+    }
+
+    public float setEfficiency(ItemStack stack, float amount, ToolType type) {
+        return amount;
+    }
+
+    public double setAttackSpeed(ItemStack stack, double amount) {
+        return amount;
+    }
+
+    public long onXPAdded(ItemStack stack, long amount) {
+        return amount;
     }
 }

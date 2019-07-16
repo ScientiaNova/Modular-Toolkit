@@ -12,6 +12,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.glfw.GLFW;
 
 public class PartConstructorScreen extends ContainerScreen<PartConstructorContainer> {
@@ -59,7 +60,7 @@ public class PartConstructorScreen extends ContainerScreen<PartConstructorContai
         renderHoveredToolTip(mouseX, mouseY);
 
         if (isMouseOnReset(mouseX, mouseY))
-            renderTooltip("Reset Pattern", mouseX, mouseY);
+            renderTooltip(new TranslationTextComponent("modulartoolkit.button.tooltip.reset").getString(), mouseX, mouseY);
     }
 
     @Override

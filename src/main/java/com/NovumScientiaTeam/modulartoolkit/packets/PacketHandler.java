@@ -19,9 +19,11 @@ public class PacketHandler {
         INSTANCE.registerMessage(patternSetID, PatternPacket.class, PatternPacket::encode, PatternPacket::decode, PatternPacket::processPacket);
         INSTANCE.registerMessage(advancedRecipeTransfer, AdvancedRecipeTransferPacket.class, AdvancedRecipeTransferPacket::encode, AdvancedRecipeTransferPacket::decode, AdvancedRecipeTransferPacket::processPacket);
         INSTANCE.registerMessage(levelUpPacket, LevelUpPacket.class, LevelUpPacket::encode, LevelUpPacket::decode, LevelUpPacket::processPacket);
+        INSTANCE.registerMessage(boostsPacket, BoostsPacket.class, BoostsPacket::encode, BoostsPacket::decode, BoostsPacket::processPacket);
     }
 
     public static final int patternSetID = 0;
     public static final int advancedRecipeTransfer = 1;
     public static final int levelUpPacket = 2;
+    public static final int boostsPacket = 3;
 }

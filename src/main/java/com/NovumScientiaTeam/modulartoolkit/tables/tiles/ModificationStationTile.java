@@ -8,6 +8,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class ModificationStationTile extends TileEntity {
     private ItemStackHandler itemStackHandler;
+    private int boosts = 0;
 
     public ModificationStationTile() {
         super(ModularToolkit.STATION);
@@ -22,6 +23,7 @@ public class ModificationStationTile extends TileEntity {
     public CompoundNBT write(CompoundNBT compound) {
         CompoundNBT compoundNBT = super.write(compound);
         compoundNBT.put("handler", itemStackHandler.serializeNBT());
+        compoundNBT.putInt("boosts", boosts);
         return compoundNBT;
     }
 
@@ -30,9 +32,18 @@ public class ModificationStationTile extends TileEntity {
         super.read(compound);
         if (compound.contains("handler"))
             itemStackHandler.deserializeNBT(compound.getCompound("handler"));
+        boosts = compound.getInt("boosts");
     }
 
     public boolean canInteractWith(PlayerEntity playerIn) {
         return playerIn.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
+    }
+
+    public int getBoosts() {
+        return boosts;
+    }
+
+    public void setBoosts(int boosts) {
+        this.boosts = boosts;
     }
 }

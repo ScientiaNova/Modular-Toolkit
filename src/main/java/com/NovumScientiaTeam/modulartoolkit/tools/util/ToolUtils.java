@@ -7,6 +7,7 @@ import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.abilities.Abilities;
 import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
+import com.NovumScientiaTeam.modulartoolkit.modifiers.ModifierStats;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.Modifiers;
 import com.NovumScientiaTeam.modulartoolkit.packets.LevelUpPacket;
 import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
@@ -110,7 +111,7 @@ public final class ToolUtils {
     public static void setUsedModifierSlotCount(ItemStack stack, int amount) {
         if (isNull(stack))
             return;
-        stack.getTag().putInt("ModifierSlots", amount);
+        stack.getTag().putInt("ModifierSlotsUsed", amount);
     }
 
     public static void freeModifierSlots(ItemStack stack, int amount) {
@@ -144,12 +145,22 @@ public final class ToolUtils {
     }
 
     public static void addXP(ItemStack stack, long amount, LivingEntity entity) {
-        if (getLevel(stack) != getLevelCap(stack))
-            setXP(stack, getXP(stack) + amount);
+        for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
+            amount = e.getKey().onXPAdded(stack, e.getValue(), amount);
+        for (AbstractAbility ability : Abilities.getAll())
+            amount = ability.onXPAdded(stack, amount);
 
-        if (getLevel(stack) + 1 <= getLevelCap(stack) && getXP(stack) >= getXPForLevelUp(stack)) {
-            levelUp(stack, entity);
+        int stackLevel = getLevel(stack);
+        boolean isNextCap = stackLevel + 1 == getLevelCap(stack);
+
+        if (stackLevel != getLevelCap(stack)) {
+            if (isNextCap)
+                amount = Math.min(amount, getXPForLevel(stackLevel + 1) - getXP(stack));
+            setXP(stack, getXP(stack) + amount);
         }
+
+        if (!isNextCap && getXP(stack) >= getXPForLevelUp(stack))
+            levelUp(stack, entity);
     }
 
     public static void addXP(ItemStack stack, LivingEntity entity) {
@@ -179,7 +190,7 @@ public final class ToolUtils {
     public static long getXPForLevel(int level) {
         if (level < 1)
             return 0;
-        return 25 * (long) Math.pow(3, level - 1);
+        return 5 * (long) Math.pow(level * 2.5, 2);
     }
 
     public static long getXPForCurrentLevel(ItemStack stack) {
@@ -216,7 +227,12 @@ public final class ToolUtils {
 
     public static float getDestroySpeedForToolType(ItemStack stack, ToolType type) {
         ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
-        return (float) IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).filter(i -> ((Head) partList.get(i)).getToolType().get() == type).mapToDouble(i -> getToolMaterial(stack, i).getItemTier().getEfficiency()).max().orElse(1);
+        float speed = (float) IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).filter(i -> ((Head) partList.get(i)).getToolType().get() == type).mapToDouble(i -> getToolMaterial(stack, i).getItemTier().getEfficiency()).max().orElse(1);
+        for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
+            speed = e.getKey().setEfficiency(stack, e.getValue(), speed, type);
+        for (AbstractAbility ability : Abilities.getAll())
+            speed = ability.setEfficiency(stack, speed, type);
+        return (float) (speed * getBoostMultiplier(stack));
     }
 
     public static void remapModifiers(ItemStack stack, List<CompoundNBT> modifiersNBT) {
@@ -228,6 +244,12 @@ public final class ToolUtils {
         stack.getTag().put("Modifier", newNBT);
     }
 
+    public static CompoundNBT getModifierNBT(ItemStack stack, int index) {
+        if (isNull(stack))
+            return new CompoundNBT();
+        return stack.getTag().getCompound("Modifiers").getCompound("modifier" + index);
+    }
+
     public static List<CompoundNBT> getModifiersNBT(ItemStack stack) {
         if (isNull(stack))
             return Collections.EMPTY_LIST;
@@ -235,7 +257,7 @@ public final class ToolUtils {
         CompoundNBT main = stack.getTag().getCompound("Modifiers");
         List<CompoundNBT> result = new ArrayList<>();
         while (main.contains("modifier" + index.get()))
-            result.add(main.getCompound("modifier" + index.getAndIncrement()));
+            result.add(getModifierNBT(stack, index.getAndIncrement()));
         return result;
     }
 
@@ -253,6 +275,14 @@ public final class ToolUtils {
         return getModifiersNBT(stack).stream().collect(Collectors.toMap(nbt -> allModifiers.stream().filter(m -> m.getName().equals(nbt.getString("name"))).findFirst(), nbt -> nbt.getInt("tier"))).entrySet().stream().filter(e -> e.getKey().isPresent()).collect(Collectors.toMap(e -> e.getKey().get(), Map.Entry::getValue));
     }
 
+    public static List<ModifierStats> getModifiersStats(ItemStack stack) {
+        if (isNull(stack))
+            return Collections.EMPTY_LIST;
+        Set<AbstractModifier> allModifiers = Modifiers.getAll();
+        return getModifiersNBT(stack).stream()
+                .map(nbt -> new ModifierStats(allModifiers.stream().filter(m -> m.getName().equals(nbt.getString("name"))).findFirst().get(), nbt.getInt("tier"), nbt.getInt("consumed"), nbt.getInt("added"))).collect(Collectors.toList());
+    }
+
     public static List<AbstractAbility> getAllAbilities(ItemStack stack) {
         if (isNull(stack))
             return Collections.EMPTY_LIST;
@@ -260,28 +290,29 @@ public final class ToolUtils {
         return IntStream.range(0, partList.size()).mapToObj(i -> Abilities.getFor(getToolMaterial(stack, i), partList.get(i))).filter(StreamUtils::isNotNull).collect(Collectors.toList());
     }
 
-    public static List<CompoundNBT> getBoostsNBT(ItemStack stack) {
+    public static List<Integer> getBoosts(ItemStack stack) {
         if (isNull(stack))
             return Collections.EMPTY_LIST;
         AtomicInteger index = new AtomicInteger(0);
         CompoundNBT main = stack.getTag().getCompound("Boosts");
-        List<CompoundNBT> result = new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
         while (main.contains("boost" + index.get()))
-            result.add(main.getCompound("boost" + index.getAndIncrement()));
+            result.add(main.getInt("boost" + index.getAndIncrement()));
         return result;
     }
 
-    public static List<Integer> getLevelsOfBoosts(ItemStack stack) {
-        return getBoostsNBT(stack).stream().map(nbt -> nbt.getInt("added")).collect(Collectors.toList());
-    }
-
-    public static void remapBoosts(ItemStack stack, List<CompoundNBT> boostsNBT) {
+    public static void remapBoosts(ItemStack stack, List<Integer> boostsNBT) {
         if (isNull(stack))
             return;
         CompoundNBT newNBT = new CompoundNBT();
         for (int i = 0; i < boostsNBT.size(); i++)
-            newNBT.put("boost" + i, boostsNBT.get(i));
+            newNBT.putInt("boost" + i, boostsNBT.get(i));
         stack.getTag().put("Boosts", newNBT);
     }
 
+    public static double getBoostMultiplier(ItemStack stack) {
+        if (getBoosts(stack).size() < 1)
+            return 1;
+        return 1 + Math.log(getBoosts(stack).size() * 2) / 6;
+    }
 }
