@@ -1,13 +1,10 @@
 package com.NovumScientiaTeam.modulartoolkit.proxy;
 
 import com.EmosewaPixel.pixellib.materialsystem.materials.IMaterialItem;
-import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.EmosewaPixel.pixellib.proxy.IModProxy;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
 import com.NovumScientiaTeam.modulartoolkit.ObjTypeRegistry;
-import com.NovumScientiaTeam.modulartoolkit.abilities.Abilities;
-import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.Modifiers;
 import com.NovumScientiaTeam.modulartoolkit.partTypes.Extra;
@@ -30,7 +27,6 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import org.lwjgl.glfw.GLFW;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = ModularToolkit.MOD_ID, value = Dist.CLIENT)
@@ -61,43 +57,18 @@ public class ClientProxy implements IModProxy {
         List<ITextComponent> tooltip = e.getToolTip();
         if (item instanceof IMaterialItem) {
             ObjectType obj = ((IMaterialItem) item).getObjType();
-            Material mat = ((IMaterialItem) item).getMaterial();
-            if (mat.getItemTier() != null) {
-                DecimalFormat format = new DecimalFormat("#.##");
-                AbstractAbility ability;
+            if (((IMaterialItem) item).getMaterial().getItemTier() != null) {
                 if (obj.hasTag(ObjTypeRegistry.HEAD)) {
-                    Head head = new Head();
                     tooltip.add(new TranslationTextComponent("tool_part_type.head").applyTextStyle(TextFormatting.UNDERLINE));
-                    tooltip.add(new TranslationTextComponent("tool.stat.attack_damage", format.format(mat.getItemTier().getAttackDamage() + 1)));
-                    if (!obj.hasTag(ObjTypeRegistry.WEAPON_PART)) {
-                        tooltip.add(new TranslationTextComponent("tool.stat.harvest_level", new TranslationTextComponent("harvest_level_" + mat.getItemTier().getHarvestLevel())));
-                        tooltip.add(new TranslationTextComponent("tool.stat.efficiency", format.format(mat.getItemTier().getEfficiency())));
-                    }
-                    tooltip.add(new TranslationTextComponent("tool.stat.durability", Integer.toString(head.getExtraDurability(mat))));
-                    tooltip.add(new TranslationTextComponent("tool.stat.level_cap_multiplier", format.format(head.getLevelCapMultiplier(mat))));
-                    ;
-                    ability = Abilities.getFor(mat, head);
-                    if (ability != null)
-                        tooltip.add(ability.getTranslationKey(e.getItemStack()));
+                    new Head().addTooltip(item, tooltip);
                 }
                 if (obj.hasTag(ObjTypeRegistry.HANDLE)) {
-                    Handle handle = new Handle();
                     tooltip.add(new TranslationTextComponent("tool_part_type.handle").applyTextStyle(TextFormatting.UNDERLINE));
-                    tooltip.add(new TranslationTextComponent("tool.stat.durability", Integer.toString(handle.getExtraDurability(mat))));
-                    tooltip.add(new TranslationTextComponent("tool.stat.durability_multiplier", format.format(handle.getDurabilityModifier(mat))));
-                    ;
-                    ability = Abilities.getFor(mat, handle);
-                    if (ability != null)
-                        tooltip.add(ability.getTranslationKey(e.getItemStack()));
+                    new Handle().addTooltip(item, tooltip);
                 }
                 if (obj.hasTag(ObjTypeRegistry.EXTRA)) {
-                    Extra extra = new Extra();
                     tooltip.add(new TranslationTextComponent("tool_part_type.extra").applyTextStyle(TextFormatting.UNDERLINE));
-                    tooltip.add(new TranslationTextComponent("tool.stat.durability", Integer.toString(extra.getExtraDurability(mat))));
-                    tooltip.add(new TranslationTextComponent("tool.stat.level_cap_multiplier", format.format(extra.getLevelCapMultiplier(mat))));
-                    ability = Abilities.getFor(mat, extra);
-                    if (ability != null)
-                        tooltip.add(ability.getTranslationKey(e.getItemStack()));
+                    new Extra().addTooltip(item, tooltip);
                 }
             }
         }

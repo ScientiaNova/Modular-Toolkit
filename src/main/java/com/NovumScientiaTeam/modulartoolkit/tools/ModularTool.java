@@ -102,7 +102,7 @@ public abstract class ModularTool extends Item {
                 });
                 getAllAbilities(stack).stream().collect(Collectors.toMap(a -> a, a -> 1, Integer::sum)).forEach((a, v) -> {
                     if (v > 1)
-                        tooltip.add(new StringTextComponent(v + "x " + a.getTranslationKey(stack).getFormattedText()));
+                        tooltip.add(new StringTextComponent(a.getTranslationKey(stack).getFormattedText() + " x" + v));
                     else
                         tooltip.add(a.getTranslationKey(stack));
                 });
@@ -110,13 +110,11 @@ public abstract class ModularTool extends Item {
             } else if (InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL)) {
                 List<Material> materials = getAllToolMaterials(stack);
                 List<ObjectType> parts = getToolParts(stack.getItem());
-                IntStream.range(0, materials.size())
-                        .mapToObj(i -> MaterialItems.getItem(materials.get(i), parts.get(i)))
-                        .forEach(item -> {
-                            List<ITextComponent> list = new ItemStack(item).getTooltip(Minecraft.getInstance().player, flagIn);
-                            list.set(0, new StringTextComponent(TextFormatting.BOLD + list.get(0).getFormattedText()));
-                            tooltip.addAll(list);
-                        });
+                IntStream.range(0, materials.size()).forEach(i -> {
+                    Item item = MaterialItems.getItem(materials.get(i), parts.get(i));
+                    tooltip.add(new ItemStack(item).getDisplayName().applyTextStyle(TextFormatting.UNDERLINE));
+                    partList.get(i).addTooltip(item, tooltip);
+                });
             } else {
                 tooltip.add(new TranslationTextComponent("tool.tooltip.tool_button"));
                 tooltip.add(new TranslationTextComponent("tool.tooltip.part_button"));
