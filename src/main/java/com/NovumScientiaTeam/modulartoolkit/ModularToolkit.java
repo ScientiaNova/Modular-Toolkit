@@ -2,12 +2,13 @@ package com.NovumScientiaTeam.modulartoolkit;
 
 import com.EmosewaPixel.pixellib.proxy.IModProxy;
 import com.NovumScientiaTeam.modulartoolkit.abilities.AbilityRegistry;
+import com.NovumScientiaTeam.modulartoolkit.effects.MagneticEffect;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.ModifierRegistry;
 import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ClientProxy;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ServerProxy;
 import com.NovumScientiaTeam.modulartoolkit.recipes.ConstructorPatternRegistry;
-import com.NovumScientiaTeam.modulartoolkit.recipes.SerializerRegistry;
+import com.NovumScientiaTeam.modulartoolkit.recipes.ToolRecipeSerializer;
 import com.NovumScientiaTeam.modulartoolkit.tables.blocks.BlockRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tables.containers.ModificationStationContainer;
 import com.NovumScientiaTeam.modulartoolkit.tables.containers.PartConstructorContainer;
@@ -24,6 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.potion.Effect;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -55,6 +57,10 @@ public class ModularToolkit {
 
     public static ContainerType STATION_CONTAINER;
     public static TileEntityType STATION;
+
+    public static IRecipeSerializer<?> TOOL_RECIPE_SERAILIZER;
+
+    public static Effect MAGNETIC;
 
     public ModularToolkit() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
@@ -115,7 +121,12 @@ public class ModularToolkit {
 
         @SubscribeEvent
         public static void onRecipeSerializerRegistry(RegistryEvent.Register<IRecipeSerializer<?>> e) {
-            SerializerRegistry.registry(e);
+            e.getRegistry().register(TOOL_RECIPE_SERAILIZER = new ToolRecipeSerializer());
+        }
+
+        @SubscribeEvent
+        public static void onEffectRegistry(RegistryEvent.Register<Effect> e) {
+            e.getRegistry().register(MAGNETIC = new MagneticEffect());
         }
     }
 }

@@ -4,17 +4,12 @@ import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 public class LuckMod extends AbstractModifier {
     public LuckMod() {
         super("luck");
-    }
-
-    @Override
-    public ITextComponent getTextComponent(ItemStack stack, ModifierStats stats) {
-        return super.getTextComponent(stack, stats).applyTextStyle(TextFormatting.BLUE);
+        addAdditionRequirements(stack -> ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_MELEE_WEAPON) || ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_TOOL) || ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_HOE));
     }
 
     @Override
@@ -25,11 +20,6 @@ public class LuckMod extends AbstractModifier {
     @Override
     public int getLevelRequirement(int level) {
         return 40 * (int) Math.pow(level, 2);
-    }
-
-    @Override
-    public boolean canBeAdded(ItemStack stack) {
-        return ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_MELEE_WEAPON) || ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_TOOL) || ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_HOE);
     }
 
     @Override
@@ -50,5 +40,10 @@ public class LuckMod extends AbstractModifier {
             stack.addEnchantment(Enchantments.LOOTING, level);
         else
             stack.addEnchantment(Enchantments.FORTUNE, level);
+    }
+
+    @Override
+    public TextFormatting getFormatting() {
+        return TextFormatting.DARK_BLUE;
     }
 }

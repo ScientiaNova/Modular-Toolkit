@@ -6,6 +6,7 @@ import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
+import com.NovumScientiaTeam.modulartoolkit.modifiers.ModifierStats;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.Modifiers;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.ModificationStationTile;
 import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
@@ -181,9 +182,9 @@ public class ModificationStationContainer extends Container {
         if (ToolUtils.getLevelCap(inputTool) > levelCap && ToolUtils.getXPForLevel(levelCap) < ToolUtils.getXP(outputTool)) {
             ToolUtils.setXP(outputTool, ToolUtils.getXPForLevel(levelCap));
             ToolUtils.setLevel(outputTool, levelCap);
-            Map<AbstractModifier, Integer> modTierMap = ToolUtils.getModifierTierMap(outputTool);
-            if (modTierMap.values().stream().anyMatch(v -> v > levelCap)) {
-                modTierMap.forEach((m, e) -> m.whenRemoved(outputTool, e));
+            List<ModifierStats> modStats = ToolUtils.getModifiersStats(outputTool);
+            if (modStats.stream().anyMatch(s -> s.getAdded() > levelCap || s.getTier() > levelCap)) {
+                modStats.forEach(s -> s.getModifier().whenRemoved(outputTool, s.getTier()));
                 ToolUtils.remapModifiers(outputTool, ToolUtils.getModifiersStats(outputTool).stream().filter(stats -> stats.getAdded() <= levelCap).map(stats -> {
                     if (stats.getTier() > levelCap) {
                         stats.setTier(levelCap);

@@ -10,7 +10,7 @@ public class SoftAbility extends AbstractAbility {
     @Override
     public ITextComponent getTranslationKey(ItemStack stack) {
         int level = getLevel(stack);
-        return new StringTextComponent(TextFormatting.GOLD + new TranslationTextComponent("ability.soft").getString() + (level > 0 ? " " + getLevel(stack) : ""));
+        return new StringTextComponent(TextFormatting.GOLD + new TranslationTextComponent("ability.soft").getString() + (level > 0 ? " " + level : ""));
     }
 
     @Override

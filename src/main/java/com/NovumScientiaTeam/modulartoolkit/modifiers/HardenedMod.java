@@ -1,5 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
+import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -10,13 +11,14 @@ import java.util.Random;
 public class HardenedMod extends AbstractModifier {
     public HardenedMod() {
         super("hardened");
+        addAdditionRequirements(stack -> !ToolUtils.getAllModifiers(stack).contains(ModifierRegistry.REVIVING));
     }
 
     @Override
-    public ITextComponent getTextComponent(ItemStack stack, ModifierStats stats) {
-        if (stats.getTier() == 10)
-            return new TranslationTextComponent("modifier.unbreakable");
-        return super.getTextComponent(stack, stats).applyTextStyle(TextFormatting.DARK_PURPLE);
+    public ITextComponent getNameTextComponent(ItemStack stack, ModifierStats stats) {
+        if (stats == null || stats.getTier() < 10)
+            return super.getNameTextComponent(stack, stats);
+        return new TranslationTextComponent("modifier.unbreakable.name");
     }
 
     @Override
@@ -34,5 +36,10 @@ public class HardenedMod extends AbstractModifier {
         if (new Random().nextInt(10) < tier)
             amount = 0;
         return amount;
+    }
+
+    @Override
+    public TextFormatting getFormatting() {
+        return TextFormatting.DARK_PURPLE;
     }
 }

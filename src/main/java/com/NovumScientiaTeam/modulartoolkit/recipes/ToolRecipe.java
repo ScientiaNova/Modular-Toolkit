@@ -2,6 +2,7 @@ package com.NovumScientiaTeam.modulartoolkit.recipes;
 
 import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialItems;
 import com.EmosewaPixel.pixellib.materialsystem.materials.IMaterialItem;
+import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -22,7 +23,7 @@ public class ToolRecipe extends ShapelessRecipe {
     }
 
     public IRecipeSerializer<?> getSerializer() {
-        return SerializerRegistry.TOOL_RECIPE_SERAILIZER;
+        return ModularToolkit.TOOL_RECIPE_SERAILIZER;
     }
 
     @Override

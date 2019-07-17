@@ -83,6 +83,10 @@ public final class ToolUtils {
         stack.setDamage(Math.max(0, stack.getDamage() - amount));
     }
 
+    public static void repairTool(ItemStack stack) {
+        repairTool(stack, 1);
+    }
+
     public static Material getToolMaterial(ItemStack stack, int index) {
         if (isNull(stack))
             return null;

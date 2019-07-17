@@ -3,18 +3,13 @@ package com.NovumScientiaTeam.modulartoolkit.modifiers;
 import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ToolType;
 
 public class HasteMod extends AbstractModifier {
     public HasteMod() {
         super("haste");
-    }
-
-    @Override
-    public ITextComponent getTextComponent(ItemStack stack, ModifierStats stats) {
-        return super.getTextComponent(stack, stats).applyTextStyle(TextFormatting.RED);
+        addAdditionRequirements(stack -> ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_TOOL));
     }
 
     @Override
@@ -28,12 +23,12 @@ public class HasteMod extends AbstractModifier {
     }
 
     @Override
-    public boolean canBeAdded(ItemStack stack) {
-        return ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_TOOL);
+    public float setEfficiency(ItemStack stack, int level, float amount, ToolType type) {
+        return amount * (level + 1);
     }
 
     @Override
-    public float setEfficiency(ItemStack stack, int level, float amount, ToolType type) {
-        return amount * (level + 1);
+    public TextFormatting getFormatting() {
+        return TextFormatting.RED;
     }
 }

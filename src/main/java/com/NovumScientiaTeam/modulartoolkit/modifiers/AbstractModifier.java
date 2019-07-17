@@ -1,5 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
+import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockState;
@@ -16,19 +17,30 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
+import javax.annotation.Nullable;
+import java.util.function.Predicate;
+
 public abstract class AbstractModifier {
     private String name;
+    private Predicate<ItemStack> additionRequirements = s -> true;
 
     public AbstractModifier(String name) {
         this.name = name;
     }
 
-    public ITextComponent getTextComponent(ItemStack stack, ModifierStats stats) {
-        int tier = stats.getTier();
-        int itemsForCurrent = getLevelRequirement(tier);
-        int itemsForLast = getLevelRequirement(tier - 1);
-        String lastPart = canLevelUp(stack, tier + 1) ? (stats.getConsumed() - itemsForCurrent) + "/" + (getLevelRequirement(tier + 1) - itemsForCurrent) : (stats.getConsumed() - itemsForLast) + "/" + (itemsForCurrent - itemsForLast);
-        return new StringTextComponent(TextFormatting.WHITE + new TranslationTextComponent("modifier." + name).getString() + " " + tier + " (" + lastPart + ")");
+    public ITextComponent getNameTextComponent(ItemStack stack, @Nullable ModifierStats stats) {
+        if (stack.getItem() instanceof ModularTool && stats != null) {
+            int tier = stats.getTier();
+            int itemsForCurrent = getLevelRequirement(tier);
+            int itemsForLast = getLevelRequirement(tier - 1);
+            String lastPart = canLevelUp(stack, tier + 1) ? (stats.getConsumed() - itemsForCurrent) + "/" + (getLevelRequirement(tier + 1) - itemsForCurrent) : (stats.getConsumed() - itemsForLast) + "/" + (itemsForCurrent - itemsForLast);
+            return new StringTextComponent(new TranslationTextComponent("modifier." + name + ".name").getString() + " " + tier + " (" + lastPart + ")");
+        }
+        return new TranslationTextComponent("modifier." + name + ".name");
+    }
+
+    public ITextComponent getDescTextComponent() {
+        return new TranslationTextComponent("modifier." + name + ".desc");
     }
 
     public abstract int getLevelCap();
@@ -44,8 +56,12 @@ public abstract class AbstractModifier {
         return name;
     }
 
-    public boolean canBeAdded(ItemStack stack) {
-        return true;
+    public final void addAdditionRequirements(Predicate<ItemStack> req) {
+        additionRequirements = additionRequirements.and(req);
+    }
+
+    public final boolean canBeAdded(ItemStack stack) {
+        return additionRequirements.test(stack);
     }
 
     public int onToolDamaged(int amount, ItemStack stack, int tier) {
@@ -98,5 +114,9 @@ public abstract class AbstractModifier {
 
     public void enchantItem(ItemStack stack, int level) {
 
+    }
+
+    public TextFormatting getFormatting() {
+        return TextFormatting.WHITE;
     }
 }

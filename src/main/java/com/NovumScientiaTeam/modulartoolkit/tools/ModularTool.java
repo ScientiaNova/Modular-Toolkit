@@ -101,8 +101,13 @@ public abstract class ModularTool extends Item {
                     tooltip.add(new TranslationTextComponent("tool.stat.harvest_level_" + t.getName(), new TranslationTextComponent("harvest_level_" + getHarvestMap(stack).get(t))));
                     tooltip.add(new TranslationTextComponent("tool.stat.efficiency_" + t.getName(), format.format(getDestroySpeedForToolType(stack, t))));
                 });
-                getAllAbilities(stack).stream().collect(Collectors.toMap(a -> a, a -> 1, Integer::sum)).forEach((a, v) -> tooltip.add(new StringTextComponent(v + "x " + a.getTranslationKey(stack).getFormattedText())));
-                getModifiersStats(stack).forEach(s -> tooltip.add(s.getModifier().getTextComponent(stack, s)));
+                getAllAbilities(stack).stream().collect(Collectors.toMap(a -> a, a -> 1, Integer::sum)).forEach((a, v) -> {
+                    if (v > 1)
+                        tooltip.add(new StringTextComponent(v + "x " + a.getTranslationKey(stack).getFormattedText()));
+                    else
+                        tooltip.add(a.getTranslationKey(stack));
+                });
+                getModifiersStats(stack).forEach(s -> tooltip.add(new StringTextComponent(s.getModifier().getFormatting() + s.getModifier().getNameTextComponent(stack, s).getFormattedText())));
             } else if (InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL)) {
                 List<Material> materials = getAllToolMaterials(stack);
                 List<ObjectType> parts = getToolParts(stack.getItem());
@@ -114,8 +119,8 @@ public abstract class ModularTool extends Item {
                             tooltip.addAll(list);
                         });
             } else {
-                tooltip.add(new TranslationTextComponent("tool.tooltip.hold_shift"));
-                tooltip.add(new TranslationTextComponent("tool.tooltip.hold_ctrl"));
+                tooltip.add(new TranslationTextComponent("tool.tooltip.tool_button"));
+                tooltip.add(new TranslationTextComponent("tool.tooltip.part_button"));
             }
         }
     }
@@ -178,15 +183,18 @@ public abstract class ModularTool extends Item {
                 amount = e.getKey().onToolDamaged(amount, stack, e.getValue());
             for (AbstractAbility ability : Abilities.getAll())
                 amount = ability.onToolDamaged(stack, amount);
-            int max = getMaxDamage(stack) - 1 - stack.getDamage();
-            if (amount >= max && !isBroken(stack))
-                makeBroken(stack, entity);
-            return Math.min(amount, max);
         } else {
             for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
                 amount = e.getKey().onToolRepaired(amount, stack, e.getValue());
             for (AbstractAbility ability : Abilities.getAll())
                 amount = ability.onToolRepaired(stack, amount);
+        }
+        if (amount > 0) {
+            int max = getMaxDamage(stack) - 1 - stack.getDamage();
+            if (amount >= max && !isBroken(stack))
+                makeBroken(stack, entity);
+            return Math.min(amount, max);
+        } else {
             if (amount < 0 && isBroken(stack))
                 unbreak(stack);
             return Math.max(amount, -getDamage(stack));

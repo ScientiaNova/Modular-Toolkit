@@ -26,7 +26,6 @@
   "tool_part_type.head": "Head",
   "tool_part_type.handle": "Handle",
   "tool_part_type.extra": "Extra",
-
   "tool.stat.broken": "Broken",
   "tool.stat.level": "Level: %s/%s",
   "tool.stat.experience": "XP: %s/%s",
@@ -48,8 +47,11 @@
   "tool.stat.level_cap": "Level Cap: %s",
   "tool.stat.level_cap_multiplier": "Level Cap Multiplier: %s",
 
-  "tool.tooltip.hold_shift": "Hold Shift for Tool Info",
-  "tool.tooltip.hold_ctrl": "Hold Control for Part Info",
+  "tool.tooltip.tool_button": "Hold Shift for Tool Info",
+  "tool.tooltip.part_button": "Hold Control for Part Info",
+
+  "part.tooltip.mod_button": "Hold Shift for Modifier Info",
+  "part.tooltip.level_cap": "Level Cap: %s",
 
   "harvest_level_0": "Stone",
   "harvest_level_1": "Iron",
@@ -59,16 +61,29 @@
   "modulartoolkit.button.tooltip.reset": "Reset Pattern",
   "modulartoolkit.button.tooltip.boost": "Boost",
 
-  "modifier.sharpness": "Sharpness",
-  "modifier.haste": "Haste",
-  "modifier.firey": "Firey",
-  "modifier.hardened": "Hardened",
+  "modifier.sharpness.name": "Sharpness",
+  "modifier.sharpness.desc": "Gives weapons extra damage",
+  "modifier.haste.name": "Haste",
+  "modifier.haste.desc": "Increases the efficiency of the tool",
+  "modifier.firey.name": "Firey",
+  "modifier.firey.desc": "Sets attacked mobs on fire",
+  "modifier.hardened.name": "Hardened",
+  "modifier.hardened.desc": "When used, the tool has a chance not to lose any durability",
   "modifier.unbreakable": "Unbreakable",
-  "modifier.glowing": "Glowing",
-  "modifier.luck": "Luck",
-  "modifier.enchanted": "Enchanted",
+  "modifier.glowing.name": "Glowing",
+  "modifier.glowing.desc": "Gives attacked mobs the Glowing effect",
+  "modifier.luck.name": "Luck",
+  "modifier.luck.desc": "Gives weapons Looting and tools Fortune",
+  "modifier.enchanted.name": "Enchanted",
+  "modifier.enchanted.desc": "The amount of XP gained is multiplied by the tier of the modifier",
+  "modifier.reviving.name": "Reviving",
+  "modifier.reviving.desc": "Heals the holder when they're low on health. 100 durability per heart",
 
   "ability.soft": "Soft",
+  "ability.cheap": "Cheap",
+  "ability.rustable": "Rustable",
+  "ability.photosynthesis": "Photosynthesis",
+  "ability.magnetic": "Magnetic",
 
   "gui.jei.category.part_constructor": "Part Constructor"
 }
