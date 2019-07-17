@@ -84,6 +84,8 @@
   "ability.rustable": "Rustable",
   "ability.photosynthesis": "Photosynthesis",
   "ability.magnetic": "Magnetic",
+  "ability.flammable": "Flammable",
+  "ability.cobbling": "Cobbling",
 
   "gui.jei.category.part_constructor": "Part Constructor"
 }

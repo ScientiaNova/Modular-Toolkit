@@ -76,7 +76,7 @@ public final class ToolUtils {
     public static void repairTool(ItemStack stack, int amount) {
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             amount = e.getKey().onToolRepaired(amount, stack, e.getValue());
-        for (AbstractAbility ability : Abilities.getAll())
+        for (AbstractAbility ability : getAllAbilities(stack))
             amount = ability.onToolRepaired(stack, amount);
         if (amount > 0 && isBroken(stack))
             unbreak(stack);
@@ -151,7 +151,7 @@ public final class ToolUtils {
     public static void addXP(ItemStack stack, long amount, LivingEntity entity) {
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             amount = e.getKey().onXPAdded(stack, e.getValue(), amount);
-        for (AbstractAbility ability : Abilities.getAll())
+        for (AbstractAbility ability : getAllAbilities(stack))
             amount = ability.onXPAdded(stack, amount);
 
         int stackLevel = getLevel(stack);
@@ -227,7 +227,7 @@ public final class ToolUtils {
         float speed = (float) IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).filter(i -> ((Head) partList.get(i)).getToolType().get() == type).mapToDouble(i -> getToolMaterial(stack, i).getItemTier().getEfficiency()).max().orElse(1);
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             speed = e.getKey().setEfficiency(stack, e.getValue(), speed, type);
-        for (AbstractAbility ability : Abilities.getAll())
+        for (AbstractAbility ability : getAllAbilities(stack))
             speed = ability.setEfficiency(stack, speed, type);
         return (float) (speed * getBoostMultiplier(stack));
     }

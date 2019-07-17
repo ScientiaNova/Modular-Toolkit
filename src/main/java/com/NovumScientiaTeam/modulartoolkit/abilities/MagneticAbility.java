@@ -2,6 +2,7 @@ package com.NovumScientiaTeam.modulartoolkit.abilities;
 
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
 import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
+import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -22,23 +23,24 @@ public class MagneticAbility extends AbstractAbility {
 
     @Override
     public int getLevelCap() {
-        return 1;
+        return 5;
     }
 
     @Override
     public int getLevel(ItemStack stack) {
-        return 1;
+        int level = 1 + ToolUtils.getLevel(stack) / 4;
+        return ToolUtils.getLevel(stack) > getLevelCap() ? getLevelCap() : level;
     }
 
     @Override
     public void onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
         if (!worldIn.isRemote)
-            entityLiving.addPotionEffect(new EffectInstance(ModularToolkit.MAGNETIC, 30, 1, false, false));
+            entityLiving.addPotionEffect(new EffectInstance(ModularToolkit.MAGNETIC, 20, getLevel(stack), false, false));
     }
 
     @Override
     public void onHitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (!attacker.world.isRemote && !target.isAlive())
-            attacker.addPotionEffect(new EffectInstance(ModularToolkit.MAGNETIC, 30, 1, false, false));
+            attacker.addPotionEffect(new EffectInstance(ModularToolkit.MAGNETIC, 20, getLevel(stack), false, false));
     }
 }

@@ -6,7 +6,6 @@ import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
-import com.NovumScientiaTeam.modulartoolkit.abilities.Abilities;
 import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
 import com.NovumScientiaTeam.modulartoolkit.partTypes.Head;
@@ -147,7 +146,7 @@ public abstract class ModularTool extends Item {
 
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             multimap = e.getKey().getAttributeModifiers(slot, stack, e.getValue(), multimap);
-        for (AbstractAbility ability : Abilities.getAll())
+        for (AbstractAbility ability : getAllAbilities(stack))
             multimap = ability.getAttributeModifiers(slot, stack, multimap);
 
         return multimap;
@@ -181,12 +180,12 @@ public abstract class ModularTool extends Item {
         if (amount > 0) {
             for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
                 amount = e.getKey().onToolDamaged(amount, stack, e.getValue());
-            for (AbstractAbility ability : Abilities.getAll())
+            for (AbstractAbility ability : getAllAbilities(stack))
                 amount = ability.onToolDamaged(stack, amount);
         } else {
             for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
                 amount = e.getKey().onToolRepaired(amount, stack, e.getValue());
-            for (AbstractAbility ability : Abilities.getAll())
+            for (AbstractAbility ability : getAllAbilities(stack))
                 amount = ability.onToolRepaired(stack, amount);
         }
         if (amount > 0) {
@@ -220,7 +219,7 @@ public abstract class ModularTool extends Item {
     public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity livingEntity) {
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             e.getKey().onBlockDestroyed(stack, worldIn, state, pos, livingEntity, e.getValue());
-        for (AbstractAbility ability : Abilities.getAll())
+        for (AbstractAbility ability : getAllAbilities(stack))
             ability.onBlockDestroyed(stack, worldIn, state, pos, livingEntity);
 
         if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0F && !isBroken(stack))
@@ -241,7 +240,7 @@ public abstract class ModularTool extends Item {
     public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             e.getKey().onHitEntity(stack, target, attacker, e.getValue());
-        for (AbstractAbility ability : Abilities.getAll())
+        for (AbstractAbility ability : getAllAbilities(stack))
             ability.onHitEntity(stack, target, attacker);
 
         if (!isBroken(stack))
@@ -269,7 +268,7 @@ public abstract class ModularTool extends Item {
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             e.getKey().onInventoryTick(stack, worldIn, entityIn, itemSlot, isSelected, e.getValue());
-        for (AbstractAbility ability : Abilities.getAll())
+        for (AbstractAbility ability : getAllAbilities(stack))
             ability.onInventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
     }
 
@@ -321,7 +320,7 @@ public abstract class ModularTool extends Item {
         double amount = getAttackDamage(stack);
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             amount = e.getKey().setAttackDamage(stack, e.getValue(), amount);
-        for (AbstractAbility ability : Abilities.getAll())
+        for (AbstractAbility ability : getAllAbilities(stack))
             amount = ability.setAttackDamage(stack, amount);
         return amount * getBoostMultiplier(stack);
     }
@@ -330,7 +329,7 @@ public abstract class ModularTool extends Item {
         double amount = getAttackSpeed(stack);
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             amount = e.getKey().setAttackSpeed(stack, e.getValue(), amount);
-        for (AbstractAbility ability : Abilities.getAll())
+        for (AbstractAbility ability : getAllAbilities(stack))
             amount = ability.setAttackSpeed(stack, amount);
         return amount;
     }

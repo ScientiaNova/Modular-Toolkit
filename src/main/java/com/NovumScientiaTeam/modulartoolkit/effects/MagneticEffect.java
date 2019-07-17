@@ -20,16 +20,17 @@ public class MagneticEffect extends BaseEffect {
     @Override
     public void performEffect(LivingEntity entity, int amplifier) {
         BlockPos entityPos = entity.getPosition();
-        entity.getEntityWorld().getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.posX - 2, entity.posY - 2, entity.posZ - 2, entity.posX + 2, entity.posY + 2, entity.posZ + 2))
+        double range = 2 + amplifier * 0.25;
+        entity.getEntityWorld().getEntitiesWithinAABB(ItemEntity.class, new AxisAlignedBB(entity.posX - range, entity.posY - range, entity.posZ - range, entity.posX + range, entity.posY + range, entity.posZ + range))
                 .forEach(item -> {
                     if (!item.isAlive() || item.getItem().isEmpty())
                         return;
 
                     Vec3d vec = new Vec3d(entityPos);
-                    vec.subtract(item.posX, item.posY, item.posZ);
-                    vec.normalize();
-                    vec.scale(0.07f);
-                    item.getMotion().add(vec);
+                    vec = vec.subtract(item.posX, item.posY, item.posZ);
+                    vec = vec.normalize();
+                    vec = vec.scale(0.07f);
+                    item.setMotion(item.getMotion().add(vec));
                 });
     }
 }
