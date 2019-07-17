@@ -27,6 +27,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -78,12 +79,20 @@ public abstract class ModularTool extends Item {
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!isNull(stack)) {
             if (isBroken(stack))
-                tooltip.add(new StringTextComponent(TextFormatting.RED + new TranslationTextComponent("tool.stat.broken").getString()));
+                tooltip.add(new TranslationTextComponent("tool.stat.broken").applyTextStyle(TextFormatting.RED));
             if (InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 DecimalFormat format = new DecimalFormat("#.#");
-                getAllAbilities(stack).forEach(a -> tooltip.add(a.getTranslationKey(stack)));
                 tooltip.add(new TranslationTextComponent("tool.stat.level", getLevel(stack), getLevelCap(stack)));
-                tooltip.add(new TranslationTextComponent("tool.stat.experience", getXP(stack) - getXPForCurrentLevel(stack), getXPForLevelUp(stack) - getXPForCurrentLevel(stack)));
+                long currentXP;
+                long nextXP;
+                if (getLevel(stack) < getLevelCap(stack)) {
+                    currentXP = getXPForCurrentLevel(stack);
+                    nextXP = getXPForLevelUp(stack);
+                } else {
+                    currentXP = getXPForLevel(getLevel(stack) - 1);
+                    nextXP = getXPForCurrentLevel(stack);
+                }
+                tooltip.add(new TranslationTextComponent("tool.stat.experience", getXP(stack) - currentXP, nextXP - currentXP));
                 tooltip.add(new TranslationTextComponent("tool.stat.modifier_slots", getFreeModifierSlotCount(stack)));
                 int maxDamage = getMaxDamage(stack) - 1;
                 tooltip.add(new TranslationTextComponent("tool.stat.current_durability", maxDamage - stack.getDamage(), maxDamage));
@@ -92,8 +101,8 @@ public abstract class ModularTool extends Item {
                     tooltip.add(new TranslationTextComponent("tool.stat.harvest_level_" + t.getName(), new TranslationTextComponent("harvest_level_" + getHarvestMap(stack).get(t))));
                     tooltip.add(new TranslationTextComponent("tool.stat.efficiency_" + t.getName(), format.format(getDestroySpeedForToolType(stack, t))));
                 });
-                getModifiersStats(stack).forEach(s ->
-                        tooltip.add(s.getModifier().getTextComponent(stack, s)));
+                getAllAbilities(stack).stream().collect(Collectors.toMap(a -> a, a -> 1, Integer::sum)).forEach((a, v) -> tooltip.add(new StringTextComponent(v + "x " + a.getTranslationKey(stack).getFormattedText())));
+                getModifiersStats(stack).forEach(s -> tooltip.add(s.getModifier().getTextComponent(stack, s)));
             } else if (InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL)) {
                 List<Material> materials = getAllToolMaterials(stack);
                 List<ObjectType> parts = getToolParts(stack.getItem());
@@ -101,7 +110,7 @@ public abstract class ModularTool extends Item {
                         .mapToObj(i -> MaterialItems.getItem(materials.get(i), parts.get(i)))
                         .forEach(item -> {
                             List<ITextComponent> list = new ItemStack(item).getTooltip(Minecraft.getInstance().player, flagIn);
-                            list.set(0, new StringTextComponent(TextFormatting.BOLD + list.get(0).getString()));
+                            list.set(0, new StringTextComponent(TextFormatting.BOLD + list.get(0).getFormattedText()));
                             tooltip.addAll(list);
                         });
             } else {
@@ -275,6 +284,17 @@ public abstract class ModularTool extends Item {
                 result.setTag(mainCompound);
                 return result;
             }).forEach(list::add);
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public boolean hasEffect(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public Rarity getRarity(ItemStack stack) {
+        return Rarity.COMMON;
     }
 
     public void addToolTags(String... tags) {

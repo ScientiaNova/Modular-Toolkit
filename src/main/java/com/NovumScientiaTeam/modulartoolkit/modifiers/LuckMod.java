@@ -1,0 +1,54 @@
+package com.NovumScientiaTeam.modulartoolkit.modifiers;
+
+import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
+import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+
+public class LuckMod extends AbstractModifier {
+    public LuckMod() {
+        super("luck");
+    }
+
+    @Override
+    public ITextComponent getTextComponent(ItemStack stack, ModifierStats stats) {
+        return super.getTextComponent(stack, stats).applyTextStyle(TextFormatting.BLUE);
+    }
+
+    @Override
+    public int getLevelCap() {
+        return 3;
+    }
+
+    @Override
+    public int getLevelRequirement(int level) {
+        return 40 * (int) Math.pow(level, 2);
+    }
+
+    @Override
+    public boolean canBeAdded(ItemStack stack) {
+        return ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_MELEE_WEAPON) || ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_TOOL) || ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_HOE);
+    }
+
+    @Override
+    public void whenGainedLevel(ItemStack stack, int level) {
+        if (level > 0)
+            ToolUtils.remapEnchantments(stack);
+    }
+
+    @Override
+    public void whenRemoved(ItemStack stack, int level) {
+        if (level > 0)
+            stack.removeChildTag("Enchantments");
+    }
+
+    @Override
+    public void enchantItem(ItemStack stack, int level) {
+        if (((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_MELEE_WEAPON) || ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_HOE))
+            stack.addEnchantment(Enchantments.LOOTING, level);
+        else
+            stack.addEnchantment(Enchantments.FORTUNE, level);
+    }
+}

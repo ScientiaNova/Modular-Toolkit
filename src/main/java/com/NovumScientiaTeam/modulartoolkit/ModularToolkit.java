@@ -1,6 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit;
 
 import com.EmosewaPixel.pixellib.proxy.IModProxy;
+import com.NovumScientiaTeam.modulartoolkit.abilities.AbilityRegistry;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.ModifierRegistry;
 import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ClientProxy;
@@ -31,6 +32,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -55,31 +57,35 @@ public class ModularToolkit {
     public static TileEntityType STATION;
 
     public ModularToolkit() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
-
 
         MinecraftForge.EVENT_BUS.register(this);
 
         new ObjTypeRegistry();
+    }
+
+    private void clientSetup(FMLClientSetupEvent event) {
+        ScreenManager.registerFactory(CONSTRUCTOR_CONTAINER, PartConstructorScreen::new);
+        ScreenManager.registerFactory(STATION_CONTAINER, ModificationStationScreen::new);
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
         PacketHandler.setup();
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
         proxy.enque(event);
         ToolTypeMap.init();
+        AbilityRegistry.register();
+        ModifierRegistry.register();
+        ConstructorPatternRegistry.setup();
     }
 
     private void processIMC(final InterModProcessEvent event) {
         proxy.process(event);
-        ConstructorPatternRegistry.setup();
-        ModifierRegistry.register();
-    }
-
-    public void clientSetup(FMLClientSetupEvent event) {
-        ScreenManager.registerFactory(CONSTRUCTOR_CONTAINER, PartConstructorScreen::new);
-        ScreenManager.registerFactory(STATION_CONTAINER, ModificationStationScreen::new);
     }
 
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)

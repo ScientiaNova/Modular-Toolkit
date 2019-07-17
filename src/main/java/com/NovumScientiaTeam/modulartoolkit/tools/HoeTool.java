@@ -12,7 +12,7 @@ import net.minecraft.util.ActionResultType;
 
 public class HoeTool extends ModularTool {
     public HoeTool() {
-        super("modulartoolkit:hoe_tool", ImmutableList.of(new Head(null), new Extra(), new Handle()));
+        super("modulartoolkit:hoe_tool", ImmutableList.of(new Head(), new Extra(), new Handle()));
         addToolTags(ToolUtils.IS_HOE);
     }
 

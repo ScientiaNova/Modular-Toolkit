@@ -60,6 +60,15 @@
   "modulartoolkit.button.tooltip.boost": "Boost",
 
   "modifier.sharpness": "Sharpness",
+  "modifier.haste": "Haste",
+  "modifier.firey": "Firey",
+  "modifier.hardened": "Hardened",
+  "modifier.unbreakable": "Unbreakable",
+  "modifier.glowing": "Glowing",
+  "modifier.luck": "Luck",
+  "modifier.enchanted": "Enchanted",
+
+  "ability.soft": "Soft",
 
   "gui.jei.category.part_constructor": "Part Constructor"
 }

@@ -151,16 +151,15 @@ public final class ToolUtils {
             amount = ability.onXPAdded(stack, amount);
 
         int stackLevel = getLevel(stack);
-        boolean isNextCap = stackLevel + 1 == getLevelCap(stack);
+        int cap = getLevelCap(stack);
 
-        if (stackLevel != getLevelCap(stack)) {
-            if (isNextCap)
+        if (stackLevel < cap) {
+            if (stackLevel + 1 == cap)
                 amount = Math.min(amount, getXPForLevel(stackLevel + 1) - getXP(stack));
             setXP(stack, getXP(stack) + amount);
+            if (getXP(stack) >= getXPForLevelUp(stack))
+                levelUp(stack, entity);
         }
-
-        if (!isNextCap && getXP(stack) >= getXPForLevelUp(stack))
-            levelUp(stack, entity);
     }
 
     public static void addXP(ItemStack stack, LivingEntity entity) {
@@ -194,17 +193,11 @@ public final class ToolUtils {
     }
 
     public static long getXPForCurrentLevel(ItemStack stack) {
-        int level = getLevel(stack);
-        if (level == getLevelCap(stack))
-            return getXPForLevel(level - 1);
-        return getXPForLevel(level);
+        return getXPForLevel(getLevel(stack));
     }
 
     public static long getXPForLevelUp(ItemStack stack) {
-        int level = getLevel(stack);
-        if (level >= getLevelCap(stack))
-            return getXPForLevel(level);
-        return getXPForLevel(level + 1);
+        return getXPForLevel(getLevel(stack) + 1);
     }
 
     public static int getLevelCap(ItemStack stack) {
@@ -241,7 +234,12 @@ public final class ToolUtils {
         CompoundNBT newNBT = new CompoundNBT();
         for (int i = 0; i < modifiersNBT.size(); i++)
             newNBT.put("modifier" + i, modifiersNBT.get(i));
-        stack.getTag().put("Modifier", newNBT);
+        stack.getTag().put("Modifiers", newNBT);
+        Set<AbstractModifier> all = Modifiers.getAll();
+        modifiersNBT.forEach(nbt -> {
+            Optional<AbstractModifier> modifier = all.stream().filter(m -> m.getName().equals(nbt.getString("name"))).findFirst();
+            modifier.ifPresent(m -> m.whenGainedLevel(stack, nbt.getInt("tier")));
+        });
     }
 
     public static CompoundNBT getModifierNBT(ItemStack stack, int index) {
@@ -278,9 +276,7 @@ public final class ToolUtils {
     public static List<ModifierStats> getModifiersStats(ItemStack stack) {
         if (isNull(stack))
             return Collections.EMPTY_LIST;
-        Set<AbstractModifier> allModifiers = Modifiers.getAll();
-        return getModifiersNBT(stack).stream()
-                .map(nbt -> new ModifierStats(allModifiers.stream().filter(m -> m.getName().equals(nbt.getString("name"))).findFirst().get(), nbt.getInt("tier"), nbt.getInt("consumed"), nbt.getInt("added"))).collect(Collectors.toList());
+        return getModifiersNBT(stack).stream().map(ModifierStats::deserialize).collect(Collectors.toList());
     }
 
     public static List<AbstractAbility> getAllAbilities(ItemStack stack) {
@@ -314,5 +310,13 @@ public final class ToolUtils {
         if (getBoosts(stack).size() < 1)
             return 1;
         return 1 + Math.log(getBoosts(stack).size() * 2) / 6;
+    }
+
+    public static void remapEnchantments(ItemStack stack) {
+        if (isNull(stack))
+            return;
+        if (stack.getTag().contains("Enchantments"))
+            stack.getTag().remove("Enchantments");
+        getModifierTierMap(stack).forEach((m, t) -> m.enchantItem(stack, t));
     }
 }

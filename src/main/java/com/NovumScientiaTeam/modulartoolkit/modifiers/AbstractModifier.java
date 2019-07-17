@@ -87,4 +87,16 @@ public abstract class AbstractModifier {
     public long onXPAdded(ItemStack stack, int level, long amount) {
         return amount;
     }
+
+    public void whenGainedLevel(ItemStack stack, int level) {
+
+    }
+
+    public void whenRemoved(ItemStack stack, int level) {
+
+    }
+
+    public void enchantItem(ItemStack stack, int level) {
+
+    }
 }

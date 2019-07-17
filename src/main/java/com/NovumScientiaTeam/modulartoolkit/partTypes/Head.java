@@ -12,6 +12,10 @@ public class Head extends PartType {
         this.toolType = toolType;
     }
 
+    public Head() {
+        this(null);
+    }
+
     @Override
     public int getExtraDurability(Material mat) {
         return (int) (mat.getItemTier().getMaxUses() * 0.8);

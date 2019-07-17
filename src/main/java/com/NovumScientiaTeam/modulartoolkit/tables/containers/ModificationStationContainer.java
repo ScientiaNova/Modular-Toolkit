@@ -181,12 +181,17 @@ public class ModificationStationContainer extends Container {
         if (ToolUtils.getLevelCap(inputTool) > levelCap && ToolUtils.getXPForLevel(levelCap) < ToolUtils.getXP(outputTool)) {
             ToolUtils.setXP(outputTool, ToolUtils.getXPForLevel(levelCap));
             ToolUtils.setLevel(outputTool, levelCap);
-            if (ToolUtils.getModifierTierMap(outputTool).values().stream().anyMatch(v -> v < levelCap))
-                ToolUtils.remapModifiers(outputTool, ToolUtils.getModifiersNBT(outputTool).stream().filter(nbt -> nbt.getInt("added") <= levelCap).map(nbt -> {
-                    if (nbt.getInt("tier") > levelCap)
-                        nbt.putInt("tier", levelCap);
-                    return nbt;
+            Map<AbstractModifier, Integer> modTierMap = ToolUtils.getModifierTierMap(outputTool);
+            if (modTierMap.values().stream().anyMatch(v -> v > levelCap)) {
+                modTierMap.forEach((m, e) -> m.whenRemoved(outputTool, e));
+                ToolUtils.remapModifiers(outputTool, ToolUtils.getModifiersStats(outputTool).stream().filter(stats -> stats.getAdded() <= levelCap).map(stats -> {
+                    if (stats.getTier() > levelCap) {
+                        stats.setTier(levelCap);
+                        stats.setConsumed(stats.getModifier().getLevelRequirement(levelCap));
+                    }
+                    return stats.serialize();
                 }).collect(Collectors.toList()));
+            }
             if (ToolUtils.getBoosts(outputTool).stream().anyMatch(b -> b > levelCap))
                 ToolUtils.remapBoosts(outputTool, ToolUtils.getBoosts(outputTool).stream().filter(b -> b <= levelCap).collect(Collectors.toList()));
             if (ToolUtils.getUsedModifierSlotCount(outputTool) > levelCap)
@@ -203,31 +208,34 @@ public class ModificationStationContainer extends Container {
                     int modifierIndex = new ArrayList<>(currentModifiers.keySet()).indexOf(modifier);
                     CompoundNBT modifierNBT = ToolUtils.getModifierNBT(outputTool, modifierIndex);
                     int alreadyAdded = modifierNBT.getInt("consumed");
-                    int tier = new ArrayList<>(currentModifiers.values()).get(modifierIndex);
+                    final int initialTier = new ArrayList<>(currentModifiers.values()).get(modifierIndex);
+                    int tier = initialTier;
                     int consumed = 0;
                     while (modifier.canLevelUp(outputTool, tier + 1)) {
                         int consumeRequirement = modifier.getLevelRequirement(tier + 1);
-                        if (consumeRequirement - alreadyAdded - consumed <= current.getCount()) {
-                            consumed += consumeRequirement - alreadyAdded - consumed;
+                        if (consumeRequirement - alreadyAdded <= current.getCount()) {
+                            consumed = consumeRequirement - alreadyAdded;
                             tier++;
                         } else {
-                            consumed += current.getCount();
+                            consumed = current.getCount();
                             break;
                         }
                     }
                     modifierNBT.putInt("consumed", alreadyAdded + consumed);
                     modifierNBT.putInt("tier", tier);
+                    if (tier > initialTier)
+                        modifier.whenGainedLevel(outputTool, tier);
                     consumeMap.put(i, consumed);
                 } else if (ToolUtils.getFreeModifierSlotCount(outputTool) > 0 && modifier.canBeAdded(outputTool)) {
                     int tier = 0;
                     int consumed = 0;
                     while (modifier.canLevelUp(outputTool, tier + 1)) {
                         int consumeRequirement = modifier.getLevelRequirement(tier + 1);
-                        if (consumeRequirement - consumed <= current.getCount()) {
-                            consumed += consumeRequirement - consumed;
+                        if (consumeRequirement <= current.getCount()) {
+                            consumed = consumeRequirement;
                             tier++;
                         } else {
-                            consumed += current.getCount();
+                            consumed = current.getCount();
                             break;
                         }
                     }
@@ -235,6 +243,8 @@ public class ModificationStationContainer extends Container {
                     nbt.putString("name", modifier.getName());
                     nbt.putInt("consumed", consumed);
                     nbt.putInt("tier", tier);
+                    if (tier > 0)
+                        modifier.whenGainedLevel(outputTool, tier);
                     nbt.putInt("added", ToolUtils.getUsedModifierSlotCount(outputTool) + 1);
                     ToolUtils.useModifierSlot(outputTool);
                     outputTool.getTag().getCompound("Modifiers").put("modifier" + currentModifiers.entrySet().size(), nbt);

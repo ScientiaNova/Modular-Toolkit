@@ -14,7 +14,7 @@ import net.minecraft.tags.BlockTags;
 
 public class SwordTool extends ModularTool {
     public SwordTool() {
-        super("modulartoolkit:sword_tool", ImmutableList.of(new Head(null), new Extra(), new Handle()));
+        super("modulartoolkit:sword_tool", ImmutableList.of(new Head(), new Extra(), new Handle()));
         addToolTags(ToolUtils.IS_MELEE_WEAPON);
     }
 

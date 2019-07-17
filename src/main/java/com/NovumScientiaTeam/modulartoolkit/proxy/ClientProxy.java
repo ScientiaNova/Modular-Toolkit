@@ -15,8 +15,6 @@ import com.NovumScientiaTeam.modulartoolkit.tools.ToolRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -60,11 +58,8 @@ public class ClientProxy implements IModProxy {
                 DecimalFormat format = new DecimalFormat("#.##");
                 AbstractAbility ability;
                 if (obj.hasTag(ObjTypeRegistry.HEAD)) {
-                    Head head = new Head(null);
-                    ability = Abilities.getFor(mat, head);
-                    if (ability != null)
-                        e.getToolTip().add(ability.getTranslationKey(e.getItemStack()));
-                    e.getToolTip().add(underline(new TranslationTextComponent("tool_part_type.head")));
+                    Head head = new Head();
+                    e.getToolTip().add(new TranslationTextComponent("tool_part_type.head").applyTextStyle(TextFormatting.UNDERLINE));
                     e.getToolTip().add(new TranslationTextComponent("tool.stat.attack_damage", format.format(mat.getItemTier().getAttackDamage() + 1)));
                     if (!obj.hasTag(ObjTypeRegistry.WEAPON_PART)) {
                         e.getToolTip().add(new TranslationTextComponent("tool.stat.harvest_level", new TranslationTextComponent("harvest_level_" + mat.getItemTier().getHarvestLevel())));
@@ -72,30 +67,32 @@ public class ClientProxy implements IModProxy {
                     }
                     e.getToolTip().add(new TranslationTextComponent("tool.stat.durability", Integer.toString(head.getExtraDurability(mat))));
                     e.getToolTip().add(new TranslationTextComponent("tool.stat.level_cap_multiplier", format.format(head.getLevelCapMultiplier(mat))));
+                    ;
+                    ability = Abilities.getFor(mat, head);
+                    if (ability != null)
+                        e.getToolTip().add(ability.getTranslationKey(e.getItemStack()));
                 }
                 if (obj.hasTag(ObjTypeRegistry.HANDLE)) {
                     Handle handle = new Handle();
+                    e.getToolTip().add(new TranslationTextComponent("tool_part_type.handle").applyTextStyle(TextFormatting.UNDERLINE));
+                    e.getToolTip().add(new TranslationTextComponent("tool.stat.durability", Integer.toString(handle.getExtraDurability(mat))));
+                    e.getToolTip().add(new TranslationTextComponent("tool.stat.durability_multiplier", format.format(handle.getDurabilityModifier(mat))));
+                    ;
                     ability = Abilities.getFor(mat, handle);
                     if (ability != null)
                         e.getToolTip().add(ability.getTranslationKey(e.getItemStack()));
-                    e.getToolTip().add(underline(new TranslationTextComponent("tool_part_type.handle")));
-                    e.getToolTip().add(new TranslationTextComponent("tool.stat.durability", Integer.toString(handle.getExtraDurability(mat))));
-                    e.getToolTip().add(new TranslationTextComponent("tool.stat.durability_multiplier", format.format(handle.getDurabilityModifier(mat))));
                 }
                 if (obj.hasTag(ObjTypeRegistry.EXTRA)) {
                     Extra extra = new Extra();
+                    e.getToolTip().add(new TranslationTextComponent("tool_part_type.extra").applyTextStyle(TextFormatting.UNDERLINE));
+                    e.getToolTip().add(new TranslationTextComponent("tool.stat.durability", Integer.toString(extra.getExtraDurability(mat))));
+                    e.getToolTip().add(new TranslationTextComponent("tool.stat.level_cap_multiplier", format.format(extra.getLevelCapMultiplier(mat))));
+                    ;
                     ability = Abilities.getFor(mat, extra);
                     if (ability != null)
                         e.getToolTip().add(ability.getTranslationKey(e.getItemStack()));
-                    e.getToolTip().add(underline(new TranslationTextComponent("tool_part_type.extra")));
-                    e.getToolTip().add(new TranslationTextComponent("tool.stat.durability", Integer.toString(extra.getExtraDurability(mat))));
-                    e.getToolTip().add(new TranslationTextComponent("tool.stat.level_cap_multiplier", format.format(extra.getLevelCapMultiplier(mat))));
                 }
             }
         }
-    }
-
-    private static StringTextComponent underline(ITextComponent component) {
-        return new StringTextComponent(TextFormatting.UNDERLINE + component.getString());
     }
 }
