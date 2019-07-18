@@ -15,6 +15,9 @@
   "block.modulartoolkit.part_constructor": "Part Constructor",
   "block.modulartoolkit.modification_station": "Modification Station",
 
+  "tooltip.modulartoolkit.part_constructor": "Used for making tool parts",
+  "tooltip.modulartoolkit.modification_station": "Used for repairing, modifying and boosting tools and replacing their parts",
+
   "item.modulartoolkit.pickaxe_tool": "%s Pickaxe",
   "item.modulartoolkit.shovel_tool": "%s Shovel",
   "item.modulartoolkit.hoe_tool": "%s Hoe",
@@ -41,6 +44,10 @@
   "tool.stat.efficiency_pickaxe": "Pickaxe Mining Speed: %s",
   "tool.stat.efficiency_shovel": "Shovel Mining Speed: %s",
   "tool.stat.efficiency_wrench": "Wrench Mining Speed: %s",
+  "tool.stat.axe": "Axe: %s, %s",
+  "tool.stat.pickaxe": "Pickaxe: %s, %s",
+  "tool.stat.shovel": "Shovel: %s, %s",
+  "tool.stat.wrench": "Wrench: %s, %s",
   "tool.stat.durability": "Durability: %s",
   "tool.stat.current_durability": "Durability: %s/%s",
   "tool.stat.durability_multiplier": "Durability Multiplier: %s",

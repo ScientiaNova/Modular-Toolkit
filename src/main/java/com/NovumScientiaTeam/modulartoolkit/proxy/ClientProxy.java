@@ -73,7 +73,7 @@ public class ClientProxy implements IModProxy {
             }
         }
         if (Modifiers.getFor(item) != null) {
-            AbstractModifier modifier = Modifiers.getFor(item);
+            AbstractModifier modifier = Modifiers.getFor(item).getModifier();
             if (InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 tooltip.add(new StringTextComponent(modifier.getFormatting() + modifier.getNameTextComponent(e.getItemStack(), null).getString()));
                 tooltip.add(new StringTextComponent("   -" + modifier.getFormatting() + modifier.getDescTextComponent().getString()));

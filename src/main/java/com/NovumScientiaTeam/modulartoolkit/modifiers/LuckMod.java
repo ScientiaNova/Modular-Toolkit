@@ -44,6 +44,6 @@ public class LuckMod extends AbstractModifier {
 
     @Override
     public TextFormatting getFormatting() {
-        return TextFormatting.DARK_BLUE;
+        return TextFormatting.BLUE;
     }
 }

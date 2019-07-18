@@ -1,5 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
+import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
 import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import com.google.common.collect.Multimap;
@@ -26,6 +27,7 @@ public abstract class AbstractModifier {
 
     public AbstractModifier(String name) {
         this.name = name;
+        Modifiers.addModifier(this);
     }
 
     public ITextComponent getNameTextComponent(ItemStack stack, @Nullable ModifierStats stats) {

@@ -6,8 +6,9 @@ import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
-import com.NovumScientiaTeam.modulartoolkit.modifiers.ModifierStats;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.Modifiers;
+import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStack;
+import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.ModificationStationTile;
 import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
@@ -204,7 +205,9 @@ public class ModificationStationContainer extends Container {
             if (!consumeMap.containsKey(i) && Modifiers.getFor(modStacks.get(i).getItem()) != null) {
                 Map<AbstractModifier, Integer> currentModifiers = ToolUtils.getModifierTierMap(outputTool);
                 final ItemStack current = modStacks.get(i);
-                AbstractModifier modifier = Modifiers.getFor(current.getItem());
+                final ModifierStack stack = Modifiers.getFor(current.getItem());
+                final AbstractModifier modifier = stack.getModifier();
+                final int count = stack.getCount();
                 if (currentModifiers.containsKey(modifier)) {
                     int modifierIndex = new ArrayList<>(currentModifiers.keySet()).indexOf(modifier);
                     CompoundNBT modifierNBT = ToolUtils.getModifierNBT(outputTool, modifierIndex);
@@ -213,16 +216,21 @@ public class ModificationStationContainer extends Container {
                     int tier = initialTier;
                     int consumed = 0;
                     while (modifier.canLevelUp(outputTool, tier + 1)) {
-                        int consumeRequirement = modifier.getLevelRequirement(tier + 1);
-                        if (consumeRequirement - alreadyAdded <= current.getCount()) {
-                            consumed = consumeRequirement - alreadyAdded;
-                            tier++;
+                        double neededForLevelUp = (modifier.getLevelRequirement(tier + 1) - alreadyAdded) / (double) count;
+                        if (Math.ceil(neededForLevelUp) <= current.getCount()) {
+                            if (neededForLevelUp != Math.ceil(neededForLevelUp) && !modifier.canLevelUp(outputTool, tier + 2)) {
+                                consumed = (int) neededForLevelUp;
+                                break;
+                            } else {
+                                consumed = (int) Math.ceil(neededForLevelUp);
+                                tier++;
+                            }
                         } else {
                             consumed = current.getCount();
                             break;
                         }
                     }
-                    modifierNBT.putInt("consumed", alreadyAdded + consumed);
+                    modifierNBT.putInt("consumed", alreadyAdded + consumed * count);
                     modifierNBT.putInt("tier", tier);
                     if (tier > initialTier)
                         modifier.whenGainedLevel(outputTool, tier);
@@ -231,10 +239,15 @@ public class ModificationStationContainer extends Container {
                     int tier = 0;
                     int consumed = 0;
                     while (modifier.canLevelUp(outputTool, tier + 1)) {
-                        int consumeRequirement = modifier.getLevelRequirement(tier + 1);
-                        if (consumeRequirement <= current.getCount()) {
-                            consumed = consumeRequirement;
-                            tier++;
+                        double neededForLevelUp = modifier.getLevelRequirement(tier + 1) / (double) count;
+                        if (Math.ceil(neededForLevelUp) <= current.getCount()) {
+                            if (neededForLevelUp != Math.ceil(neededForLevelUp) && !modifier.canLevelUp(outputTool, tier + 2)) {
+                                consumed = (int) neededForLevelUp;
+                                break;
+                            } else {
+                                consumed = (int) Math.ceil(neededForLevelUp);
+                                tier++;
+                            }
                         } else {
                             consumed = current.getCount();
                             break;
@@ -242,7 +255,7 @@ public class ModificationStationContainer extends Container {
                     }
                     CompoundNBT nbt = new CompoundNBT();
                     nbt.putString("name", modifier.getName());
-                    nbt.putInt("consumed", consumed);
+                    nbt.putInt("consumed", consumed * count);
                     nbt.putInt("tier", tier);
                     if (tier > 0)
                         modifier.whenGainedLevel(outputTool, tier);

@@ -1,5 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
+import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

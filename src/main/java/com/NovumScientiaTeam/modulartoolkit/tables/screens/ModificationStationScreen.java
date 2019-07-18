@@ -16,34 +16,58 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ModificationStationScreen extends ContainerScreen<ModificationStationContainer> {
     protected ModificationStationTile te;
-    public static final ResourceLocation background = new ResourceLocation(ModularToolkit.MOD_ID + ":textures/gui/modification_station.png");
+    public static final ResourceLocation background = new ResourceLocation(ModularToolkit.MOD_ID, "textures/gui/modification_station.png");
     private PlayerInventory playerInventory;
 
     public ModificationStationScreen(ModificationStationContainer container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         this.playerInventory = playerInventory;
         this.te = container.getTe();
+        this.xSize = 448;
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         this.minecraft.getTextureManager().bindTexture(ModificationStationScreen.background);
-        this.blit(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
+        this.blit(this.guiLeft, this.guiTop, 0, 0, 176, this.ySize);
 
         if (hasModifiers())
             if (isMouseOnBoost(mouseX, mouseY))
                 this.blit(guiLeft + 103, guiTop + 47, 183, 0, 7, 7);
             else
                 this.blit(guiLeft + 103, guiTop + 47, 176, 0, 7, 7);
+
+        this.minecraft.getTextureManager().bindTexture(new ResourceLocation(ModularToolkit.MOD_ID, "textures/gui/stats_panel.png"));
+        this.blit(this.guiLeft - 136, this.guiTop, 0, 0, 136, this.ySize);
+        this.blit(this.guiLeft + 176, this.guiTop, 0, 0, 136, this.ySize);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        this.guiLeft += 136;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String name = title.getFormattedText();
-        this.font.drawString(name, (float) (this.xSize / 2 - this.font.getStringWidth(name) / 2), 6.0F, 4210752);
-        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float) (this.ySize - 96 + 2), 4210752);
+        font.drawString(name, 88 - this.font.getStringWidth(name) / 2f, 6.0F, 4210752);
+        font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, this.ySize - 94, 4210752);
+
+        List<ITextComponent> inputStats = new ArrayList<>();
+        ToolUtils.addToolStats(container.getSlot(0).getStack(), inputStats, true);
+        for (int i = 0; i < inputStats.size(); i++)
+            font.drawString(inputStats.get(i).getFormattedText(), -128, 8 + i * 10, 0xffffff);
+
+        List<ITextComponent> outputputStats = new ArrayList<>();
+        ToolUtils.addToolStats(container.getSlot(5).getStack(), outputputStats, true);
+        for (int i = 0; i < outputputStats.size(); i++)
+            font.drawString(outputputStats.get(i).getFormattedText(), 184, 8 + i * 10, 0xffffff);
     }
 
     @Override

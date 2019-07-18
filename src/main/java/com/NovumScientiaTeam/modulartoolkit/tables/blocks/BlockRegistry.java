@@ -2,10 +2,18 @@ package com.NovumScientiaTeam.modulartoolkit.tables.blocks;
 
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
 import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +33,12 @@ public class BlockRegistry {
 
     private static Block register(Block block, RegistryEvent.Register<Block> e) {
         e.getRegistry().register(block);
-        blockItems.add(new BlockItem(block, new Item.Properties().group(ModularToolkit.MAIN_GROUP)).setRegistryName(block.getRegistryName()));
+        blockItems.add(new BlockItem(block, new Item.Properties().group(ModularToolkit.MAIN_GROUP)) {
+            @OnlyIn(Dist.CLIENT)
+            public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+                tooltip.add(new TranslationTextComponent("tooltip" + getTranslationKey().substring(5)));
+            }
+        }.setRegistryName(block.getRegistryName()));
         return block;
     }
 }

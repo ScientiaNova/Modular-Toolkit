@@ -1,5 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
+import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;

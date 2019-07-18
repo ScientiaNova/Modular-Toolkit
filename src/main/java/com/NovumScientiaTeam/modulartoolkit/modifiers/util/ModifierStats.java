@@ -1,5 +1,7 @@
-package com.NovumScientiaTeam.modulartoolkit.modifiers;
+package com.NovumScientiaTeam.modulartoolkit.modifiers.util;
 
+import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
+import com.NovumScientiaTeam.modulartoolkit.modifiers.Modifiers;
 import net.minecraft.nbt.CompoundNBT;
 
 public class ModifierStats {
@@ -16,7 +18,7 @@ public class ModifierStats {
     }
 
     public static ModifierStats deserialize(CompoundNBT nbt) {
-        return new ModifierStats(Modifiers.getAll().stream().filter(m -> m.getName().equals(nbt.getString("name"))).findFirst().get(), nbt.getInt("tier"), nbt.getInt("consumed"), nbt.getInt("added"));
+        return new ModifierStats(Modifiers.get(nbt.getString("name")), nbt.getInt("tier"), nbt.getInt("consumed"), nbt.getInt("added"));
     }
 
     public CompoundNBT serialize() {

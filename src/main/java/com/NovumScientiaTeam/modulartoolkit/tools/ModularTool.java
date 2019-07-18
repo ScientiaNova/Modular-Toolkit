@@ -32,7 +32,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -42,7 +41,6 @@ import net.minecraftforge.common.ToolType;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -79,35 +77,9 @@ public abstract class ModularTool extends Item {
         if (!isNull(stack)) {
             if (isBroken(stack))
                 tooltip.add(new TranslationTextComponent("tool.stat.broken").applyTextStyle(TextFormatting.RED));
-            if (InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                DecimalFormat format = new DecimalFormat("#.#");
-                tooltip.add(new TranslationTextComponent("tool.stat.level", getLevel(stack), getLevelCap(stack)));
-                long currentXP;
-                long nextXP;
-                if (getLevel(stack) < getLevelCap(stack)) {
-                    currentXP = getXPForCurrentLevel(stack);
-                    nextXP = getXPForLevelUp(stack);
-                } else {
-                    currentXP = getXPForLevel(getLevel(stack) - 1);
-                    nextXP = getXPForCurrentLevel(stack);
-                }
-                tooltip.add(new TranslationTextComponent("tool.stat.experience", getXP(stack) - currentXP, nextXP - currentXP));
-                tooltip.add(new TranslationTextComponent("tool.stat.modifier_slots", getFreeModifierSlotCount(stack)));
-                int maxDamage = getMaxDamage(stack) - 1;
-                tooltip.add(new TranslationTextComponent("tool.stat.current_durability", maxDamage - stack.getDamage(), maxDamage));
-                tooltip.add(new TranslationTextComponent("tool.stat.attack_damage", format.format(getTrueAttackDamage(stack) + 1)));
-                getToolTypes(stack).forEach(t -> {
-                    tooltip.add(new TranslationTextComponent("tool.stat.harvest_level_" + t.getName(), new TranslationTextComponent("harvest_level_" + getHarvestMap(stack).get(t))));
-                    tooltip.add(new TranslationTextComponent("tool.stat.efficiency_" + t.getName(), format.format(getDestroySpeedForToolType(stack, t))));
-                });
-                getAllAbilities(stack).stream().collect(Collectors.toMap(a -> a, a -> 1, Integer::sum)).forEach((a, v) -> {
-                    if (v > 1)
-                        tooltip.add(new StringTextComponent(a.getTranslationKey(stack).getFormattedText() + " x" + v));
-                    else
-                        tooltip.add(a.getTranslationKey(stack));
-                });
-                getModifiersStats(stack).forEach(s -> tooltip.add(new StringTextComponent(s.getModifier().getFormatting() + s.getModifier().getNameTextComponent(stack, s).getFormattedText())));
-            } else if (InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL)) {
+            if (InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT))
+                addToolStats(stack, tooltip, false);
+            else if (InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL)) {
                 List<Material> materials = getAllToolMaterials(stack);
                 List<ObjectType> parts = getToolParts(stack.getItem());
                 IntStream.range(0, materials.size()).forEach(i -> {
