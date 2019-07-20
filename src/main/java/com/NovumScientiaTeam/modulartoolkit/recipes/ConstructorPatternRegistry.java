@@ -1,7 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.recipes;
 
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
-import com.NovumScientiaTeam.modulartoolkit.ObjTypeRegistry;
+import com.NovumScientiaTeam.modulartoolkit.parts.ObjTypeRegistry;
 
 import java.util.*;
 
@@ -58,10 +58,26 @@ public final class ConstructorPatternRegistry {
                 {1}
         }), ObjTypeRegistry.TOOL_ROD);
         addPattern(new ConstructorPattern(new byte[][]{
+                {0, 1, 0},
+                {1, 1, 1},
+                {1, 1, 1},
+                {1, 1, 1},
+                {1, 1, 1},
+                {1, 1, 1},
+                {0, 1, 0}
+        }), ObjTypeRegistry.TOUGH_TOOL_ROD);
+        addPattern(new ConstructorPattern(new byte[][]{
                 {1, 0, 1},
                 {0, 1, 0},
                 {1, 0, 1}
         }), ObjTypeRegistry.BINDING);
+        addPattern(new ConstructorPattern(new byte[][]{
+                {1, 0, 0, 0, 1},
+                {0, 1, 0, 1, 0},
+                {0, 0, 1, 0, 0},
+                {0, 1, 0, 1, 0},
+                {1, 0, 0, 0, 1}
+        }), ObjTypeRegistry.TOUGH_BINDING);
         addPattern(new ConstructorPattern(new byte[][]{
                 {1, 0, 0, 0, 0},
                 {1, 1, 1, 0, 0},

@@ -1,9 +1,9 @@
 package com.NovumScientiaTeam.modulartoolkit.abilities;
 
 import com.EmosewaPixel.pixellib.materialsystem.MaterialRegistry;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Extra;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Handle;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Head;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Extra;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Handle;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Head;
 
 public class AbilityRegistry {
     public static final SoftAbility SOFT = new SoftAbility();

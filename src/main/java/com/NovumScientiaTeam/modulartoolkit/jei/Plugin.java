@@ -5,7 +5,7 @@ import com.EmosewaPixel.pixellib.materialsystem.lists.Materials;
 import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
-import com.NovumScientiaTeam.modulartoolkit.ObjTypeRegistry;
+import com.NovumScientiaTeam.modulartoolkit.parts.ObjTypeRegistry;
 import com.NovumScientiaTeam.modulartoolkit.jei.partConstructor.PartConstructorCategory;
 import com.NovumScientiaTeam.modulartoolkit.jei.partConstructor.PartConstructorTransferHandler;
 import com.NovumScientiaTeam.modulartoolkit.jei.partConstructor.PartRecipe;

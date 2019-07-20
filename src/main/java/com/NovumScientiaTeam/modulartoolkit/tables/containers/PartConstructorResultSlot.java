@@ -4,7 +4,7 @@ import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialItems;
 import com.EmosewaPixel.pixellib.materialsystem.materials.IMaterialItem;
 import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
-import com.NovumScientiaTeam.modulartoolkit.ObjTypeRegistry;
+import com.NovumScientiaTeam.modulartoolkit.parts.ObjTypeRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

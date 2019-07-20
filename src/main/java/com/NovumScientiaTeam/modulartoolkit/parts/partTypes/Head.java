@@ -1,15 +1,15 @@
-package com.NovumScientiaTeam.modulartoolkit.partTypes;
+package com.NovumScientiaTeam.modulartoolkit.parts.partTypes;
 
 import com.EmosewaPixel.pixellib.materialsystem.materials.IMaterialItem;
 import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
-import com.NovumScientiaTeam.modulartoolkit.ObjTypeRegistry;
 import com.NovumScientiaTeam.modulartoolkit.abilities.Abilities;
 import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
+import com.NovumScientiaTeam.modulartoolkit.parts.ObjTypeRegistry;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.modifications.PartModification;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.ToolType;
 
@@ -21,6 +21,7 @@ public class Head extends PartType {
     private ToolType toolType;
 
     public Head(ToolType toolType) {
+        super("head");
         this.toolType = toolType;
     }
 
@@ -30,7 +31,7 @@ public class Head extends PartType {
 
     @Override
     public int getExtraDurability(Material mat) {
-        return (int) (mat.getItemTier().getMaxUses() * 0.8);
+        return (int) (mat.getItemTier().getMaxUses() * 0.8 * mods.stream().mapToDouble(PartModification::getExtraDurabilityMultiplier).reduce(1, (d1, d2) -> d1 * d2));
     }
 
     @Override
@@ -45,11 +46,6 @@ public class Head extends PartType {
 
     public Optional<ToolType> getToolType() {
         return Optional.ofNullable(toolType);
-    }
-
-    @Override
-    public String getName() {
-        return "head";
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.abilities;
 
 import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.PartType;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.PartType;
 import com.google.common.collect.HashBasedTable;
 
 import java.util.HashSet;

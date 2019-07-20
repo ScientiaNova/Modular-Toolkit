@@ -1,19 +1,14 @@
 package com.NovumScientiaTeam.modulartoolkit.tools;
 
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Extra;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Handle;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Head;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
-import net.minecraftforge.common.ToolType;
 
 public class ShovelTool extends ModularTool {
     public ShovelTool() {
-        super("modulartoolkit:shovel_tool", ImmutableList.of(new Head(ToolType.SHOVEL), new Extra(), new Handle()));
+        super("modulartoolkit:shovel_tool");
         addToolTags(ToolUtils.IS_TOOL);
     }
 

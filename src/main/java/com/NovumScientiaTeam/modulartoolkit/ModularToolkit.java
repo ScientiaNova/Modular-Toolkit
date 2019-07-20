@@ -5,6 +5,7 @@ import com.NovumScientiaTeam.modulartoolkit.abilities.AbilityRegistry;
 import com.NovumScientiaTeam.modulartoolkit.effects.MagneticEffect;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.ModifierRegistry;
 import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
+import com.NovumScientiaTeam.modulartoolkit.parts.ObjTypeRegistry;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ClientProxy;
 import com.NovumScientiaTeam.modulartoolkit.proxy.ServerProxy;
 import com.NovumScientiaTeam.modulartoolkit.recipes.ConstructorPatternRegistry;
@@ -17,7 +18,7 @@ import com.NovumScientiaTeam.modulartoolkit.tables.screens.PartConstructorScreen
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.ModificationStationTile;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.PartConstructorTile;
 import com.NovumScientiaTeam.modulartoolkit.tools.ToolRegistry;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolTypeMap;
+import com.NovumScientiaTeam.modulartoolkit.tools.util.HarvestMaterialMap;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.inventory.container.ContainerType;
@@ -84,7 +85,7 @@ public class ModularToolkit {
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
         proxy.enque(event);
-        ToolTypeMap.init();
+        HarvestMaterialMap.init();
         AbilityRegistry.register();
         ModifierRegistry.register();
         ConstructorPatternRegistry.setup();

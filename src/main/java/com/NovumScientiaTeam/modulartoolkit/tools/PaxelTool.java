@@ -1,18 +1,14 @@
 package com.NovumScientiaTeam.modulartoolkit.tools;
 
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Handle;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Head;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
-import net.minecraftforge.common.ToolType;
 
 public class PaxelTool extends ModularTool {
     public PaxelTool() {
-        super("modulartoolkit:paxel_tool", ImmutableList.of(new Head(ToolType.AXE), new Head(ToolType.SHOVEL), new Head(ToolType.PICKAXE), new Handle()));
+        super("modulartoolkit:paxel_tool");
         addToolTags(ToolUtils.IS_TOOL);
     }
 
@@ -25,7 +21,7 @@ public class PaxelTool extends ModularTool {
 
     @Override
     public double getAttackSpeed(ItemStack stack) {
-        return ToolUtils.getAllToolMaterials(stack).stream().mapToDouble(m -> m.getItemTier().getHarvestLevel()).average().orElse(0) * 0.1 - 4;
+        return ToolUtils.getAllToolMaterials(stack).stream().mapToDouble(m -> m.getItemTier().getHarvestLevel()).average().orElse(0) * 0.1 - 3.9;
     }
 
     @Override

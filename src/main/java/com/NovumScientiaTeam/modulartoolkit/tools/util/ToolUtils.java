@@ -11,12 +11,11 @@ import com.NovumScientiaTeam.modulartoolkit.modifiers.Modifiers;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
 import com.NovumScientiaTeam.modulartoolkit.packets.LevelUpPacket;
 import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Head;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.PartType;
+import com.NovumScientiaTeam.modulartoolkit.parts.PartTypeMap;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Head;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.PartType;
 import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
-import javafx.util.Pair;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -54,6 +53,10 @@ public final class ToolUtils {
 
     public static List<ObjectType> getToolParts(Item tool) {
         return TOOL_PART_MAP.get(tool);
+    }
+
+    public static List<PartType> getPartList(Item tool) {
+        return getToolParts(tool).stream().map(PartTypeMap::getPartType).collect(Collectors.toList());
     }
 
     //NBT Methods
@@ -101,7 +104,7 @@ public final class ToolUtils {
         if (isNull(stack))
             return Collections.EMPTY_LIST;
 
-        return IntStream.range(0, ((ModularTool) stack.getItem()).getPartList().size()).mapToObj(i -> getToolMaterial(stack, i)).collect(Collectors.toList());
+        return IntStream.range(0, getToolParts(stack.getItem()).size()).mapToObj(i -> getToolMaterial(stack, i)).collect(Collectors.toList());
     }
 
     public static void setToolMaterial(ItemStack stack, int index, Material mat) {
@@ -209,7 +212,7 @@ public final class ToolUtils {
     }
 
     public static int getLevelCap(ItemStack stack) {
-        ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
+        List<PartType> partList = getPartList(stack.getItem());
         return (int) IntStream.range(0, partList.size())
                 .collect(HashMultimap::create, (map, i) -> map.put(partList.get(i).getName(), partList.get(i).getLevelCapMultiplier(getToolMaterial(stack, i))), (m1, m2) -> m1.putAll(m2))
                 .asMap().values().stream()
@@ -217,17 +220,17 @@ public final class ToolUtils {
     }
 
     public static List<Material> getHeadMaterials(ItemStack stack) {
-        ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
+        List<PartType> partList = getPartList(stack.getItem());
         return IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).mapToObj(i -> getToolMaterial(stack, i)).collect(Collectors.toList());
     }
 
     public static Map<ToolType, Integer> getHarvestMap(ItemStack stack) {
-        ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
-        return IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).filter(i -> ((Head) partList.get(i)).getToolType().isPresent()).mapToObj(i -> new Pair<>(((Head) partList.get(i)).getToolType().get(), getToolMaterial(stack, i).getItemTier().getHarvestLevel())).collect(Collectors.toMap(Pair::getKey, Pair::getValue, (i1, i2) -> i1 > i2 ? i1 : i2));
+        List<PartType> partList = getPartList(stack.getItem());
+        return IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head && ((Head) partList.get(i)).getToolType().isPresent()).boxed().collect(Collectors.toMap(i -> ((Head) partList.get(i)).getToolType().get(), i -> getToolMaterial(stack, i).getItemTier().getHarvestLevel(), (i1, i2) -> i1 > i2 ? i1 : i2));
     }
 
     public static float getDestroySpeedForToolType(ItemStack stack, ToolType type) {
-        ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
+        List<PartType> partList = getPartList(stack.getItem());
         float speed = (float) IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).filter(i -> ((Head) partList.get(i)).getToolType().get() == type).mapToDouble(i -> getToolMaterial(stack, i).getItemTier().getEfficiency()).max().orElse(1);
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             speed = e.getKey().setEfficiency(stack, e.getValue(), speed, type);
@@ -284,7 +287,7 @@ public final class ToolUtils {
     public static List<AbstractAbility> getAllAbilities(ItemStack stack) {
         if (isNull(stack))
             return Collections.EMPTY_LIST;
-        ImmutableList<PartType> partList = ((ModularTool) stack.getItem()).getPartList();
+        List<PartType> partList = getPartList(stack.getItem());
         return IntStream.range(0, partList.size()).mapToObj(i -> Abilities.getFor(getToolMaterial(stack, i), partList.get(i))).filter(StreamUtils::isNotNull).collect(Collectors.toList());
     }
 

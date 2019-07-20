@@ -3,13 +3,13 @@ package com.NovumScientiaTeam.modulartoolkit.jei.partConstructor;
 import com.EmosewaPixel.pixellib.PixelLib;
 import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialItems;
 import com.EmosewaPixel.pixellib.materialsystem.materials.IMaterialItem;
-import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
 import com.NovumScientiaTeam.modulartoolkit.jei.partConstructor.recipetransfer.AdvancedRecipeTransferPacket;
 import com.NovumScientiaTeam.modulartoolkit.jei.partConstructor.recipetransfer.AdvancedRecipeTransferUtils;
+import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
+import com.NovumScientiaTeam.modulartoolkit.packets.PatternPacket;
 import com.NovumScientiaTeam.modulartoolkit.recipes.ConstructorPattern;
 import com.NovumScientiaTeam.modulartoolkit.recipes.ConstructorPatternRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tables.containers.PartConstructorContainer;
-import com.NovumScientiaTeam.modulartoolkit.packets.PatternPacket;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
@@ -60,6 +60,8 @@ public class PartConstructorTransferHandler implements IRecipeTransferHandler<Pa
         craftingSlots.put(container.getSlot(0).slotNumber, container.getSlot(0));
 
         IGuiItemStackGroup itemStackGroup = recipeLayout.getItemStacks();
+        if (itemStackGroup.getGuiIngredients().isEmpty() || itemStackGroup.getGuiIngredients().get(0).getAllIngredients().isEmpty())
+            return handlerHelper.createInternalError();
 
         Map<Integer, ItemStack> availableItemStacks = new HashMap<>();
 

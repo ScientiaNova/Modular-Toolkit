@@ -1,10 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit.tools;
 
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Extra;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Handle;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Head;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -14,7 +10,7 @@ import net.minecraft.tags.BlockTags;
 
 public class SwordTool extends ModularTool {
     public SwordTool() {
-        super("modulartoolkit:sword_tool", ImmutableList.of(new Head(), new Extra(), new Handle()));
+        super("modulartoolkit:sword_tool");
         addToolTags(ToolUtils.IS_MELEE_WEAPON);
     }
 

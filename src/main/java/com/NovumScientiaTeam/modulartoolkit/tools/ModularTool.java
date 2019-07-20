@@ -8,10 +8,10 @@ import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
 import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Head;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.PartType;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolTypeMap;
-import com.google.common.collect.ImmutableList;
+import com.NovumScientiaTeam.modulartoolkit.parts.PartTypeMap;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Head;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.PartType;
+import com.NovumScientiaTeam.modulartoolkit.tools.util.HarvestMaterialMap;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -49,13 +49,11 @@ import java.util.stream.IntStream;
 import static com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils.*;
 
 public abstract class ModularTool extends Item {
-    private ImmutableList<PartType> partList;
     private List<String> toolTags = new ArrayList<>();
 
-    public ModularTool(String name, ImmutableList<PartType> partList) {
+    public ModularTool(String name) {
         super(new Properties().group(ModularToolkit.MAIN_GROUP).maxStackSize(1).setNoRepair());
         setRegistryName(name);
-        this.partList = partList;
         addPropertyOverride(new ResourceLocation("broken"), (stack, world, entity) -> isBroken(stack) ? 1 : 0);
     }
 
@@ -85,7 +83,7 @@ public abstract class ModularTool extends Item {
                 IntStream.range(0, materials.size()).forEach(i -> {
                     Item item = MaterialItems.getItem(materials.get(i), parts.get(i));
                     tooltip.add(new ItemStack(item).getDisplayName().applyTextStyle(TextFormatting.UNDERLINE));
-                    partList.get(i).addTooltip(item, tooltip);
+                    PartTypeMap.getPartType(parts.get(i)).addTooltip(item, tooltip);
                 });
             } else {
                 tooltip.add(new TranslationTextComponent("tool.tooltip.tool_button"));
@@ -96,7 +94,7 @@ public abstract class ModularTool extends Item {
 
     @Override
     public Set<ToolType> getToolTypes(ItemStack stack) {
-        return partList.stream().filter(p -> p instanceof Head).map(h -> ((Head) h).getToolType()).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toCollection(LinkedHashSet::new));
+        return getPartList(stack.getItem()).stream().filter(p -> p instanceof Head).map(h -> ((Head) h).getToolType()).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     @Override
@@ -126,9 +124,9 @@ public abstract class ModularTool extends Item {
     public float getDestroySpeed(ItemStack stack, BlockState state) {
         if (isNull(stack) || isBroken(stack))
             return 1;
-        if (ToolTypeMap.contains(state.getBlock()))
-            return getDestroySpeedForToolType(stack, ToolTypeMap.get(state.getBlock()));
-        return (float) getToolTypes(stack).stream().filter(state::isToolEffective).mapToDouble(t -> getDestroySpeedForToolType(stack, t)).max().orElse(1);
+        if (HarvestMaterialMap.contains(state.getMaterial()) && getToolTypes(stack).contains(HarvestMaterialMap.get(state.getMaterial())))
+            return getDestroySpeedForToolType(stack, HarvestMaterialMap.get(state.getMaterial()));
+        return (float) getToolTypes(stack).stream().filter(t -> state.isToolEffective(t) && getHarvestLevel(stack, t, null, state) >= state.getHarvestLevel()).mapToDouble(t -> getDestroySpeedForToolType(stack, t)).max().orElse(1);
     }
 
     @Override
@@ -140,6 +138,7 @@ public abstract class ModularTool extends Item {
     public final int getMaxDamage(ItemStack stack) {
         if (isNull(stack))
             return 1;
+        List<PartType> partList = getPartList(stack.getItem());
         return (int) (IntStream.range(0, partList.size()).map(i -> partList.get(i).getExtraDurability(getToolMaterial(stack, i))).sum() * IntStream.range(0, partList.size()).mapToDouble(i -> partList.get(i).getDurabilityModifier(getToolMaterial(stack, i))).reduce(1, (d, p) -> d * p) * getBoostMultiplier(stack) + 1);
     }
 
@@ -244,7 +243,7 @@ public abstract class ModularTool extends Item {
 
     @Override
     public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list) {
-        if (isInGroup(group))
+        if (isInGroup(group) && group != ItemGroup.SEARCH)
             Materials.getAll().stream().filter(mat -> mat.getItemTier() != null).map(mat -> {
                 ItemStack result = new ItemStack(this);
                 CompoundNBT mainCompound = new CompoundNBT();
@@ -256,7 +255,7 @@ public abstract class ModularTool extends Item {
                 mainCompound.putInt("Damage", 0);
                 mainCompound.putInt("ModifierSlotsUsed", 0);
                 CompoundNBT materialNBT = new CompoundNBT();
-                StreamUtils.repeat(partList.size(), i -> materialNBT.putString("material" + i, mat.getName()));
+                StreamUtils.repeat(getToolParts(this).size(), i -> materialNBT.putString("material" + i, mat.getName()));
                 mainCompound.put("Materials", materialNBT);
                 result.setTag(mainCompound);
                 return result;
@@ -274,16 +273,17 @@ public abstract class ModularTool extends Item {
         return Rarity.COMMON;
     }
 
+    @Override
+    public boolean canHarvestBlock(ItemStack stack, BlockState blockIn) {
+        return getDestroySpeed(stack, blockIn) > 1;
+    }
+
     public void addToolTags(String... tags) {
         toolTags.addAll(Arrays.asList(tags));
     }
 
     public boolean hasTag(String tag) {
         return toolTags.contains(tag);
-    }
-
-    public ImmutableList<PartType> getPartList() {
-        return partList;
     }
 
     public double getTrueAttackDamage(ItemStack stack) {

@@ -1,10 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.tools;
 
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Handle;
-import com.NovumScientiaTeam.modulartoolkit.partTypes.Head;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.IWrenchableBlock;
 import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -14,15 +11,12 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ToolType;
 
 import java.util.Optional;
 
 public class WrenchTool extends ModularTool {
-    public static final ToolType WRENCH = ToolType.get("wrench");
-
     public WrenchTool() {
-        super("modulartoolkit:wrench_tool", ImmutableList.of(new Head(WRENCH), new Handle()));
+        super("modulartoolkit:wrench_tool");
     }
 
     @Override

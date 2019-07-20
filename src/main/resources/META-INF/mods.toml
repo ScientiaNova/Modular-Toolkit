@@ -16,12 +16,12 @@ description="A mod adding customizable tools based on Pixel Lib materials."
 [[dependencies.modulartoolkit]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.14.3]"
+    versionRange="[1.14.,]"
     ordering="NONE"
     side="BOTH"
 [[dependencies.modulartoolkit]]
      modId="pixellib"
      mandatory=true
-     versionRange="[1.0.5,]"
+     versionRange="[1.0.7,]"
      ordering="AFTER"
      side="BOTH"

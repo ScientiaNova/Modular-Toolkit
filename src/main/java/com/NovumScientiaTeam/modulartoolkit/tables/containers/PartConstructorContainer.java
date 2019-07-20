@@ -7,7 +7,7 @@ import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
-import com.NovumScientiaTeam.modulartoolkit.ObjTypeRegistry;
+import com.NovumScientiaTeam.modulartoolkit.parts.ObjTypeRegistry;
 import com.NovumScientiaTeam.modulartoolkit.recipes.ConstructorPattern;
 import com.NovumScientiaTeam.modulartoolkit.recipes.ConstructorPatternRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.PartConstructorTile;
