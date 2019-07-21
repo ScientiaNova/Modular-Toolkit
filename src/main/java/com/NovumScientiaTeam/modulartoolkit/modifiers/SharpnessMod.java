@@ -1,13 +1,13 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
-import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.ModularItem;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import net.minecraft.item.ItemStack;
 
 public class SharpnessMod extends AbstractModifier {
     public SharpnessMod() {
         super("sharpness");
-        addAdditionRequirements(stack -> ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_MELEE_WEAPON) || ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_HOE));
+        addAdditionRequirements(stack -> ((ModularItem) stack.getItem()).hasTag(ModularUtils.IS_MELEE_WEAPON) || ((ModularItem) stack.getItem()).hasTag(ModularUtils.IS_HOE));
     }
 
     @Override

@@ -10,7 +10,7 @@ import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.modifications.ToughM
 import net.minecraftforge.common.ToolType;
 
 public class ObjTypeRegistry {
-    public static ObjectType TOOL_ROD, AXE_HEAD, HOE_HEAD, PICKAXE_HEAD, SWORD_BLADE, BINDING, SHOVEL_HEAD, SWORD_GUARD, WRENCH_HEAD, FRAGMENT, TOUGH_TOOL_ROD, TOUGH_BINDING;
+    public static ObjectType TOOL_ROD, AXE_HEAD, HOE_HEAD, PICKAXE_HEAD, SWORD_BLADE, BINDING, SHOVEL_HEAD, SWORD_GUARD, WRENCH_HEAD, FRAGMENT, TOUGH_TOOL_ROD, TOUGH_BINDING, PLATING, SHIELD_FRAME;
 
     public static final String WEAPON_PART = "weapon_part";
 
@@ -26,9 +26,11 @@ public class ObjTypeRegistry {
         BINDING = new ItemType("binding", m -> m.getItemTier() != null).setBucketVolume(72).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
         SWORD_GUARD = new ItemType("sword_guard", m -> m.getItemTier() != null).setBucketVolume(72).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE, WEAPON_PART).build();
         WRENCH_HEAD = new ItemType("wrench_head", m -> m.getItemTier() != null).setBucketVolume(144).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
-        FRAGMENT = new ItemType("fragment", m -> m.getItemTier() != null).setBucketVolume(72).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
+        FRAGMENT = new ItemType("fragment", m -> m.getItemTier() != null || m.getArmorMaterial() != null).setBucketVolume(72).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
         TOUGH_TOOL_ROD = new ItemType("tough_tool_rod", m -> m.getItemTier() != null).setBucketVolume(432).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
         TOUGH_BINDING = new ItemType("tough_binding", m -> m.getItemTier() != null).setBucketVolume(216).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
+        PLATING = new ItemType("plating", m -> m.getArmorMaterial() != null).setBucketVolume(216).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
+        SHIELD_FRAME = new ItemType("shield_frame", m -> m.getArmorMaterial() != null).setBucketVolume(288).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
 
         PartTypeMap.bindToPartType(TOOL_ROD, new Handle());
         PartTypeMap.bindToPartType(AXE_HEAD, new Head(ToolType.AXE));

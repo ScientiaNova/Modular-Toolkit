@@ -1,11 +1,12 @@
 package com.NovumScientiaTeam.modulartoolkit.tables.screens;
 
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
+import com.NovumScientiaTeam.modulartoolkit.items.ModularItem;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import com.NovumScientiaTeam.modulartoolkit.packets.BoostsPacket;
 import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
 import com.NovumScientiaTeam.modulartoolkit.tables.containers.ModificationStationContainer;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.ModificationStationTile;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -59,15 +60,21 @@ public class ModificationStationScreen extends ContainerScreen<ModificationStati
         font.drawString(name, 88 - this.font.getStringWidth(name) / 2f, 6.0F, 4210752);
         font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, this.ySize - 94, 4210752);
 
-        List<ITextComponent> inputStats = new ArrayList<>();
-        ToolUtils.addToolStats(container.getSlot(0).getStack(), inputStats, true);
-        for (int i = 0; i < inputStats.size(); i++)
-            font.drawString(inputStats.get(i).getFormattedText(), -128, 8 + i * 10, 0xffffff);
+        ItemStack input = container.getSlot(0).getStack();
+        if (!input.isEmpty()) {
+            List<ITextComponent> inputStats = new ArrayList<>();
+            ((ModularItem) input.getItem()).addStats(input, inputStats, true);
+            for (int i = 0; i < inputStats.size(); i++)
+                font.drawString(inputStats.get(i).getFormattedText(), -128, 8 + i * 10, 0xffffff);
 
-        List<ITextComponent> outputputStats = new ArrayList<>();
-        ToolUtils.addToolStats(container.getSlot(5).getStack(), outputputStats, true);
-        for (int i = 0; i < outputputStats.size(); i++)
-            font.drawString(outputputStats.get(i).getFormattedText(), 184, 8 + i * 10, 0xffffff);
+            ItemStack output = container.getSlot(5).getStack();
+            if (!output.isEmpty()) {
+                List<ITextComponent> outputputStats = new ArrayList<>();
+                ((ModularItem) output.getItem()).addStats(output, outputputStats, true);
+                for (int i = 0; i < outputputStats.size(); i++)
+                    font.drawString(outputputStats.get(i).getFormattedText(), 184, 8 + i * 10, 0xffffff);
+            }
+        }
     }
 
     @Override
@@ -99,6 +106,6 @@ public class ModificationStationScreen extends ContainerScreen<ModificationStati
         ItemStack output = container.getSlot(5).getStack();
         if (output.isEmpty())
             return false;
-        return !ToolUtils.isBroken(output) && ToolUtils.getFreeModifierSlotCount(output) > 0;
+        return !ModularUtils.isBroken(output) && ModularUtils.getFreeModifierSlotCount(output) > 0;
     }
 }

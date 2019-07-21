@@ -1,4 +1,4 @@
-package com.NovumScientiaTeam.modulartoolkit.tools.util;
+package com.NovumScientiaTeam.modulartoolkit.items.util;
 
 import com.EmosewaPixel.pixellib.materialsystem.lists.Materials;
 import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
@@ -12,9 +12,7 @@ import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
 import com.NovumScientiaTeam.modulartoolkit.packets.LevelUpPacket;
 import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
 import com.NovumScientiaTeam.modulartoolkit.parts.PartTypeMap;
-import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Head;
 import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.PartType;
-import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
 import com.google.common.collect.HashMultimap;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,19 +21,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public final class ToolUtils {
+public final class ModularUtils {
     //Tool Tags
     public static final String IS_TOOL = "is_tool";
     public static final String IS_MELEE_WEAPON = "is_melee_weapon";
@@ -80,7 +73,7 @@ public final class ToolUtils {
         stack.getOrCreateTag().putBoolean("isBroken", false);
     }
 
-    public static void repairTool(ItemStack stack, int amount) {
+    public static void repairItem(ItemStack stack, int amount) {
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             amount = e.getKey().onToolRepaired(amount, stack, e.getValue());
         for (AbstractAbility ability : getAllAbilities(stack))
@@ -90,8 +83,8 @@ public final class ToolUtils {
         stack.setDamage(Math.max(0, stack.getDamage() - amount));
     }
 
-    public static void repairTool(ItemStack stack) {
-        repairTool(stack, 1);
+    public static void repairItem(ItemStack stack) {
+        repairItem(stack, 1);
     }
 
     public static Material getToolMaterial(ItemStack stack, int index) {
@@ -219,26 +212,6 @@ public final class ToolUtils {
                 .mapToDouble(l -> l.stream().mapToDouble(d -> (double) d).average().getAsDouble()).reduce(1, (d1, d2) -> d1 * d2);
     }
 
-    public static List<Material> getHeadMaterials(ItemStack stack) {
-        List<PartType> partList = getPartList(stack.getItem());
-        return IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).mapToObj(i -> getToolMaterial(stack, i)).collect(Collectors.toList());
-    }
-
-    public static Map<ToolType, Integer> getHarvestMap(ItemStack stack) {
-        List<PartType> partList = getPartList(stack.getItem());
-        return IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head && ((Head) partList.get(i)).getToolType().isPresent()).boxed().collect(Collectors.toMap(i -> ((Head) partList.get(i)).getToolType().get(), i -> getToolMaterial(stack, i).getItemTier().getHarvestLevel(), (i1, i2) -> i1 > i2 ? i1 : i2));
-    }
-
-    public static float getDestroySpeedForToolType(ItemStack stack, ToolType type) {
-        List<PartType> partList = getPartList(stack.getItem());
-        float speed = (float) IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof Head).filter(i -> ((Head) partList.get(i)).getToolType().get() == type).mapToDouble(i -> getToolMaterial(stack, i).getItemTier().getEfficiency()).max().orElse(1);
-        for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
-            speed = e.getKey().setEfficiency(stack, e.getValue(), speed, type);
-        for (AbstractAbility ability : getAllAbilities(stack))
-            speed = ability.setEfficiency(stack, speed, type);
-        return (float) (speed * getBoostMultiplier(stack));
-    }
-
     public static void remapModifiers(ItemStack stack, List<CompoundNBT> modifiersNBT) {
         if (isNull(stack))
             return;
@@ -272,10 +245,10 @@ public final class ToolUtils {
         return getModifiersNBT(stack).stream().map(nbt -> Modifiers.get(nbt.getString("name"))).filter(StreamUtils::isNotNull).collect(Collectors.toList());
     }
 
-    public static Map<AbstractModifier, Integer> getModifierTierMap(ItemStack stack) {
+    public static LinkedHashMap<AbstractModifier, Integer> getModifierTierMap(ItemStack stack) {
         if (isNull(stack))
-            return Collections.EMPTY_MAP;
-        return getModifiersNBT(stack).stream().collect(Collectors.toMap(nbt -> Modifiers.get(nbt.getString("name")), nbt -> nbt.getInt("tier")));
+            return new LinkedHashMap<>();
+        return getModifiersNBT(stack).stream().collect(Collectors.toMap(nbt -> Modifiers.get((nbt).getString("name")), nbt -> nbt.getInt("tier"), (nbt1, nbt2) -> nbt2, LinkedHashMap::new));
     }
 
     public static List<ModifierStats> getModifiersStats(ItemStack stack) {
@@ -323,41 +296,5 @@ public final class ToolUtils {
         if (stack.getTag().contains("Enchantments"))
             stack.getTag().remove("Enchantments");
         getModifierTierMap(stack).forEach((m, t) -> m.enchantItem(stack, t));
-    }
-
-    public static void addToolStats(ItemStack stack, List<ITextComponent> tooltip, boolean compact) {
-        if (stack.getItem() instanceof ModularTool) {
-            DecimalFormat format = new DecimalFormat("#.#");
-            tooltip.add(new TranslationTextComponent("tool.stat.level", getLevel(stack), getLevelCap(stack)));
-            long currentXP;
-            long nextXP;
-            if (getLevel(stack) < getLevelCap(stack)) {
-                currentXP = getXPForCurrentLevel(stack);
-                nextXP = getXPForLevelUp(stack);
-            } else {
-                currentXP = getXPForLevel(getLevel(stack) - 1);
-                nextXP = getXPForCurrentLevel(stack);
-            }
-            tooltip.add(new TranslationTextComponent("tool.stat.experience", getXP(stack) - currentXP, nextXP - currentXP));
-            tooltip.add(new TranslationTextComponent("tool.stat.modifier_slots", getFreeModifierSlotCount(stack)));
-            int maxDamage = stack.getMaxDamage() - 1;
-            tooltip.add(new TranslationTextComponent("tool.stat.current_durability", maxDamage - stack.getDamage(), maxDamage));
-            tooltip.add(new TranslationTextComponent("tool.stat.attack_damage", format.format(((ModularTool) stack.getItem()).getTrueAttackDamage(stack) + 1)));
-            Set<ToolType> toolTypes = stack.getToolTypes();
-            if (compact)
-                toolTypes.forEach(t -> tooltip.add(new TranslationTextComponent("tool.stat." + t.getName(), new TranslationTextComponent("harvest_level_" + getHarvestMap(stack).get(t)), format.format(getDestroySpeedForToolType(stack, t)))));
-            else
-                toolTypes.forEach(t -> {
-                    tooltip.add(new TranslationTextComponent("tool.stat.harvest_level_" + t.getName(), new TranslationTextComponent("harvest_level_" + getHarvestMap(stack).get(t))));
-                    tooltip.add(new TranslationTextComponent("tool.stat.efficiency_" + t.getName(), format.format(getDestroySpeedForToolType(stack, t))));
-                });
-            getAllAbilities(stack).stream().collect(Collectors.toMap(a -> a, a -> 1, Integer::sum)).forEach((a, v) -> {
-                if (v > 1)
-                    tooltip.add(new StringTextComponent(a.getTranslationKey(stack).getFormattedText() + " x" + v));
-                else
-                    tooltip.add(a.getTranslationKey(stack));
-            });
-            getModifiersStats(stack).forEach(s -> tooltip.add(new StringTextComponent(s.getModifier().getFormatting() + s.getModifier().getNameTextComponent(stack, s).getFormattedText())));
-        }
     }
 }

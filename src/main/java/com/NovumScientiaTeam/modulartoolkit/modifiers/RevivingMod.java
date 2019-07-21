@@ -1,7 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
 import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 public class RevivingMod extends AbstractModifier {
     public RevivingMod() {
         super("reviving");
-        addAdditionRequirements(stack -> !ToolUtils.getAllModifiers(stack).contains(ModifierRegistry.HARDENED));
+        addAdditionRequirements(stack -> !ModularUtils.getAllModifiers(stack).contains(ModifierRegistry.HARDENED));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
 import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -12,7 +12,7 @@ import java.util.Random;
 public class HardenedMod extends AbstractModifier {
     public HardenedMod() {
         super("hardened");
-        addAdditionRequirements(stack -> !ToolUtils.getAllModifiers(stack).contains(ModifierRegistry.REVIVING));
+        addAdditionRequirements(stack -> !ModularUtils.getAllModifiers(stack).contains(ModifierRegistry.REVIVING));
     }
 
     @Override

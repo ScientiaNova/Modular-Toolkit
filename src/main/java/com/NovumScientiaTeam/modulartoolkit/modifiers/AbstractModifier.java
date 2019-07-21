@@ -1,8 +1,8 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
+import com.NovumScientiaTeam.modulartoolkit.items.ModularItem;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
-import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -31,7 +31,7 @@ public abstract class AbstractModifier {
     }
 
     public ITextComponent getNameTextComponent(ItemStack stack, @Nullable ModifierStats stats) {
-        if (stack.getItem() instanceof ModularTool && stats != null) {
+        if (stack.getItem() instanceof ModularItem && stats != null) {
             int tier = stats.getTier();
             int itemsForCurrent = getLevelRequirement(tier);
             int itemsForLast = getLevelRequirement(tier - 1);
@@ -48,7 +48,7 @@ public abstract class AbstractModifier {
     public abstract int getLevelCap();
 
     public boolean canLevelUp(ItemStack stack, int level) {
-        return level <= getLevelCap() && level <= ToolUtils.getLevel(stack);
+        return level <= getLevelCap() && level <= ModularUtils.getLevel(stack);
     }
 
     //Returns the amount of items that need to be consumed for a certain level

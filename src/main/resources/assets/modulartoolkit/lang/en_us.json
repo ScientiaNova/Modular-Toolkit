@@ -13,6 +13,8 @@
   "itemtype.fragment": "%s Fragment",
   "itemtype.tough_tool_rod": "Tough %s Tool Rod",
   "itemtype.tough_binding": "Tough %s Binding",
+  "itemtype.plating": "%s Armor Plating",
+  "itemtype.shield_frame": "%s Shield Frame",
 
   "block.modulartoolkit.part_constructor": "Part Constructor",
   "block.modulartoolkit.modification_station": "Modification Station",

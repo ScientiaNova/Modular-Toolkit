@@ -19,7 +19,7 @@ archivesBaseName = 'modulartoolkit'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190709-1.14.3'
+    mappings channel: 'snapshot', version: '20190720-1.14.3'
 
     accessTransformer = file('src/main/resources/META-INF/modulartoolkit_at.cfg')
 
@@ -82,10 +82,10 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-27.0.60"
-    compile files("libs/pixellib-${mc_version}-${lib_version}-deobf.jar")
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
-    compile fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
+    minecraft "net.minecraftforge:forge:${mc_version}-28.0.1"
+    compile files("libs/pixellib-1.14.3-${lib_version}-deobf.jar")
+    compileOnly fg.deobf("mezz.jei:jei-1.14.3:${jei_version}:api")
+    compile fg.deobf("mezz.jei:jei-1.14.3:${jei_version}")
 }
 
 jar {

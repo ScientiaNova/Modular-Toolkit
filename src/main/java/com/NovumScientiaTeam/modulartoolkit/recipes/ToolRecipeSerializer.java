@@ -1,7 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.recipes;
 
 import com.EmosewaPixel.pixellib.materialsystem.lists.ObjTypes;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -46,7 +46,7 @@ public class ToolRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?
             throw new JsonParseException("Too many ingredients for tool recipe the max is 9");
         } else {
             ItemStack itemstack = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
-            ToolUtils.setToolParts(itemstack.getItem(), tags.stream().map(tag -> ObjTypes.get(tag.getId().getPath().substring(0, tag.getId().getPath().length() - 1))).collect(Collectors.toList()));
+            ModularUtils.setToolParts(itemstack.getItem(), tags.stream().map(tag -> ObjTypes.get(tag.getId().getPath().substring(0, tag.getId().getPath().length() - 1))).collect(Collectors.toList()));
             return new ToolRecipe(recipeId, s, itemstack, nonnulllist);
         }
     }

@@ -1,4 +1,4 @@
-package com.NovumScientiaTeam.modulartoolkit.tools.util;
+package com.NovumScientiaTeam.modulartoolkit.items.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;

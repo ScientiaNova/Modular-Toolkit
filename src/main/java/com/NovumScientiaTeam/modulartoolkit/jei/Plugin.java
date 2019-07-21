@@ -12,7 +12,7 @@ import com.NovumScientiaTeam.modulartoolkit.jei.partConstructor.PartRecipe;
 import com.NovumScientiaTeam.modulartoolkit.recipes.ConstructorPatternRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tables.blocks.BlockRegistry;
 import com.NovumScientiaTeam.modulartoolkit.tables.screens.PartConstructorScreen;
-import com.NovumScientiaTeam.modulartoolkit.tools.ToolRegistry;
+import com.NovumScientiaTeam.modulartoolkit.items.ItemRegistry;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -36,7 +36,7 @@ public class Plugin implements IModPlugin {
     @Override
     public void registerItemSubtypes(ISubtypeRegistration reg) {
         ToolTypeInterpreter toolInterpreter = new ToolTypeInterpreter();
-        ToolRegistry.TOOLS.forEach(tool -> reg.registerSubtypeInterpreter(tool, toolInterpreter));
+        ItemRegistry.TOOLS.forEach(tool -> reg.registerSubtypeInterpreter(tool, toolInterpreter));
     }
 
     @Override

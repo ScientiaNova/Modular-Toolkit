@@ -1,7 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
-import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.ModularItem;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ToolType;
@@ -9,7 +9,7 @@ import net.minecraftforge.common.ToolType;
 public class HasteMod extends AbstractModifier {
     public HasteMod() {
         super("haste");
-        addAdditionRequirements(stack -> ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_TOOL));
+        addAdditionRequirements(stack -> ((ModularItem) stack.getItem()).hasTag(ModularUtils.IS_TOOL));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit.abilities;
 
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -19,7 +19,7 @@ public abstract class AbstractAbility {
     public abstract int getLevelCap();
 
     public int getLevel(ItemStack stack) {
-        return ToolUtils.getLevel(stack) > getLevelCap() ? getLevelCap() : ToolUtils.getLevel(stack);
+        return ModularUtils.getLevel(stack) > getLevelCap() ? getLevelCap() : ModularUtils.getLevel(stack);
     }
 
     public int onToolDamaged(ItemStack stack, int amount) {

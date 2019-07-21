@@ -1,7 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
-import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.ModularItem;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -9,7 +9,7 @@ import net.minecraft.util.text.TextFormatting;
 public class FireyMod extends AbstractModifier {
     public FireyMod() {
         super("firey");
-        addAdditionRequirements(stack -> ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_MELEE_WEAPON));
+        addAdditionRequirements(stack -> ((ModularItem) stack.getItem()).hasTag(ModularUtils.IS_MELEE_WEAPON));
     }
 
     @Override

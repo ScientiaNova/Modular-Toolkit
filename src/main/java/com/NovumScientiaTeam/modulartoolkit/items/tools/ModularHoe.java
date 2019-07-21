@@ -1,7 +1,7 @@
-package com.NovumScientiaTeam.modulartoolkit.tools;
+package com.NovumScientiaTeam.modulartoolkit.items.tools;
 
 import com.EmosewaPixel.pixellib.miscutils.ItemUtils;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropsBlock;
@@ -12,15 +12,15 @@ import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.List;
 
-public class HoeTool extends ModularTool {
-    public HoeTool() {
+public class ModularHoe extends ModularTool {
+    public ModularHoe() {
         super("modulartoolkit:hoe_tool");
-        addToolTags(ToolUtils.IS_HOE);
+        addToolTags(ModularUtils.IS_HOE);
     }
 
     @Override
@@ -30,19 +30,19 @@ public class HoeTool extends ModularTool {
 
     @Override
     public double getAttackSpeed(ItemStack stack) {
-        if (ToolUtils.isNull(stack))
+        if (ModularUtils.isNull(stack))
             return -3;
-        return ToolUtils.getToolMaterial(stack, 0).getItemTier().getHarvestLevel() + -3;
+        return ModularUtils.getToolMaterial(stack, 0).getItemTier().getHarvestLevel() + -3;
     }
 
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         ItemStack stack = context.getPlayer().getHeldItem(context.getHand());
-        if (ToolUtils.isBroken(stack) || ToolUtils.isNull(stack))
+        if (ModularUtils.isBroken(stack) || ModularUtils.isNull(stack))
             return ActionResultType.PASS;
         ActionResultType result = Items.DIAMOND_HOE.onItemUse(context);
         if (result == ActionResultType.SUCCESS) {
-            ToolUtils.addXP(stack, context.getPlayer());
+            ModularUtils.addXP(stack, context.getPlayer());
             return ActionResultType.SUCCESS;
         }
         BlockState state = context.getWorld().getBlockState(context.getPos());

@@ -1,7 +1,7 @@
-package com.NovumScientiaTeam.modulartoolkit.tools;
+package com.NovumScientiaTeam.modulartoolkit.items.tools;
 
-import com.NovumScientiaTeam.modulartoolkit.tools.util.IWrenchableBlock;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.util.IWrenchableBlock;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -14,16 +14,16 @@ import net.minecraft.world.World;
 
 import java.util.Optional;
 
-public class WrenchTool extends ModularTool {
-    public WrenchTool() {
+public class ModularWrench extends ModularTool {
+    public ModularWrench() {
         super("modulartoolkit:wrench_tool");
     }
 
     @Override
     public double getAttackDamage(ItemStack stack) {
-        if (ToolUtils.isNull(stack))
+        if (ModularUtils.isNull(stack))
             return 0;
-        return ToolUtils.getToolMaterial(stack, 0).getItemTier().getAttackDamage() + 1;
+        return ModularUtils.getToolMaterial(stack, 0).getItemTier().getAttackDamage() + 1;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class WrenchTool extends ModularTool {
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
-        if (ToolUtils.isBroken(stack) || ToolUtils.isNull(stack))
+        if (ModularUtils.isBroken(stack) || ModularUtils.isNull(stack))
             return ActionResultType.PASS;
         World world = context.getWorld();
         BlockState state = world.getBlockState(context.getPos());
@@ -50,7 +50,7 @@ public class WrenchTool extends ModularTool {
                 stack.damageItem(1, player, (p_220038_0_) -> {
                     p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND);
                 });
-                ToolUtils.addXP(stack, context.getPlayer());
+                ModularUtils.addXP(stack, context.getPlayer());
                 return ActionResultType.SUCCESS;
             }
 

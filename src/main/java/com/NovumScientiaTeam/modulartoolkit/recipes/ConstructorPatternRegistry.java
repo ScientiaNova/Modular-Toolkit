@@ -102,5 +102,19 @@ public final class ConstructorPatternRegistry {
                 {1, 1, 1, 1},
                 {1, 1, 1, 1}
         }), ObjTypeRegistry.SHOVEL_HEAD);
+        addPattern(new ConstructorPattern(new byte[][]{
+                {1, 1, 1},
+                {1, 1, 1},
+                {1, 1, 1}
+        }), ObjTypeRegistry.PLATING);
+        addPattern(new ConstructorPattern(new byte[][]{
+                {1, 1, 1, 1},
+                {1, 0, 0, 1},
+                {1, 0, 0, 1},
+                {1, 0, 0, 1},
+                {1, 0, 0, 1},
+                {1, 0, 0, 1},
+                {1, 1, 1, 1}
+        }), ObjTypeRegistry.SHIELD_FRAME);
     }
 }

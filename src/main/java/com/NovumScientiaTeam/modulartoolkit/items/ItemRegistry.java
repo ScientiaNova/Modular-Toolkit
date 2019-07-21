@@ -1,12 +1,13 @@
-package com.NovumScientiaTeam.modulartoolkit.tools;
+package com.NovumScientiaTeam.modulartoolkit.items;
 
+import com.NovumScientiaTeam.modulartoolkit.items.tools.*;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToolRegistry {
+public class ItemRegistry {
     public static final List<Item> TOOLS = new ArrayList<>();
 
     public static Item AXE;
@@ -18,13 +19,13 @@ public class ToolRegistry {
     public static Item WRENCH;
 
     public static void registry(RegistryEvent.Register<Item> e) {
-        AXE = register(new AxeTool(), e);
-        HOE = register(new HoeTool(), e);
-        PAXEL = register(new PaxelTool(), e);
-        PICKAXE = register(new PickaxeTool(), e);
-        SHOVEL = register(new ShovelTool(), e);
-        SWORD = register(new SwordTool(), e);
-        WRENCH = register(new WrenchTool(), e);
+        AXE = register(new ModularAxe(), e);
+        HOE = register(new ModularHoe(), e);
+        PAXEL = register(new ModularPaxel(), e);
+        PICKAXE = register(new ModularPickaxe(), e);
+        SHOVEL = register(new ModularShovel(), e);
+        SWORD = register(new ModularSword(), e);
+        WRENCH = register(new ModularWrench(), e);
     }
 
     private static Item register(Item i, RegistryEvent.Register<Item> e) {

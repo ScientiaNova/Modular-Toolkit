@@ -5,13 +5,12 @@ import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
 import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
+import com.NovumScientiaTeam.modulartoolkit.items.ModularItem;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.Modifiers;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStack;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.ModificationStationTile;
-import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -24,12 +23,11 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils.*;
 
 public class ModificationStationContainer extends Container {
     protected ModificationStationTile te;
@@ -58,31 +56,31 @@ public class ModificationStationContainer extends Container {
         this.addSlot(new SlotItemHandler(this.itemHandler, 0, 44, 35) {
             @Override
             public boolean isItemValid(@Nonnull ItemStack stack) {
-                return stack.getItem() instanceof ModularTool;
+                return stack.getItem() instanceof ModularItem;
             }
         });
         this.addSlot(new SlotItemHandler(this.itemHandler, 1, 23, 35) {
             @Override
             public boolean isItemValid(@Nonnull ItemStack stack) {
-                return !(stack.getItem() instanceof ModularTool);
+                return !(stack.getItem() instanceof ModularItem);
             }
         });
         this.addSlot(new SlotItemHandler(this.itemHandler, 2, 44, 14) {
             @Override
             public boolean isItemValid(@Nonnull ItemStack stack) {
-                return !(stack.getItem() instanceof ModularTool);
+                return !(stack.getItem() instanceof ModularItem);
             }
         });
         this.addSlot(new SlotItemHandler(this.itemHandler, 3, 65, 35) {
             @Override
             public boolean isItemValid(@Nonnull ItemStack stack) {
-                return !(stack.getItem() instanceof ModularTool);
+                return !(stack.getItem() instanceof ModularItem);
             }
         });
         this.addSlot(new SlotItemHandler(this.itemHandler, 4, 44, 56) {
             @Override
             public boolean isItemValid(@Nonnull ItemStack stack) {
-                return !(stack.getItem() instanceof ModularTool);
+                return !(stack.getItem() instanceof ModularItem);
             }
         });
         this.addSlot(new ModificationStationResultSlot(itemHandler, 5, 134, 35));
@@ -145,8 +143,8 @@ public class ModificationStationContainer extends Container {
 
         ItemStack outputTool = inputTool.copy();
 
-        List<Material> toolMats = ToolUtils.getAllToolMaterials(inputTool);
-        List<ObjectType> toolParts = ToolUtils.getToolParts(inputTool.getItem());
+        List<Material> toolMats = getAllToolMaterials(inputTool);
+        List<ObjectType> toolParts = getToolParts(inputTool.getItem());
 
         List<ItemStack> modStacks = IntStream.range(1, 5).mapToObj(itemHandler::getStackInSlot).collect(Collectors.toList());
         Map<Integer, Integer> consumeMap = new HashMap<>();
@@ -160,7 +158,7 @@ public class ModificationStationContainer extends Container {
             if (!consumeMap.containsKey(i) && outputTool.isDamaged() && toolMats.stream().anyMatch(m -> m.getItemTier().getRepairMaterial().test(modStacks.get(i)))) {
                 float singleRepairAmount = outputTool.getMaxDamage() / 4f;
                 int consumeCount = Math.min((int) Math.ceil(outputTool.getDamage() / singleRepairAmount), modStacks.get(i).getCount());
-                ToolUtils.repairTool(outputTool, (int) Math.ceil(consumeCount * singleRepairAmount));
+                repairItem(outputTool, (int) Math.ceil(consumeCount * singleRepairAmount));
                 consumeMap.put(i, consumeCount);
             }
         });
@@ -169,24 +167,24 @@ public class ModificationStationContainer extends Container {
         StreamUtils.repeat(4, i -> {
             if (!consumeMap.containsKey(i) && !outputTool.isDamaged() && modStacks.get(i).getItem() instanceof IMaterialItem) {
                 final IMaterialItem current = (IMaterialItem) modStacks.get(i).getItem();
-                List<Material> toolMatsNew = ToolUtils.getAllToolMaterials(outputTool);
+                List<Material> toolMatsNew = getAllToolMaterials(outputTool);
                 List<Integer> indices = IntStream.range(0, toolParts.size()).filter(j -> toolMatsNew.get(j) != current.getMaterial() && toolParts.get(j) == current.getObjType()).boxed().collect(Collectors.toList());
                 if (!indices.isEmpty()) {
-                    ToolUtils.setToolMaterial(outputTool, indices.get(i % indices.size()), current.getMaterial());
+                    setToolMaterial(outputTool, indices.get(i % indices.size()), current.getMaterial());
                     consumeMap.put(i, 1);
                 }
             }
         });
 
         //Balancing new level
-        final int levelCap = ToolUtils.getLevelCap(outputTool);
-        if (ToolUtils.getLevelCap(inputTool) > levelCap && ToolUtils.getXPForLevel(levelCap) < ToolUtils.getXP(outputTool)) {
-            ToolUtils.setXP(outputTool, ToolUtils.getXPForLevel(levelCap));
-            ToolUtils.setLevel(outputTool, levelCap);
-            List<ModifierStats> modStats = ToolUtils.getModifiersStats(outputTool);
+        final int levelCap = getLevelCap(outputTool);
+        if (getLevelCap(inputTool) > levelCap && getXPForLevel(levelCap) < getXP(outputTool)) {
+            setXP(outputTool, getXPForLevel(levelCap));
+            setLevel(outputTool, levelCap);
+            List<ModifierStats> modStats = getModifiersStats(outputTool);
             if (modStats.stream().anyMatch(s -> s.getAdded() > levelCap || s.getTier() > levelCap)) {
                 modStats.forEach(s -> s.getModifier().whenRemoved(outputTool, s.getTier()));
-                ToolUtils.remapModifiers(outputTool, ToolUtils.getModifiersStats(outputTool).stream().filter(stats -> stats.getAdded() <= levelCap).map(stats -> {
+                remapModifiers(outputTool, getModifiersStats(outputTool).stream().filter(stats -> stats.getAdded() <= levelCap).map(stats -> {
                     if (stats.getTier() > levelCap) {
                         stats.setTier(levelCap);
                         stats.setConsumed(stats.getModifier().getLevelRequirement(levelCap));
@@ -194,25 +192,26 @@ public class ModificationStationContainer extends Container {
                     return stats.serialize();
                 }).collect(Collectors.toList()));
             }
-            if (ToolUtils.getBoosts(outputTool).stream().anyMatch(b -> b > levelCap))
-                ToolUtils.remapBoosts(outputTool, ToolUtils.getBoosts(outputTool).stream().filter(b -> b <= levelCap).collect(Collectors.toList()));
-            if (ToolUtils.getUsedModifierSlotCount(outputTool) > levelCap)
-                ToolUtils.setUsedModifierSlotCount(outputTool, levelCap);
+            if (getBoosts(outputTool).stream().anyMatch(b -> b > levelCap))
+                remapBoosts(outputTool, getBoosts(outputTool).stream().filter(b -> b <= levelCap).collect(Collectors.toList()));
+            if (getUsedModifierSlotCount(outputTool) > levelCap)
+                setUsedModifierSlotCount(outputTool, levelCap);
         }
 
         //Adding Modifiers
         StreamUtils.repeat(4, i -> {
             if (!consumeMap.containsKey(i) && Modifiers.getFor(modStacks.get(i).getItem()) != null) {
-                Map<AbstractModifier, Integer> currentModifiers = ToolUtils.getModifierTierMap(outputTool);
+                LinkedHashMap<AbstractModifier, Integer> currentModifiers = getModifierTierMap(outputTool);
                 final ItemStack current = modStacks.get(i);
                 final ModifierStack stack = Modifiers.getFor(current.getItem());
                 final AbstractModifier modifier = stack.getModifier();
                 final int count = stack.getCount();
-                if (currentModifiers.containsKey(modifier)) {
-                    int modifierIndex = new ArrayList<>(currentModifiers.keySet()).indexOf(modifier);
-                    CompoundNBT modifierNBT = ToolUtils.getModifierNBT(outputTool, modifierIndex);
+                final LinkedList<Map.Entry<AbstractModifier, Integer>> linkedList = new LinkedList<>(currentModifiers.entrySet());
+                if (currentModifiers.keySet().contains(modifier)) {
+                    int modifierIndex = IntStream.range(0, linkedList.size()).filter(j -> linkedList.get(j).getKey().equals(modifier)).findFirst().getAsInt();
+                    CompoundNBT modifierNBT = getModifierNBT(outputTool, modifierIndex);
                     int alreadyAdded = modifierNBT.getInt("consumed");
-                    final int initialTier = new ArrayList<>(currentModifiers.values()).get(modifierIndex);
+                    final int initialTier = linkedList.get(modifierIndex).getValue();
                     int tier = initialTier;
                     int consumed = 0;
                     while (modifier.canLevelUp(outputTool, tier + 1)) {
@@ -235,7 +234,7 @@ public class ModificationStationContainer extends Container {
                     if (tier > initialTier)
                         modifier.whenGainedLevel(outputTool, tier);
                     consumeMap.put(i, consumed);
-                } else if (ToolUtils.getFreeModifierSlotCount(outputTool) > 0 && modifier.canBeAdded(outputTool)) {
+                } else if (getFreeModifierSlotCount(outputTool) > 0 && modifier.canBeAdded(outputTool)) {
                     int tier = 0;
                     int consumed = 0;
                     while (modifier.canLevelUp(outputTool, tier + 1)) {
@@ -259,8 +258,8 @@ public class ModificationStationContainer extends Container {
                     nbt.putInt("tier", tier);
                     if (tier > 0)
                         modifier.whenGainedLevel(outputTool, tier);
-                    nbt.putInt("added", ToolUtils.getUsedModifierSlotCount(outputTool) + 1);
-                    ToolUtils.useModifierSlot(outputTool);
+                    nbt.putInt("added", getUsedModifierSlotCount(outputTool) + 1);
+                    useModifierSlot(outputTool);
                     outputTool.getTag().getCompound("Modifiers").put("modifier" + currentModifiers.entrySet().size(), nbt);
                     consumeMap.put(i, consumed);
                 }
@@ -268,17 +267,17 @@ public class ModificationStationContainer extends Container {
         });
 
         //Boosts
-        int modifierSlots = ToolUtils.getFreeModifierSlotCount(outputTool);
+        int modifierSlots = getFreeModifierSlotCount(outputTool);
         if (te.getBoosts() > modifierSlots)
             te.setBoosts(modifierSlots);
-        if (te.getBoosts() > 0 && !ToolUtils.isBroken(outputTool)) {
+        if (te.getBoosts() > 0 && !isBroken(outputTool)) {
             int boosts = te.getBoosts();
-            int currentBoostCount = ToolUtils.getBoosts(outputTool).size();
-            int usedModifierSlot = ToolUtils.getLevel(outputTool) - modifierSlots;
+            int currentBoostCount = getBoosts(outputTool).size();
+            int usedModifierSlot = getLevel(outputTool) - modifierSlots;
             CompoundNBT boostsNBT = outputTool.getTag().getCompound("Boosts");
             for (int i = 0; i < boosts; i++)
                 boostsNBT.putInt("boost" + currentBoostCount++, ++usedModifierSlot);
-            ToolUtils.useModifierSlots(outputTool, boosts);
+            useModifierSlots(outputTool, boosts);
         }
 
         updateConsumeMap(consumeMap);

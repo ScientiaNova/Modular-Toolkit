@@ -1,8 +1,8 @@
 package com.NovumScientiaTeam.modulartoolkit.abilities;
 
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
-import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.ModularItem;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 public class MagneticAbility extends AbstractAbility {
     @Override
     public ITextComponent getTranslationKey(ItemStack stack) {
-        if (stack.getItem() instanceof ModularTool)
+        if (stack.getItem() instanceof ModularItem)
             return new StringTextComponent(new TranslationTextComponent("ability.magnetic").getString() + " " + getLevel(stack));
         return new TranslationTextComponent("ability.magnetic");
     }
@@ -28,8 +28,8 @@ public class MagneticAbility extends AbstractAbility {
 
     @Override
     public int getLevel(ItemStack stack) {
-        int level = 1 + ToolUtils.getLevel(stack) / 4;
-        return ToolUtils.getLevel(stack) > getLevelCap() ? getLevelCap() : level;
+        int level = 1 + ModularUtils.getLevel(stack) / 4;
+        return ModularUtils.getLevel(stack) > getLevelCap() ? getLevelCap() : level;
     }
 
     @Override

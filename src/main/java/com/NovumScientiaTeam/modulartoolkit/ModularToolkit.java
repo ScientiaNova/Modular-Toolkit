@@ -3,6 +3,8 @@ package com.NovumScientiaTeam.modulartoolkit;
 import com.EmosewaPixel.pixellib.proxy.IModProxy;
 import com.NovumScientiaTeam.modulartoolkit.abilities.AbilityRegistry;
 import com.NovumScientiaTeam.modulartoolkit.effects.MagneticEffect;
+import com.NovumScientiaTeam.modulartoolkit.items.ItemRegistry;
+import com.NovumScientiaTeam.modulartoolkit.items.util.HarvestMaterialMap;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.ModifierRegistry;
 import com.NovumScientiaTeam.modulartoolkit.packets.PacketHandler;
 import com.NovumScientiaTeam.modulartoolkit.parts.ObjTypeRegistry;
@@ -17,8 +19,6 @@ import com.NovumScientiaTeam.modulartoolkit.tables.screens.ModificationStationSc
 import com.NovumScientiaTeam.modulartoolkit.tables.screens.PartConstructorScreen;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.ModificationStationTile;
 import com.NovumScientiaTeam.modulartoolkit.tables.tiles.PartConstructorTile;
-import com.NovumScientiaTeam.modulartoolkit.tools.ToolRegistry;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.HarvestMaterialMap;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.inventory.container.ContainerType;
@@ -49,7 +49,7 @@ public class ModularToolkit {
     public static final ItemGroup MAIN_GROUP = new ItemGroup("mt_main") {
         @Override
         public ItemStack createIcon() {
-            return new ItemStack(ToolRegistry.PICKAXE);
+            return new ItemStack(ItemRegistry.PICKAXE);
         }
     };
 
@@ -99,7 +99,7 @@ public class ModularToolkit {
     public static class RegistryEvents {
         @SubscribeEvent
         public static void onItemRegistry(RegistryEvent.Register<Item> e) {
-            ToolRegistry.registry(e);
+            ItemRegistry.registry(e);
             BlockRegistry.registerItems(e);
         }
 

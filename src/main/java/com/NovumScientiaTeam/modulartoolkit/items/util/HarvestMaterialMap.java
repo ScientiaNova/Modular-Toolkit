@@ -1,4 +1,4 @@
-package com.NovumScientiaTeam.modulartoolkit.tools.util;
+package com.NovumScientiaTeam.modulartoolkit.items.util;
 
 import net.minecraft.block.material.Material;
 import net.minecraftforge.common.ToolType;

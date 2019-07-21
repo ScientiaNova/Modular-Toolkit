@@ -9,8 +9,8 @@ import com.NovumScientiaTeam.modulartoolkit.modifiers.Modifiers;
 import com.NovumScientiaTeam.modulartoolkit.parts.PartTypeMap;
 import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.PartType;
 import com.NovumScientiaTeam.modulartoolkit.recipes.ToolRecipe;
-import com.NovumScientiaTeam.modulartoolkit.tools.ToolRegistry;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.ItemRegistry;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.item.Item;
@@ -42,10 +42,10 @@ public class ClientProxy implements IModProxy {
 
     @Override
     public void enque(InterModEnqueueEvent interModEnqueueEvent) {
-        ToolRegistry.TOOLS.forEach(t ->
+        ItemRegistry.TOOLS.forEach(t ->
                 Minecraft.getInstance().getItemColors().register((stack, index) -> {
-                    if (ToolUtils.getToolMaterial(stack, index) != null)
-                        return ToolUtils.getToolMaterial(stack, index).getColor();
+                    if (ModularUtils.getToolMaterial(stack, index) != null)
+                        return ModularUtils.getToolMaterial(stack, index).getColor();
                     return -1;
                 }, t));
     }
@@ -83,10 +83,10 @@ public class ClientProxy implements IModProxy {
     @SubscribeEvent
     public static void onRecipesUpdated(RecipesUpdatedEvent e) {
         RecipeManager manager = Minecraft.getInstance().getConnection().getRecipeManager();
-        ToolRegistry.TOOLS.forEach(tool -> {
+        ItemRegistry.TOOLS.forEach(tool -> {
             Optional<? extends IRecipe<?>> recipe = manager.getRecipe(tool.getRegistryName());
             if (recipe.isPresent() && (recipe.get() instanceof ToolRecipe))
-                ToolUtils.setToolParts(tool, recipe.get().getIngredients().stream().map(i -> ((IMaterialItem) i.getMatchingStacks()[0].getItem()).getObjType()).collect(Collectors.toList()));
+                ModularUtils.setToolParts(tool, recipe.get().getIngredients().stream().map(i -> ((IMaterialItem) i.getMatchingStacks()[0].getItem()).getObjType()).collect(Collectors.toList()));
         });
     }
 }

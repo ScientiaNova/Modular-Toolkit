@@ -131,7 +131,7 @@ public class PartConstructorContainer extends Container {
     private Optional<Material> getMaterialOfItem(ItemStack stack) {
         if (stack.getItem() instanceof IMaterialItem && ((IMaterialItem) stack.getItem()).getObjType() == ObjTypeRegistry.FRAGMENT)
             return Optional.of(((IMaterialItem) stack.getItem()).getMaterial());
-        return Materials.getAll().stream().filter(m -> m.getItemTier() != null && m.getItemTier().getRepairMaterial().test(stack)).findFirst();
+        return Materials.getAll().stream().filter(m -> (m.getItemTier() != null && m.getItemTier().getRepairMaterial().test(stack)) || (m.getArmorMaterial() != null && m.getArmorMaterial().getRepairMaterial().test(stack))).findFirst();
     }
 
     private float getMaterialValue(ItemStack stack) {
@@ -147,7 +147,6 @@ public class PartConstructorContainer extends Container {
         }
         return null;
     }
-
 
     public PartConstructorTile getTe() {
         return te;

@@ -1,7 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
-import com.NovumScientiaTeam.modulartoolkit.tools.ModularTool;
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.ModularItem;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -9,7 +9,7 @@ import net.minecraft.util.text.TextFormatting;
 public class LuckMod extends AbstractModifier {
     public LuckMod() {
         super("luck");
-        addAdditionRequirements(stack -> ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_MELEE_WEAPON) || ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_TOOL) || ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_HOE));
+        addAdditionRequirements(stack -> ((ModularItem) stack.getItem()).hasTag(ModularUtils.IS_MELEE_WEAPON) || ((ModularItem) stack.getItem()).hasTag(ModularUtils.IS_TOOL) || ((ModularItem) stack.getItem()).hasTag(ModularUtils.IS_HOE));
     }
 
     @Override
@@ -25,7 +25,7 @@ public class LuckMod extends AbstractModifier {
     @Override
     public void whenGainedLevel(ItemStack stack, int level) {
         if (level > 0)
-            ToolUtils.remapEnchantments(stack);
+            ModularUtils.remapEnchantments(stack);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class LuckMod extends AbstractModifier {
 
     @Override
     public void enchantItem(ItemStack stack, int level) {
-        if (((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_MELEE_WEAPON) || ((ModularTool) stack.getItem()).hasTag(ToolUtils.IS_HOE))
+        if (((ModularItem) stack.getItem()).hasTag(ModularUtils.IS_MELEE_WEAPON) || ((ModularItem) stack.getItem()).hasTag(ModularUtils.IS_HOE))
             stack.addEnchantment(Enchantments.LOOTING, level);
         else
             stack.addEnchantment(Enchantments.FORTUNE, level);

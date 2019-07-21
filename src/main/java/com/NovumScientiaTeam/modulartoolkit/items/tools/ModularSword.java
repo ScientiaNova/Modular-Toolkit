@@ -1,6 +1,6 @@
-package com.NovumScientiaTeam.modulartoolkit.tools;
+package com.NovumScientiaTeam.modulartoolkit.items.tools;
 
-import com.NovumScientiaTeam.modulartoolkit.tools.util.ToolUtils;
+import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -8,17 +8,17 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 
-public class SwordTool extends ModularTool {
-    public SwordTool() {
+public class ModularSword extends ModularTool {
+    public ModularSword() {
         super("modulartoolkit:sword_tool");
-        addToolTags(ToolUtils.IS_MELEE_WEAPON);
+        addToolTags(ModularUtils.IS_MELEE_WEAPON);
     }
 
     @Override
     public double getAttackDamage(ItemStack stack) {
-        if (ToolUtils.isNull(stack))
+        if (ModularUtils.isNull(stack))
             return 0;
-        return ToolUtils.getToolMaterial(stack, 0).getItemTier().getAttackDamage() + 3;
+        return ModularUtils.getToolMaterial(stack, 0).getItemTier().getAttackDamage() + 3;
     }
 
     @Override
