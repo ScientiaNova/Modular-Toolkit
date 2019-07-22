@@ -1,26 +1,20 @@
 package com.NovumScientiaTeam.modulartoolkit.items;
 
 import com.EmosewaPixel.pixellib.materialsystem.lists.MaterialItems;
-import com.EmosewaPixel.pixellib.materialsystem.lists.Materials;
 import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
-import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.ModularToolkit;
 import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
 import com.NovumScientiaTeam.modulartoolkit.parts.PartTypeMap;
-import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.PartType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -78,14 +72,6 @@ public abstract class ModularItem extends Item {
     }
 
     @Override
-    public final int getMaxDamage(ItemStack stack) {
-        if (isNull(stack))
-            return 1;
-        List<PartType> partList = getPartList(stack.getItem());
-        return (int) (IntStream.range(0, partList.size()).map(i -> partList.get(i).getExtraDurability(getToolMaterial(stack, i))).sum() * IntStream.range(0, partList.size()).mapToDouble(i -> partList.get(i).getDurabilityModifier(getToolMaterial(stack, i))).reduce(1, (d, p) -> d * p) * getBoostMultiplier(stack) + 1);
-    }
-
-    @Override
     public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
         if (isNull(stack))
             return amount;
@@ -133,27 +119,6 @@ public abstract class ModularItem extends Item {
             e.getKey().onInventoryTick(stack, worldIn, entityIn, itemSlot, isSelected, e.getValue());
         for (AbstractAbility ability : getAllAbilities(stack))
             ability.onInventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
-    }
-
-    @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list) {
-        if (isInGroup(group) && group != ItemGroup.SEARCH)
-            Materials.getAll().stream().filter(mat -> mat.getItemTier() != null).map(mat -> {
-                ItemStack result = new ItemStack(this);
-                CompoundNBT mainCompound = new CompoundNBT();
-                mainCompound.put("Materials", new CompoundNBT());
-                mainCompound.putLong("XP", 0);
-                mainCompound.putInt("Level", 0);
-                mainCompound.put("Modifiers", new CompoundNBT());
-                mainCompound.put("Boosts", new CompoundNBT());
-                mainCompound.putInt("Damage", 0);
-                mainCompound.putInt("ModifierSlotsUsed", 0);
-                CompoundNBT materialNBT = new CompoundNBT();
-                StreamUtils.repeat(getToolParts(this).size(), i -> materialNBT.putString("material" + i, mat.getName()));
-                mainCompound.put("Materials", materialNBT);
-                result.setTag(mainCompound);
-                return result;
-            }).forEach(list::add);
     }
 
     @Override

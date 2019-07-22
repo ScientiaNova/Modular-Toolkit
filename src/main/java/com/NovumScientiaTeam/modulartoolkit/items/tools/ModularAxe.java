@@ -1,6 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.items.tools;
 
 import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Items;
@@ -24,6 +25,11 @@ public class ModularAxe extends ModularTool {
         if (ModularUtils.isNull(stack))
             return -3.4F;
         return -3.4F + (ModularUtils.getToolMaterial(stack, 0).getItemTier().getEfficiency() / 2 - 1) * 0.1F;
+    }
+
+    @Override
+    public boolean canDisableShield(ItemStack stack, ItemStack shield, LivingEntity entity, LivingEntity attacker) {
+        return true;
     }
 
     @Override

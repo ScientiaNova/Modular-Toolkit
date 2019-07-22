@@ -13,7 +13,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class Extra extends PartType {
+public class Extra extends ToolPartType {
     public Extra() {
         super("extra");
     }

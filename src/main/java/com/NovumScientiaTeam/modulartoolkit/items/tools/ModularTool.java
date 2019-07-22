@@ -1,6 +1,8 @@
 package com.NovumScientiaTeam.modulartoolkit.items.tools;
 
+import com.EmosewaPixel.pixellib.materialsystem.lists.Materials;
 import com.EmosewaPixel.pixellib.materialsystem.materials.Material;
+import com.EmosewaPixel.pixellib.miscutils.StreamUtils;
 import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
 import com.NovumScientiaTeam.modulartoolkit.items.ModularItem;
 import com.NovumScientiaTeam.modulartoolkit.items.util.HarvestMaterialMap;
@@ -8,6 +10,8 @@ import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
 import com.NovumScientiaTeam.modulartoolkit.items.util.ToolUtils;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
 import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Head;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.PartType;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.ToolPartType;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -15,7 +19,10 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -27,6 +34,7 @@ import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils.*;
 
@@ -108,6 +116,14 @@ public abstract class ModularTool extends ModularItem {
     }
 
     @Override
+    public final int getMaxDamage(ItemStack stack) {
+        if (isNull(stack))
+            return 1;
+        List<PartType> partList = getPartList(stack.getItem());
+        return (int) (IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof ToolPartType).map(i -> ((ToolPartType) partList.get(i)).getExtraDurability(getToolMaterial(stack, i))).sum() * IntStream.range(0, partList.size()).filter(i -> partList.get(i) instanceof ToolPartType).mapToDouble(i -> ((ToolPartType) partList.get(i)).getDurabilityModifier(getToolMaterial(stack, i))).reduce(1, (d, p) -> d * p) * getBoostMultiplier(stack) + 1);
+    }
+
+    @Override
     public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
             e.getKey().onHitEntity(stack, target, attacker, e.getValue());
@@ -128,6 +144,27 @@ public abstract class ModularTool extends ModularItem {
             addXP(stack, (int) target.getMaxHealth(), attacker);
 
         return true;
+    }
+
+    @Override
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> list) {
+        if (isInGroup(group) && group != ItemGroup.SEARCH)
+            Materials.getAll().stream().filter(mat -> mat.getItemTier() != null).map(mat -> {
+                ItemStack result = new ItemStack(this);
+                CompoundNBT mainCompound = new CompoundNBT();
+                mainCompound.put("Materials", new CompoundNBT());
+                mainCompound.putLong("XP", 0);
+                mainCompound.putInt("Level", 0);
+                mainCompound.put("Modifiers", new CompoundNBT());
+                mainCompound.put("Boosts", new CompoundNBT());
+                mainCompound.putInt("Damage", 0);
+                mainCompound.putInt("ModifierSlotsUsed", 0);
+                CompoundNBT materialNBT = new CompoundNBT();
+                StreamUtils.repeat(getToolParts(this).size(), i -> materialNBT.putString("material" + i, mat.getName()));
+                mainCompound.put("Materials", materialNBT);
+                result.setTag(mainCompound);
+                return result;
+            }).forEach(list::add);
     }
 
     @Override
@@ -172,38 +209,36 @@ public abstract class ModularTool extends ModularItem {
 
     @Override
     public void addStats(ItemStack stack, List<ITextComponent> tooltip, boolean compact) {
-        if (stack.getItem() instanceof ModularItem) {
-            DecimalFormat format = new DecimalFormat("#.#");
-            tooltip.add(new TranslationTextComponent("tool.stat.level", ModularUtils.getLevel(stack), ModularUtils.getLevelCap(stack)));
-            long currentXP;
-            long nextXP;
-            if (ModularUtils.getLevel(stack) < ModularUtils.getLevelCap(stack)) {
-                currentXP = ModularUtils.getXPForCurrentLevel(stack);
-                nextXP = ModularUtils.getXPForLevelUp(stack);
-            } else {
-                currentXP = ModularUtils.getXPForLevel(ModularUtils.getLevel(stack) - 1);
-                nextXP = ModularUtils.getXPForCurrentLevel(stack);
-            }
-            tooltip.add(new TranslationTextComponent("tool.stat.experience", ModularUtils.getXP(stack) - currentXP, nextXP - currentXP));
-            tooltip.add(new TranslationTextComponent("tool.stat.modifier_slots", ModularUtils.getFreeModifierSlotCount(stack)));
-            int maxDamage = stack.getMaxDamage() - 1;
-            tooltip.add(new TranslationTextComponent("tool.stat.current_durability", maxDamage - stack.getDamage(), maxDamage));
-            tooltip.add(new TranslationTextComponent("tool.stat.attack_damage", format.format((getTrueAttackDamage(stack) + 1))));
-            Set<ToolType> toolTypes = stack.getToolTypes();
-            if (compact)
-                toolTypes.forEach(t -> tooltip.add(new TranslationTextComponent("tool.stat." + t.getName(), new TranslationTextComponent("harvest_level_" + ToolUtils.getHarvestMap(stack).get(t)), format.format(ToolUtils.getDestroySpeedForToolType(stack, t)))));
-            else
-                toolTypes.forEach(t -> {
-                    tooltip.add(new TranslationTextComponent("tool.stat.harvest_level_" + t.getName(), new TranslationTextComponent("harvest_level_" + ToolUtils.getHarvestMap(stack).get(t))));
-                    tooltip.add(new TranslationTextComponent("tool.stat.efficiency_" + t.getName(), format.format(ToolUtils.getDestroySpeedForToolType(stack, t))));
-                });
-            ModularUtils.getAllAbilities(stack).stream().collect(Collectors.toMap(a -> a, a -> 1, Integer::sum)).forEach((a, v) -> {
-                if (v > 1)
-                    tooltip.add(new StringTextComponent(a.getTranslationKey(stack).getFormattedText() + " x" + v));
-                else
-                    tooltip.add(a.getTranslationKey(stack));
-            });
-            ModularUtils.getModifiersStats(stack).forEach(s -> tooltip.add(new StringTextComponent(s.getModifier().getFormatting() + s.getModifier().getNameTextComponent(stack, s).getFormattedText())));
+        DecimalFormat format = new DecimalFormat("#.#");
+        tooltip.add(new TranslationTextComponent("tool.stat.level", ModularUtils.getLevel(stack), ModularUtils.getLevelCap(stack)));
+        long currentXP;
+        long nextXP;
+        if (ModularUtils.getLevel(stack) < ModularUtils.getLevelCap(stack)) {
+            currentXP = ModularUtils.getXPForCurrentLevel(stack);
+            nextXP = ModularUtils.getXPForLevelUp(stack);
+        } else {
+            currentXP = ModularUtils.getXPForLevel(ModularUtils.getLevel(stack) - 1);
+            nextXP = ModularUtils.getXPForCurrentLevel(stack);
         }
+        tooltip.add(new TranslationTextComponent("tool.stat.experience", ModularUtils.getXP(stack) - currentXP, nextXP - currentXP));
+        tooltip.add(new TranslationTextComponent("tool.stat.modifier_slots", ModularUtils.getFreeModifierSlotCount(stack)));
+        int maxDamage = stack.getMaxDamage() - 1;
+        tooltip.add(new TranslationTextComponent("tool.stat.current_durability", maxDamage - stack.getDamage(), maxDamage));
+        tooltip.add(new TranslationTextComponent("tool.stat.attack_damage", format.format((getTrueAttackDamage(stack) + 1))));
+        Set<ToolType> toolTypes = stack.getToolTypes();
+        if (compact)
+            toolTypes.forEach(t -> tooltip.add(new TranslationTextComponent("tool.stat." + t.getName(), new TranslationTextComponent("harvest_level_" + ToolUtils.getHarvestMap(stack).get(t)), format.format(ToolUtils.getDestroySpeedForToolType(stack, t)))));
+        else
+            toolTypes.forEach(t -> {
+                tooltip.add(new TranslationTextComponent("tool.stat.harvest_level_" + t.getName(), new TranslationTextComponent("harvest_level_" + ToolUtils.getHarvestMap(stack).get(t))));
+                tooltip.add(new TranslationTextComponent("tool.stat.efficiency_" + t.getName(), format.format(ToolUtils.getDestroySpeedForToolType(stack, t))));
+            });
+        ModularUtils.getAllAbilities(stack).stream().collect(Collectors.toMap(a -> a, a -> 1, Integer::sum)).forEach((a, v) -> {
+            if (v > 1)
+                tooltip.add(new StringTextComponent(a.getTranslationKey(stack).getFormattedText() + " x" + v));
+            else
+                tooltip.add(a.getTranslationKey(stack));
+        });
+        ModularUtils.getModifiersStats(stack).forEach(s -> tooltip.add(new StringTextComponent(s.getModifier().getFormatting() + s.getModifier().getNameTextComponent(stack, s).getFormattedText())));
     }
 }

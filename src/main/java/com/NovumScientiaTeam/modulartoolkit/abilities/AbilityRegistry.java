@@ -1,9 +1,7 @@
 package com.NovumScientiaTeam.modulartoolkit.abilities;
 
 import com.EmosewaPixel.pixellib.materialsystem.MaterialRegistry;
-import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Extra;
-import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Handle;
-import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Head;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.*;
 
 public class AbilityRegistry {
     public static final SoftAbility SOFT = new SoftAbility();
@@ -18,6 +16,8 @@ public class AbilityRegistry {
         Abilities.addAbility(MaterialRegistry.GOLD, new Head(), SOFT);
         Abilities.addAbility(MaterialRegistry.GOLD, new Extra(), SOFT);
         Abilities.addAbility(MaterialRegistry.GOLD, new Handle(), SOFT);
+        Abilities.addAbility(MaterialRegistry.GOLD, new Plating(), SOFT);
+        Abilities.addAbility(MaterialRegistry.GOLD, new Frame(null), SOFT);
         Abilities.addAbility(MaterialRegistry.STONE, new Head(), CHEAP);
         Abilities.addAbility(MaterialRegistry.STONE, new Extra(), COBBLING);
         Abilities.addAbility(MaterialRegistry.STONE, new Handle(), COBBLING);

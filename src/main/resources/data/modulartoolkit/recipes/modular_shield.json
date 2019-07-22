@@ -1,0 +1,19 @@
+{
+  "type": "modulartoolkit:tool_crafting",
+  "group": "modulartoolkit:modular_shield",
+  "ingredients": [
+    {
+      "tag": "forge:shield_frames"
+    },
+    {
+      "tag": "forge:platings"
+    },
+    {
+      "tag": "forge:platings"
+    }
+  ],
+  "result": {
+    "item": "modulartoolkit:modular_shield",
+    "count": 1
+  }
+}

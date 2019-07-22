@@ -17,7 +17,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
-public class Head extends PartType {
+public class Head extends ToolPartType {
     private ToolType toolType;
 
     public Head(ToolType toolType) {

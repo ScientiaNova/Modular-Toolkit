@@ -1,5 +1,6 @@
 package com.NovumScientiaTeam.modulartoolkit.items;
 
+import com.NovumScientiaTeam.modulartoolkit.items.misc.ModularShield;
 import com.NovumScientiaTeam.modulartoolkit.items.tools.*;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -17,6 +18,7 @@ public class ItemRegistry {
     public static Item SHOVEL;
     public static Item SWORD;
     public static Item WRENCH;
+    public static Item SHIELD;
 
     public static void registry(RegistryEvent.Register<Item> e) {
         AXE = register(new ModularAxe(), e);
@@ -26,6 +28,7 @@ public class ItemRegistry {
         SHOVEL = register(new ModularShovel(), e);
         SWORD = register(new ModularSword(), e);
         WRENCH = register(new ModularWrench(), e);
+        SHIELD = register(new ModularShield(), e);
     }
 
     private static Item register(Item i, RegistryEvent.Register<Item> e) {

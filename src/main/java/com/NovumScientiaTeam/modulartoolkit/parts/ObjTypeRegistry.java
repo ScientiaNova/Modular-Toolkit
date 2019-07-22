@@ -3,10 +3,9 @@ package com.NovumScientiaTeam.modulartoolkit.parts;
 import com.EmosewaPixel.pixellib.materialsystem.MaterialRegistry;
 import com.EmosewaPixel.pixellib.materialsystem.types.ItemType;
 import com.EmosewaPixel.pixellib.materialsystem.types.ObjectType;
-import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Extra;
-import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Handle;
-import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Head;
+import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.*;
 import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.modifications.ToughMod;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraftforge.common.ToolType;
 
 public class ObjTypeRegistry {
@@ -43,5 +42,7 @@ public class ObjTypeRegistry {
         PartTypeMap.bindToPartType(WRENCH_HEAD, new Head(WRENCH));
         PartTypeMap.bindToPartType(TOUGH_TOOL_ROD, new Handle().addMods(new ToughMod()));
         PartTypeMap.bindToPartType(TOUGH_BINDING, new Extra().addMods(new ToughMod()));
+        PartTypeMap.bindToPartType(PLATING, new Plating());
+        PartTypeMap.bindToPartType(SHIELD_FRAME, new Frame(EquipmentSlotType.LEGS));
     }
 }

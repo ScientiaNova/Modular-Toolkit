@@ -26,10 +26,6 @@ public abstract class PartType {
         return this;
     }
 
-    public abstract int getExtraDurability(Material mat);
-
-    public abstract double getDurabilityModifier(Material mat);
-
     public abstract double getLevelCapMultiplier(Material mat);
 
     public abstract void addTooltip(Item item, List<ITextComponent> tooltip);
