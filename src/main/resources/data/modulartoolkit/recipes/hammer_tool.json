@@ -1,0 +1,19 @@
+{
+  "type": "modulartoolkit:tool_crafting",
+  "group": "modulartoolkit:pickaxe_tool",
+  "ingredients": [
+    {
+      "tag": "forge:hammer_heads"
+    },
+    {
+      "tag": "forge:tough_bindings"
+    },
+    {
+      "tag": "forge:tough_tool_rods"
+    }
+  ],
+  "result": {
+    "item": "modulartoolkit:hammer_tool",
+    "count": 1
+  }
+}

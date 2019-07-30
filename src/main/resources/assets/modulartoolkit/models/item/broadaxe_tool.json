@@ -1,0 +1,16 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "modulartoolkit:item/broadaxe_top",
+    "layer1": "modulartoolkit:item/broadaxe_middle",
+    "layer2": "modulartoolkit:item/broadaxe_bottom"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "broken": 1
+      },
+      "model": "modulartoolkit:item/broadaxe_tool_broken"
+    }
+  ]
+}

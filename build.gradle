@@ -82,7 +82,7 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-28.0.1"
+    minecraft "net.minecraftforge:forge:${mc_version}-28.0.13"
     compile files("libs/pixellib-1.14.3-${lib_version}-deobf.jar")
     compileOnly fg.deobf("mezz.jei:jei-1.14.3:${jei_version}:api")
     compile fg.deobf("mezz.jei:jei-1.14.3:${jei_version}")

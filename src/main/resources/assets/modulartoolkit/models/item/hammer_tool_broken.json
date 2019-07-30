@@ -1,0 +1,8 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "modulartoolkit:item/hammer_top_broken",
+    "layer1": "modulartoolkit:item/hammer_middle",
+    "layer2": "modulartoolkit:item/hammer_bottom"
+  }
+}

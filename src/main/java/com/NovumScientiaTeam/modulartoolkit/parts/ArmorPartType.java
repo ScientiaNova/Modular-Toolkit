@@ -12,4 +12,6 @@ public abstract class ArmorPartType extends PartType {
     public abstract int getExtraDurability(Material mat, EquipmentSlotType slotType);
 
     public abstract double getDurabilityModifier(Material mat, EquipmentSlotType slotType);
+
+    public abstract int getDefence(Material mat, EquipmentSlotType slotType);
 }

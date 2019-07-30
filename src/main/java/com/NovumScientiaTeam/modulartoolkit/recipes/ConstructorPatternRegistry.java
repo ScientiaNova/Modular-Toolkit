@@ -116,5 +116,26 @@ public final class ConstructorPatternRegistry {
                 {1, 0, 0, 1},
                 {1, 1, 1, 1}
         }), ObjTypeRegistry.SHIELD_FRAME);
+        addPattern(new ConstructorPattern(new byte[][]{
+                {0, 1, 0, 0, 0},
+                {1, 1, 1, 0, 0},
+                {1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1},
+                {1, 1, 0, 0, 0},
+                {1, 0, 0, 0, 0},
+                {1, 0, 0, 0, 0}
+        }), ObjTypeRegistry.BROADAXE_HEAD);
+        addPattern(new ConstructorPattern(new byte[][]{
+                {1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1},
+                {0, 1, 1, 1, 0}
+        }), ObjTypeRegistry.EXCAVATOR_HEAD);
+        addPattern(new ConstructorPattern(new byte[][]{
+                {1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1},
+                {1, 1, 1, 1, 1, 1, 1}
+        }), ObjTypeRegistry.HAMMER_HEAD);
     }
 }

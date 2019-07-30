@@ -1,0 +1,16 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "modulartoolkit:item/hammer_top",
+    "layer1": "modulartoolkit:item/hammer_middle",
+    "layer2": "modulartoolkit:item/hammer_bottom"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "broken": 1
+      },
+      "model": "modulartoolkit:item/hammer_tool_broken"
+    }
+  ]
+}

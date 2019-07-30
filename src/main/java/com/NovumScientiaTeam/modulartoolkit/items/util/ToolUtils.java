@@ -5,13 +5,20 @@ import com.NovumScientiaTeam.modulartoolkit.abilities.AbstractAbility;
 import com.NovumScientiaTeam.modulartoolkit.modifiers.AbstractModifier;
 import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.Head;
 import com.NovumScientiaTeam.modulartoolkit.parts.partTypes.PartType;
+import net.minecraft.block.*;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils.*;
 
 public final class ToolUtils {
     public static List<Material> getHeadMaterials(ItemStack stack) {
@@ -32,5 +39,45 @@ public final class ToolUtils {
         for (AbstractAbility ability : ModularUtils.getAllAbilities(stack))
             speed = ability.setEfficiency(stack, speed, type);
         return (float) (speed * ModularUtils.getBoostMultiplier(stack));
+    }
+
+    public static boolean breakBlock(ItemStack stack, World world, BlockState state, BlockPos pos, ServerPlayerEntity player) {
+        if (!stack.getItem().canPlayerBreakBlockWhileHolding(state, world, pos, player)) {
+            return false;
+        } else {
+            TileEntity tileentity = world.getTileEntity(pos);
+            Block block = state.getBlock();
+            if ((block instanceof CommandBlockBlock || block instanceof StructureBlock || block instanceof JigsawBlock) && !player.canUseCommandBlock()) {
+                world.notifyBlockUpdate(pos, state, state, 3);
+                return false;
+            } else if (player.func_223729_a(world, pos, player.interactionManager.getGameType()))
+                return false;
+            else {
+                block.onBlockHarvested(world, pos, state, player);
+                boolean flag = world.removeBlock(pos, false);
+                if (flag) {
+                    block.onPlayerDestroy(world, pos, state);
+                    for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
+                        e.getKey().onBlockDestroyed(stack, world, state, pos, player, e.getValue());
+                    for (AbstractAbility ability : getAllAbilities(stack))
+                        ability.onBlockDestroyed(stack, world, state, pos, player);
+                }
+                if (player.isCreative()) {
+                    return true;
+                } else {
+                    boolean flag1 = player.canHarvestBlock(state);
+                    if (flag && flag1) {
+                        block.harvestBlock(world, player, pos, state, tileentity, stack);
+                        if (state.getBlockHardness(world, pos) != 0.0F && !isBroken(stack)) {
+                            stack.damageItem(1, player, e -> {
+                            });
+                            addXP(stack, player);
+                        }
+                    }
+
+                    return true;
+                }
+            }
+        }
     }
 }

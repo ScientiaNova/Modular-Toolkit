@@ -19,6 +19,9 @@ public class ItemRegistry {
     public static Item SWORD;
     public static Item WRENCH;
     public static Item SHIELD;
+    public static Item BROADAXE;
+    public static Item EXCAVATOR;
+    public static Item HAMMER;
 
     public static void registry(RegistryEvent.Register<Item> e) {
         AXE = register(new ModularAxe(), e);
@@ -29,6 +32,9 @@ public class ItemRegistry {
         SWORD = register(new ModularSword(), e);
         WRENCH = register(new ModularWrench(), e);
         SHIELD = register(new ModularShield(), e);
+        BROADAXE = register(new ModularBroadaxe(), e);
+        EXCAVATOR = register(new ModularExcavator(), e);
+        HAMMER = register(new ModularHammer(), e);
     }
 
     private static Item register(Item i, RegistryEvent.Register<Item> e) {

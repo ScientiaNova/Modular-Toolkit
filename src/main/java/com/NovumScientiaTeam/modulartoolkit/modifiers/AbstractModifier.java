@@ -1,8 +1,8 @@
 package com.NovumScientiaTeam.modulartoolkit.modifiers;
 
 import com.NovumScientiaTeam.modulartoolkit.items.ModularItem;
-import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
 import com.NovumScientiaTeam.modulartoolkit.items.util.ModularUtils;
+import com.NovumScientiaTeam.modulartoolkit.modifiers.util.ModifierStats;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;

@@ -15,6 +15,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Plating extends ArmorPartType {
     public Plating() {
@@ -37,12 +38,18 @@ public class Plating extends ArmorPartType {
     }
 
     @Override
+    public int getDefence(Material mat, EquipmentSlotType slotType) {
+        return mat.getArmorMaterial().getDamageReductionAmount(slotType) / 2;
+    }
+
+    @Override
     public void addTooltip(Item item, List<ITextComponent> tooltip) {
         DecimalFormat format = new DecimalFormat("#.##");
         Material mat = ((IMaterialItem) item).getMaterial();
-        Arrays.stream(EquipmentSlotType.values()).filter(t -> t.getSlotType() == EquipmentSlotType.Group.ARMOR).forEach(slotType ->
-            tooltip.add(new TranslationTextComponent("tool.stat.durability_" + slotType.getName().toLowerCase(), Integer.toString(getExtraDurability(mat, slotType)))));
-            tooltip.add(new TranslationTextComponent("tool.stat.level_cap_multiplier", format.format(getLevelCapMultiplier(mat))));
+        List<EquipmentSlotType> armorSlots = Arrays.stream(EquipmentSlotType.values()).filter(t -> t.getSlotType() == EquipmentSlotType.Group.ARMOR).collect(Collectors.toList());
+        armorSlots.forEach(slotType -> tooltip.add(new TranslationTextComponent("tool.stat.durability_" + slotType.getName().toLowerCase(), Integer.toString(getExtraDurability(mat, slotType)))));
+        tooltip.add(new TranslationTextComponent("tool.stat.level_cap_multiplier", format.format(getLevelCapMultiplier(mat))));
+        armorSlots.forEach(slotType -> tooltip.add(new TranslationTextComponent("tool.stat.damage_reduction_" + slotType.getName().toLowerCase(), format.format(getDefence(mat, slotType)))));
         AbstractAbility ability = Abilities.getFor(mat, this);
         if (ability != null)
             tooltip.add(ability.getTranslationKey(new ItemStack(item)));

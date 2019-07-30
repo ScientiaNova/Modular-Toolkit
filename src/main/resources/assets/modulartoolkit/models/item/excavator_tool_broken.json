@@ -1,0 +1,8 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "modulartoolkit:item/excavator_top_broken",
+    "layer1": "modulartoolkit:item/excavator_middle",
+    "layer2": "modulartoolkit:item/excavator_bottom"
+  }
+}

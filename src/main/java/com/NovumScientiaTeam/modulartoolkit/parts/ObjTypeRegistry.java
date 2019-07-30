@@ -9,7 +9,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraftforge.common.ToolType;
 
 public class ObjTypeRegistry {
-    public static ObjectType TOOL_ROD, AXE_HEAD, HOE_HEAD, PICKAXE_HEAD, SWORD_BLADE, BINDING, SHOVEL_HEAD, SWORD_GUARD, WRENCH_HEAD, FRAGMENT, TOUGH_TOOL_ROD, TOUGH_BINDING, PLATING, SHIELD_FRAME;
+    public static ObjectType TOOL_ROD, AXE_HEAD, HOE_HEAD, PICKAXE_HEAD, SWORD_BLADE, BINDING, SHOVEL_HEAD, SWORD_GUARD, WRENCH_HEAD, FRAGMENT, TOUGH_TOOL_ROD, TOUGH_BINDING, PLATING, SHIELD_FRAME, BROADAXE_HEAD, EXCAVATOR_HEAD, HAMMER_HEAD;
 
     public static final String WEAPON_PART = "weapon_part";
 
@@ -30,6 +30,9 @@ public class ObjTypeRegistry {
         TOUGH_BINDING = new ItemType("tough_binding", m -> m.getItemTier() != null).setBucketVolume(216).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
         PLATING = new ItemType("plating", m -> m.getArmorMaterial() != null).setBucketVolume(216).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
         SHIELD_FRAME = new ItemType("shield_frame", m -> m.getArmorMaterial() != null).setBucketVolume(288).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
+        BROADAXE_HEAD = new ItemType("broadaxe_head", m -> m.getItemTier() != null).setBucketVolume(864).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
+        EXCAVATOR_HEAD = new ItemType("excavator_head", m -> m.getItemTier() != null).setBucketVolume(432).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
+        HAMMER_HEAD = new ItemType("hammer_head", m -> m.getItemTier() != null).setBucketVolume(864).addTypeTag(MaterialRegistry.SINGLE_TEXTURE_TYPE).build();
 
         PartTypeMap.bindToPartType(TOOL_ROD, new Handle());
         PartTypeMap.bindToPartType(AXE_HEAD, new Head(ToolType.AXE));
@@ -44,5 +47,8 @@ public class ObjTypeRegistry {
         PartTypeMap.bindToPartType(TOUGH_BINDING, new Extra().addMods(new ToughMod()));
         PartTypeMap.bindToPartType(PLATING, new Plating());
         PartTypeMap.bindToPartType(SHIELD_FRAME, new Frame(EquipmentSlotType.LEGS));
+        PartTypeMap.bindToPartType(BROADAXE_HEAD, new Head(ToolType.AXE).addMods(new ToughMod()));
+        PartTypeMap.bindToPartType(EXCAVATOR_HEAD, new Head(ToolType.SHOVEL).addMods(new ToughMod()));
+        PartTypeMap.bindToPartType(HAMMER_HEAD, new Head(ToolType.PICKAXE).addMods(new ToughMod()));
     }
 }

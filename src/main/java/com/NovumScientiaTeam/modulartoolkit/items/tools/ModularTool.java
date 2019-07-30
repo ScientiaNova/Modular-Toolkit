@@ -18,12 +18,13 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -94,23 +95,85 @@ public abstract class ModularTool extends ModularItem {
         return (float) getToolTypes(stack).stream().filter(t -> state.isToolEffective(t) && getHarvestLevel(stack, t, null, state) >= state.getHarvestLevel()).mapToDouble(t -> ToolUtils.getDestroySpeedForToolType(stack, t)).max().orElse(1);
     }
 
+    public List<BlockPos> getAOEPoses(ItemStack stack, World world, BlockState state, BlockPos pos, ServerPlayerEntity player, boolean harvest) {
+        List<BlockPos> poses = new ArrayList<>();
+        final float hardness = state.getPlayerRelativeBlockHardness(player, world, pos);
+        final int range = getAOERange();
+        if (hardness > 0) {
+            Vec3d vec3d = player.getPositionVector().add(0, player.getEyeHeight(), 0);
+            Vec3d vec3d1 = player.getLookVec();
+            Vec3d vec3d2 = vec3d.add(vec3d1.x * 5, vec3d1.y * 5, vec3d1.z * 5);
+            BlockRayTraceResult rayTrace = world.rayTraceBlocks(new RayTraceContext(vec3d, vec3d2, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.SOURCE_ONLY, player));
+            BlockPos currentPos;
+            float currentHardness;
+            BlockState currentState;
+            if (rayTrace.getType() == RayTraceResult.Type.BLOCK)
+                switch (rayTrace.getFace()) {
+                    case NORTH:
+                    case SOUTH:
+                        for (int i = range - 1; i > -range; i--)
+                            for (int j = range - 1; j > -range; j--)
+                                if (!ModularUtils.isBroken(stack)) {
+                                    if (i == 0 && j == 0)
+                                        continue;
+                                    currentPos = pos.add(j, i, 0);
+                                    currentState = world.getBlockState(currentPos);
+                                    currentHardness = currentState.getPlayerRelativeBlockHardness(player, world, currentPos);
+                                    if (!currentState.isAir(world, currentPos) && currentHardness >= hardness && (!harvest || ToolUtils.breakBlock(stack, world, currentState, currentPos, player)))
+                                        poses.add(currentPos);
+                                }
+                        break;
+                    case EAST:
+                    case WEST:
+                        for (int i = range - 1; i > -range; i--)
+                            for (int j = range - 1; j > -range; j--)
+                                if (!ModularUtils.isBroken(stack)) {
+                                    if (i == 0 && j == 0)
+                                        continue;
+                                    currentPos = pos.add(0, i, j);
+                                    currentState = world.getBlockState(currentPos);
+                                    currentHardness = currentState.getPlayerRelativeBlockHardness(player, world, currentPos);
+                                    if (!currentState.isAir(world, currentPos) && currentHardness >= hardness && (!harvest || ToolUtils.breakBlock(stack, world, currentState, currentPos, player)))
+                                        poses.add(currentPos);
+                                }
+                        break;
+                    case UP:
+                    case DOWN:
+                        for (int i = range - 1; i > -range; i--)
+                            for (int j = range - 1; j > -range; j--)
+                                if (!ModularUtils.isBroken(stack)) {
+                                    if (i == 0 && j == 0)
+                                        continue;
+                                    currentPos = pos.add(i, 0, j);
+                                    currentState = world.getBlockState(currentPos);
+                                    currentHardness = currentState.getPlayerRelativeBlockHardness(player, world, currentPos);
+                                    if (!currentState.isAir(world, currentPos) && currentHardness >= hardness && (!harvest || ToolUtils.breakBlock(stack, world, currentState, currentPos, player)))
+                                        poses.add(currentPos);
+                                }
+                        break;
+                }
+        }
+        return poses;
+    }
+
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity livingEntity) {
+    public boolean onBlockDestroyed(ItemStack stack, World worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
+        if (!ModularUtils.isNull(stack) && !ModularUtils.isBroken(stack) && entityLiving instanceof PlayerEntity && stack.canHarvestBlock(state) && !worldIn.isRemote && getAOERange() > 1 && !entityLiving.isSneaking())
+            getAOEPoses(stack, worldIn, state, pos, (ServerPlayerEntity) entityLiving, true);
+
         for (Map.Entry<AbstractModifier, Integer> e : getModifierTierMap(stack).entrySet())
-            e.getKey().onBlockDestroyed(stack, worldIn, state, pos, livingEntity, e.getValue());
+            e.getKey().onBlockDestroyed(stack, worldIn, state, pos, entityLiving, e.getValue());
         for (AbstractAbility ability : getAllAbilities(stack))
-            ability.onBlockDestroyed(stack, worldIn, state, pos, livingEntity);
+            ability.onBlockDestroyed(stack, worldIn, state, pos, entityLiving);
 
         if (!worldIn.isRemote && state.getBlockHardness(worldIn, pos) != 0.0F && !isBroken(stack))
             if (hasTag(IS_TOOL)) {
-                stack.damageItem(1, livingEntity, (p_220038_0_) ->
-                        p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND)
-                );
-                addXP(stack, livingEntity);
+                stack.damageItem(1, entityLiving, e -> {
+                });
+                addXP(stack, entityLiving);
             } else if (hasTag(IS_MELEE_WEAPON))
-                stack.damageItem(2, livingEntity, (p_220038_0_) ->
-                        p_220038_0_.sendBreakAnimation(EquipmentSlotType.MAINHAND)
-                );
+                stack.damageItem(2, entityLiving, e -> {
+                });
 
         return true;
     }
@@ -201,6 +264,10 @@ public abstract class ModularTool extends ModularItem {
         for (AbstractAbility ability : getAllAbilities(stack))
             amount = ability.setAttackSpeed(stack, amount);
         return amount;
+    }
+
+    public int getAOERange() {
+        return 1;
     }
 
     public abstract double getAttackDamage(ItemStack stack);

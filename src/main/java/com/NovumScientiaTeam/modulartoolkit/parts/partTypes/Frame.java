@@ -43,11 +43,17 @@ public class Frame extends ArmorPartType {
     }
 
     @Override
+    public int getDefence(Material mat, EquipmentSlotType slotType) {
+        return 0;
+    }
+
+    @Override
     public void addTooltip(Item item, List<ITextComponent> tooltip) {
         DecimalFormat format = new DecimalFormat("#.##");
         Material mat = ((IMaterialItem) item).getMaterial();
         tooltip.add(new TranslationTextComponent("tool.stat.durability", Integer.toString(getExtraDurability(mat, slotType))));
         tooltip.add(new TranslationTextComponent("tool.stat.durability_multiplier", format.format(getDurabilityModifier(mat, slotType))));
+        tooltip.add(new TranslationTextComponent("tool.stat.armor_toughness", format.format(mat.getArmorMaterial().getToughness())));
         AbstractAbility ability = Abilities.getFor(mat, this);
         if (ability != null)
             tooltip.add(ability.getTranslationKey(new ItemStack(item)));

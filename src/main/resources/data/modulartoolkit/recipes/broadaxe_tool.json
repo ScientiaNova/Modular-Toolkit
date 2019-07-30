@@ -1,0 +1,19 @@
+{
+  "type": "modulartoolkit:tool_crafting",
+  "group": "modulartoolkit:axe_tool",
+  "ingredients": [
+    {
+      "tag": "forge:broadaxe_heads"
+    },
+    {
+      "tag": "forge:tough_bindings"
+    },
+    {
+      "tag": "forge:tough_tool_rods"
+    }
+  ],
+  "result": {
+    "item": "modulartoolkit:broadaxe_tool",
+    "count": 1
+  }
+}
