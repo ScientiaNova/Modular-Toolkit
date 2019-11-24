@@ -1,11 +1,11 @@
-modLoader="javafml"
-loaderVersion="[27,)"
+modLoader="kotlinfml"
+loaderVersion="[1,)"
 issueTrackerURL="https://github.com/novumscientiateam/Modular-Toolkit"
 [[mods]]
 modId="modulartoolkit"
 version="${file.jarVersion}"
 displayName="Modular Toolkit"
-authors="TheEmosewaPixel, Nartz24, RonM"
+authors="TheEmosewaPixel, Bartz24"
 description="A mod adding customizable tools based on Pixel Lib materials."
 [[dependencies.modulartoolkit]]
     modId="forge"
